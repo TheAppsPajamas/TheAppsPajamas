@@ -29,6 +29,12 @@ namespace Build.Client
             //gets the ugly if's out of the way of the main processing block
 
 
+            //variables required MSBuildProjectName
+            //buildconfiguration
+
+            var t = BuildEngine;
+            var p = TaskResources;
+
             throw new NotImplementedException();
         }
     }

@@ -4,9 +4,10 @@
 -->
 <Project TreatAsLocalProperty="TaskFolder;TaskAssembly">
   <PropertyGroup>	
-    <TaskFolder Condition=" '$(MSBuildRuntimeType)' != 'Core' ">net46</TaskFolder>
-    <TaskAssembly>$(MSBuildThisFileDirectory)..\tools\Build.Client.dll</TaskAssembly>
+
+    <BuildClientToolAssembly>$(MSBuildThisFileDirectory)..\tools\Build.Client.dll</BuildClientToolAssembly>
   </PropertyGroup>
 
-  <UsingTask TaskName="Build.Client.BuildTasks.HelloWorld" AssemblyFile="$(TaskAssembly)" />
+
+  <UsingTask TaskName="Build.Client.BuildTasks.HelloWorld" AssemblyFile="$(BuildClientToolAssembly)" />
 </Project>

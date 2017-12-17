@@ -2,12 +2,16 @@
   This file is automatically imported by NuGet into a user's project
   when it targets a single framework, or in classic (pre 2017) csproj projects.
 -->
-<Project TreatAsLocalProperty="TaskFolder;TaskAssembly">
+<Project TreatAsLocalProperty="BuildClientToolAssembly">
   <PropertyGroup>	
 
     <BuildClientToolAssembly>$(MSBuildThisFileDirectory)..\tools\Build.Client.dll</BuildClientToolAssembly>
+
+    <BuildClientResourceBaseDir>$(MSBuildThisFileDirectory)..\..\..\</BuildClientResourceBaseDir>
   </PropertyGroup>
 
 
   <UsingTask TaskName="Build.Client.BuildTasks.HelloWorld" AssemblyFile="$(BuildClientToolAssembly)" />
+
+  <UsingTask TaskName="Build.Client.BuildTasks.LoadRemoteBuildConfig" AssemblyFile="$(BuildClientToolAssembly)" />
 </Project>

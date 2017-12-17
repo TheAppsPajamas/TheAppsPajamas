@@ -1,6 +1,21 @@
 <Project>
-  <!-- this will automatically run after the 'Build' target -->
-      <Target Name="SayHelloWorld" BeforeTargets="_GetReferenceAssemblyPaths"><HelloWorld /></Target>
+    <PropertyGroup> 
+    <BuildDebug>true</BuildDebug>
+  </PropertyGroup>
+
+    
+      <Target Name="SayHelloWorld" BeforeTargets="_GetReferenceAssemblyPaths" Condition="'$TargetFrameworkIdentifier' == 'MonoAndroid'"><HelloWorld /></Target>
+
+      <Target Name="SayHelloAgainWorld" BeforeTargets="_GetReferenceAssemblyPaths">
+      <Warning Text="Target framework $(TargetFrameworkIdentifier)"/>
+    </Target>
+
+    <Target Name="RunLoadRemoteBuildConfig" BeforeTargets="_GetReferenceAssemblyPaths" >
+       <LoadRemoteBuildConfig Debug="$(BuildDebug)" ProjectName="$(MSBuildProjectName)" BuildConfiguration="$(Configuration)" BuildClientResourceBaseDir="$(BuildClientResourceBaseDir)">
+
+            <Output TaskParameter="BuildResourceDir" PropertyName="BuildResourceDir" />
 
 
+        </LoadRemoteBuildConfig>
+    </Target>
 </Project>

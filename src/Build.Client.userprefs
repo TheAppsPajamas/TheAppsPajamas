@@ -1,0 +1,15 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/FetchBuildResources.cs">
+    <Files>
+      <File FileName="Build.Client/BuildTasks/GetDroidAppIcons.cs" Line="6" Column="23" />
+      <File FileName="Build.Client/BuildTasks/HelloWorld.cs" Line="4" Column="34" />
+      <File FileName="Build.Client/FetchBuildResources.cs" Line="15" Column="13" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MultiItemStartupConfigurations />
+</Properties>

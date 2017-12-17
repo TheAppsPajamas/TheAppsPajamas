@@ -1,9 +1,11 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/FetchBuildResources.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/build/Build.Client.props">
     <Files>
-      <File FileName="Build.Client/BuildTasks/GetDroidAppIcons.cs" Line="6" Column="23" />
-      <File FileName="Build.Client/BuildTasks/HelloWorld.cs" Line="4" Column="34" />
-      <File FileName="Build.Client/FetchBuildResources.cs" Line="15" Column="13" />
+      <File FileName="Build.Client/BuildTasks/GetDroidAppIcons.cs" Line="1" Column="1" />
+      <File FileName="Build.Client/BuildTasks/HelloWorld.cs" Line="1" Column="1" />
+      <File FileName="Build.Client/FetchBuildResources.cs" Line="1" Column="1" />
+      <File FileName="Build.Client/Build.Client.csproj" Line="68" Column="66" />
+      <File FileName="Build.Client/build/Build.Client.props" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

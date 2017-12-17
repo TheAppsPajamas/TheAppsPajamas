@@ -1,0 +1,5 @@
+<Project>
+  <!-- this will automatically run after the 'Build' target -->
+      <Target Name="SayHelloWorld" BeforeTargets="_GetReferenceAssemblyPaths"><HelloWorld /></Target>
+
+</Project>

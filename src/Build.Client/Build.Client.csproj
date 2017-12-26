@@ -59,12 +59,21 @@
     <Compile Include="BuildTasks\HelloWorld.cs" />
     <Compile Include="BuildTasks\LoadLocalBuildConfig.cs" />
     <Compile Include="BuildTasks\LoadRemoteBuildConfig.cs" />
-    <Compile Include="Models\BuildResourceConfig.cs" />
+    <Compile Include="Models\BuildResourcesConfig.cs" />
+    <Compile Include="BuildTasks\WebDownload.cs" />
+    <Compile Include="Models\SecurityConfig.cs" />
+    <Compile Include="Extensions\ConfigExtensions.cs" />
+    <Compile Include="BuildTasks\BaseTask.cs" />
+    <Compile Include="Models\ClientConfigDto.cs" />
+    <Compile Include="Models\BaseFieldClientDto.cs" />
+    <Compile Include="Models\StringFieldClientDto.cs" />
+    <Compile Include="Models\MediaFieldClientDto.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Ioc\" />
     <Folder Include="Models\" />
     <Folder Include="BuildTasks\" />
+    <Folder Include="Extensions\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -1,29 +1,11 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/BuildTasks/GetDroidAppIcons.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/Extensions/ConfigExtensions.cs">
     <Files>
-      <File FileName="Build.Client/build/Build.Client.props" Line="16" Column="69" />
-      <File FileName="Build.Client/build/Build.Client.targets" Line="17" Column="1" />
-      <File FileName="Build.Client/BuildTasks/LoadLocalBuildConfig.cs" Line="14" Column="53" />
-      <File FileName="Build.Client/BuildTasks/LoadRemoteBuildConfig.cs" Line="83" Column="59" />
-      <File FileName="Build.Client/Models/BuildResourceConfig.cs" Line="11" Column="1" />
-      <File FileName="Build.Client/BuildTasks/GetDroidAppIcons.cs" Line="32" Column="25" />
+      <File FileName="Build.Client/BuildTasks/LoadRemoteBuildConfig.cs" Line="42" Column="14" />
+      <File FileName="Build.Client/BuildTasks/WebDownload.cs" Line="154" Column="14" />
+      <File FileName="Build.Client/Extensions/ConfigExtensions.cs" Line="77" Column="35" />
+      <File FileName="Build.Client/BuildTasks/BaseTask.cs" Line="30" Column="9" />
     </Files>
-    <Pads>
-      <Pad Id="ProjectPad">
-        <State name="__root__">
-          <Node name="Build.Client" expanded="True">
-            <Node name="Build.Client" expanded="True">
-              <Node name="References" expanded="True" />
-              <Node name="build" expanded="True" />
-              <Node name="BuildTasks" expanded="True">
-                <Node name="GetDroidAppIcons.cs" selected="True" />
-              </Node>
-              <Node name="Models" expanded="True" />
-            </Node>
-          </Node>
-        </State>
-      </Pad>
-    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

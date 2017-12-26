@@ -46,7 +46,7 @@ namespace Build.Client.BuildTasks
 
                 if (packageName != null && !String.IsNullOrEmpty(packageName.GetMetadata("Value")))
                 {
-                    LogDebug("Package name found, setting manifest to {0}", packageName.GetMetadata("Value"));
+                    LogDebug("Package name found, check against resource value {0}", packageName.GetMetadata("Value"));
 
                     var appNode = xml.DocumentElement.SelectSingleNode("/manifest/application", nsmgr);
                     if (appNode != null && appNode.Attributes != null)
@@ -54,8 +54,14 @@ namespace Build.Client.BuildTasks
                         var labelAttribute = appNode.Attributes["label", AndroidNamespace];
                         if (labelAttribute != null)
                         {
-                            labelAttribute.Value = packageName.GetMetadata("Value");
-                            touched = true;
+                            if (labelAttribute.Value != packageName.GetMetadata("Value"))
+                            {
+                                LogDebug("Package name changed, setting Android Manifest");
+                                labelAttribute.Value = packageName.GetMetadata("Value");
+                                touched = true;
+                            } else {
+                                LogDebug("Package label unchanged not setting");
+                            }
                         }
                         else
                         {
@@ -76,9 +82,15 @@ namespace Build.Client.BuildTasks
                     .FirstOrDefault(x => FieldType.FromValue(Int32.Parse(x.ItemSpec)) == FieldType.PackagingDroidIdentifier);
                 
                 if (packageIdentifier != null && !String.IsNullOrEmpty(packageIdentifier.GetMetadata("Value"))){
-                    LogDebug("Package identifier found, setting manifest to {0}", packageIdentifier.GetMetadata("Value"));
-                    xml.DocumentElement.SetAttribute("package", packageIdentifier.GetMetadata("Value"));
-                    touched = true;
+                    LogDebug("Package identifier found, check against resource value {0}", packageIdentifier.GetMetadata("Value"));
+                    if (xml.DocumentElement.GetAttribute("package") != packageIdentifier.GetMetadata("Value"))
+                    {
+                        LogDebug("Package identified changed, setting Android Manifest");
+                        xml.DocumentElement.SetAttribute("package", packageIdentifier.GetMetadata("Value"));
+                        touched = true;
+                    } else {
+                        LogDebug("Package identifier unchanged not setting");
+                    }
                 } else {
                     LogDebug("Package identifier not found");
                 }
@@ -88,9 +100,15 @@ namespace Build.Client.BuildTasks
 
                 if (packageVersionName != null && !String.IsNullOrEmpty(packageVersionName.GetMetadata("Value")))
                 {
-                    LogDebug("Package version name found, setting manifest to {0}", packageVersionName.GetMetadata("Value"));
-                    xml.DocumentElement.SetAttribute("android:versionName", packageVersionName.GetMetadata("Value"));
-                    touched = true;
+                    LogDebug("Package version name found, check against resource value {0}", packageVersionName.GetMetadata("Value"));
+                    if (xml.DocumentElement.GetAttribute("android:versionName") != packageVersionName.GetMetadata("Value"))
+                    {
+                        LogDebug("Package version name changed, setting Android Manifest");
+                        xml.DocumentElement.SetAttribute("android:versionName", packageVersionName.GetMetadata("Value"));
+                        touched = true;
+                    } else {
+                        LogDebug("Package version name unchanged not setting");
+                    }
                 }
                 else
                 {
@@ -102,9 +120,15 @@ namespace Build.Client.BuildTasks
 
                 if (packageVersionCode != null && !String.IsNullOrEmpty(packageVersionCode.GetMetadata("Value")))
                 {
-                    LogDebug("Package version code found, setting manifest to {0}", packageVersionCode.GetMetadata("Value"));
-                    xml.DocumentElement.SetAttribute("android:versionCode", packageVersionCode.GetMetadata("Value"));
-                    touched = true;
+                    LogDebug("Package version code found, check against resource value {0}", packageVersionCode.GetMetadata("Value"));
+                    if (xml.DocumentElement.GetAttribute("android:versionCode") != packageVersionCode.GetMetadata("Value"))
+                    {
+                        LogDebug("Package version code changed, setting Android Manifest");
+                        xml.DocumentElement.SetAttribute("android:versionCode", packageVersionCode.GetMetadata("Value"));
+                        touched = true;
+                    } else {
+                        LogDebug("Package version code unchanged not setting");
+                    }
                 }
                 else
                 {

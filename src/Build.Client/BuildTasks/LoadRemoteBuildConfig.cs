@@ -9,7 +9,7 @@ using Build.Client.Extensions;
 
 namespace Build.Client.BuildTasks
 {
-    public class LoadRemoteBuildConfig : BaseTask
+    public class LoadRemoteBuildConfig : BaseLoadTask
     {
         public LoadRemoteBuildConfig()
         {
@@ -63,7 +63,11 @@ namespace Build.Client.BuildTasks
                 return false;
 
             //write to file (in a folder structure???)
-            //split into our variables
+
+            PackagingOutput = this.GetPackagingOutput(clientConfigDto);
+            AppIconOutput = this.GetAppIconOutput(clientConfigDto);
+            SplashOutput = this.GetSplashOutput(clientConfigDto);
+
             return true;
         }
     }

@@ -1,14 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Build.Client.BuildTasks;
 using Build.Client.Models;
+using Microsoft.Build.Framework;
+using Microsoft.Build.Utilities;
 using Newtonsoft.Json;
 
 namespace Build.Client.Extensions
 {
     public static class ConfigExtensions
     {
-        public static string GetBaseDirectory(this BaseTask baseTask){
+        public static string GetBaseDirectory(this BaseLoadTask baseTask){
             baseTask.LogDebug("BuildClientResourceBaseDir located at '{0}'", baseTask.BuildClientResourceBaseDir);
 
 
@@ -31,7 +34,7 @@ namespace Build.Client.Extensions
             return null;
         }
 
-        public static BuildResourcesConfig GetResourceConfig(this BaseTask baseTask){
+        public static BuildResourcesConfig GetResourceConfig(this BaseLoadTask baseTask){
             baseTask.LogDebug("Loading build-resources.config file");
 
             try
@@ -69,7 +72,7 @@ namespace Build.Client.Extensions
             return null;
         }
 
-        public static ClientConfigDto GetClientConfig(this BaseTask baseTask, string json){
+        public static ClientConfigDto GetClientConfig(this BaseLoadTask baseTask, string json){
             try{
                 baseTask.LogDebug("Deserializing ClientConfigDto, length '{0}'", json.Length);
                 var clientConfigDto = JsonConvert.DeserializeObject<ClientConfigDto>(json);
@@ -81,5 +84,53 @@ namespace Build.Client.Extensions
             }
             return null;
         }
+
+        public static ITaskItem[] GetPackagingOutput(this BaseLoadTask baseTask, ClientConfigDto clientConfigDto){
+            baseTask.LogDebug("Generating Packaging TaskItems");
+
+            var output = new List<ITaskItem>();
+            foreach(var field in clientConfigDto.PackagingFields){
+                var itemMetadata = new Dictionary<string, string>();
+                itemMetadata.Add("Value", field.CalculatedValue);
+                output.Add(new TaskItem(field.FieldId.ToString(), itemMetadata));
+            }
+
+            baseTask.LogDebug("Generated {0} Packaging TaskItems",output.Count);
+            return output.ToArray();  
+        }
+
+        public static ITaskItem[] GetAppIconOutput(this BaseLoadTask baseTask, ClientConfigDto clientConfigDto)
+        {
+            baseTask.LogDebug("Generating AppIcon TaskItems");
+
+            var output = new List<ITaskItem>();
+            foreach (var field in clientConfigDto.AppIconFields)
+            {
+                var itemMetadata = new Dictionary<string, string>();
+                itemMetadata.Add("LogicalName", field.CalculatedValue);
+                output.Add(new TaskItem(field.FieldId.ToString(), itemMetadata));
+            }
+
+            baseTask.LogDebug("Generated {0} AppIcon TaskItems", output.Count);
+            return output.ToArray();
+        }
+
+        public static ITaskItem[] GetSplashOutput(this BaseLoadTask baseTask, ClientConfigDto clientConfigDto)
+        {
+            baseTask.LogDebug("Generating Splash TaskItems");
+
+            var output = new List<ITaskItem>();
+            foreach (var field in clientConfigDto.SplashFields)
+            {
+                var itemMetadata = new Dictionary<string, string>();
+                itemMetadata.Add("Value", field.CalculatedValue);
+                output.Add(new TaskItem(field.FieldId.ToString(), itemMetadata));
+            }
+
+            baseTask.LogDebug("Generated {0} Splash TaskItems", output.Count);
+            return output.ToArray();
+        }
+
+
     }
 }

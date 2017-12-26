@@ -1,10 +1,12 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/Extensions/ConfigExtensions.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/BuildTasks/SetDroidManifest.cs">
     <Files>
-      <File FileName="Build.Client/BuildTasks/LoadRemoteBuildConfig.cs" Line="42" Column="14" />
+      <File FileName="Build.Client/BuildTasks/LoadRemoteBuildConfig.cs" Line="65" Column="55" />
       <File FileName="Build.Client/BuildTasks/WebDownload.cs" Line="154" Column="14" />
-      <File FileName="Build.Client/Extensions/ConfigExtensions.cs" Line="77" Column="35" />
-      <File FileName="Build.Client/BuildTasks/BaseTask.cs" Line="30" Column="9" />
+      <File FileName="Build.Client/Extensions/ConfigExtensions.cs" Line="123" Column="63" />
+      <File FileName="Build.Client/Models/BaseFieldClientDto.cs" Line="10" Column="1" />
+      <File FileName="Build.Client/build/Build.Client.targets" Line="20" Column="114" />
+      <File FileName="Build.Client/BuildTasks/SetDroidManifest.cs" Line="18" Column="32" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

@@ -14,4 +14,5 @@
   <UsingTask TaskName="Build.Client.BuildTasks.HelloWorld" AssemblyFile="$(BuildClientToolAssembly)" />
 
   <UsingTask TaskName="Build.Client.BuildTasks.LoadRemoteBuildConfig" AssemblyFile="$(BuildClientToolAssembly)" />
+  <UsingTask TaskName="Build.Client.BuildTasks.SetDroidManifest" AssemblyFile="$(BuildClientToolAssembly)" />
 </Project>

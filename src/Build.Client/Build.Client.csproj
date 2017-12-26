@@ -63,11 +63,13 @@
     <Compile Include="BuildTasks\WebDownload.cs" />
     <Compile Include="Models\SecurityConfig.cs" />
     <Compile Include="Extensions\ConfigExtensions.cs" />
-    <Compile Include="BuildTasks\BaseTask.cs" />
+    <Compile Include="BuildTasks\BaseLoadTask.cs" />
     <Compile Include="Models\ClientConfigDto.cs" />
     <Compile Include="Models\BaseFieldClientDto.cs" />
     <Compile Include="Models\StringFieldClientDto.cs" />
     <Compile Include="Models\MediaFieldClientDto.cs" />
+    <Compile Include="BuildTasks\BaseTask.cs" />
+    <Compile Include="BuildTasks\SetDroidManifest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Ioc\" />

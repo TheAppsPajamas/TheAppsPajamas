@@ -40,6 +40,7 @@
     <Reference Include="Microsoft.Build" />
     <Reference Include="Microsoft.Build.Engine" />
     <Reference Include="Microsoft.Build.Framework" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
       <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1">
@@ -70,12 +71,25 @@
     <Compile Include="Models\MediaFieldClientDto.cs" />
     <Compile Include="BuildTasks\BaseTask.cs" />
     <Compile Include="BuildTasks\SetDroidManifest.cs" />
+    <Compile Include="Enums\AppIconFieldType.cs" />
+    <Compile Include="Enums\BuildConfigRecordSetType.cs" />
+    <Compile Include="Enums\Enumeration.cs" />
+    <Compile Include="Enums\FieldType.cs" />
+    <Compile Include="Enums\MasterMediaFieldType.cs" />
+    <Compile Include="Enums\MediaFieldType.cs" />
+    <Compile Include="Enums\PackagingFieldType.cs" />
+    <Compile Include="Enums\ProjectType.cs" />
+    <Compile Include="Enums\SplashFieldType.cs" />
+    <Compile Include="Enums\StringFieldDisplayType.cs" />
+    <Compile Include="Enums\FieldHolderType.cs" />
+    <Compile Include="Enums\StringFieldType.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Ioc\" />
     <Folder Include="Models\" />
     <Folder Include="BuildTasks\" />
     <Folder Include="Extensions\" />
+    <Folder Include="Enums\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

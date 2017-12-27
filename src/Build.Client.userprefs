@@ -1,9 +1,12 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/FetchBuildResources.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/BuildTasks/CleanProjectsConfig.cs">
     <Files>
-      <File FileName="Build.Client/BuildTasks/GetDroidAppIcons.cs" Line="6" Column="23" />
-      <File FileName="Build.Client/BuildTasks/HelloWorld.cs" Line="4" Column="34" />
-      <File FileName="Build.Client/FetchBuildResources.cs" Line="15" Column="13" />
+      <File FileName="Build.Client/BuildTasks/LoadRemoteBuildConfig.cs" Line="66" Column="1" />
+      <File FileName="Build.Client/Extensions/LoadExtensions.cs" Line="20" Column="1" />
+      <File FileName="Build.Client/Constants/Consts.cs" Line="6" Column="50" />
+      <File FileName="Build.Client/BuildTasks/LoadLocalBuildConfig.cs" Line="20" Column="1" />
+      <File FileName="Build.Client/build/Build.Client.targets" Line="13" Column="32" />
+      <File FileName="Build.Client/BuildTasks/CleanProjectsConfig.cs" Line="8" Column="31" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

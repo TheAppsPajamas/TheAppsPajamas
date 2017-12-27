@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Project>
+	<PropertyGroup>
+		<BuildDebug>true</BuildDebug>
+	</PropertyGroup>
+	<Target Name="SayHelloWorld" BeforeTargets="_GetReferenceAssemblyPaths" Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid'">
+		<HelloWorld />
+	</Target>
+	<Target Name="SayHelloAgainWorld" BeforeTargets="_GetReferenceAssemblyPaths">
+		<Warning Text="Target framework $(TargetFrameworkIdentifier)" />
+	</Target>
+    
+    <Target Name="Clean">
+        <CleanProjectsConfig Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)">
+        </CleanProjectsConfig>
+    </Target>
+    
+    <Target Name="RunLoadLocalBuildConfig" BeforeTargets="_GetReferenceAssemblyPaths">
+        <LoadLocalBuildConfig Debug="$(BuildDebug)" ProjectName="$(MSBuildProjectName)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)">
+            <Output TaskParameter="BuildResourceDir" PropertyName="BuildResourceDir" />
+            <Output TaskParameter="PackagingOutput" ItemName="PackagingFields" />
+            <Output TaskParameter="AppIconOutput" ItemName="AppIconFields" />
+            <Output TaskParameter="SplashOutput" ItemName="SplashFields" />
+            <Output TaskParameter="NeedsLoadRemote" PropertyName="NeedsLoadRemote"/>
+        </LoadLocalBuildConfig>
+    </Target>
+
+
+    
+	<Target Name="RunLoadRemoteBuildConfig" AfterTargets="RunLoadLocalBuildConfig" Condition="'$(NeedsLoadRemote)' == 'True'">
+		<LoadRemoteBuildConfig Debug="$(BuildDebug)" ProjectName="$(MSBuildProjectName)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)">
+			<Output TaskParameter="BuildResourceDir" PropertyName="BuildResourceDir" />
+			<Output TaskParameter="PackagingOutput" ItemName="PackagingFields" />
+			<Output TaskParameter="AppIconOutput" ItemName="AppIconFields" />
+			<Output TaskParameter="SplashOutput" ItemName="SplashFields" />
+		</LoadRemoteBuildConfig>
+	</Target>
+	<Target Name="SetDroidManifest" AfterTargets="RunLoadRemoteBuildConfig" Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid'">
+		<SetDroidManifest Debug="$(BuildDebug)" PackagingFields="@(PackagingFields)" AndroidManifest="$(AndroidManifest)">
+		</SetDroidManifest>
+	</Target>
+</Project>

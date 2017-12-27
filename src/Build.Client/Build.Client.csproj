@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\NuGet.Build.Packaging.0.2.0\build\NuGet.Build.Packaging.props" Condition="Exists('..\packages\NuGet.Build.Packaging.0.2.0\build\NuGet.Build.Packaging.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -8,6 +9,12 @@
     <RootNamespace>Build.Client</RootNamespace>
     <AssemblyName>Build.Client</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <PackOnBuild>true</PackOnBuild>
+    <PackageId>Build.Client</PackageId>
+    <PackageVersion>0.0.1</PackageVersion>
+    <Authors>Dean Marcussen</Authors>
+    <Description>Build.Client</Description>
+    <IsTool>true</IsTool>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,6 +40,14 @@
     <Reference Include="Microsoft.Build" />
     <Reference Include="Microsoft.Build.Engine" />
     <Reference Include="Microsoft.Build.Framework" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+      <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="9.0.1">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+        </PackageReference>
+    <!-- Marks all packages as 'local only' so they don't end up in the nuspec. -->
+    <PackageReference Update="@(PackageReference)" PrivateAssets="All" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -43,11 +58,54 @@
     <Compile Include="FetchBuildResources.cs" />
     <Compile Include="BuildTasks\GetDroidAppIcons.cs" />
     <Compile Include="BuildTasks\HelloWorld.cs" />
+    <Compile Include="BuildTasks\LoadLocalBuildConfig.cs" />
+    <Compile Include="BuildTasks\LoadRemoteBuildConfig.cs" />
+    <Compile Include="Models\BuildResourcesConfig.cs" />
+    <Compile Include="BuildTasks\WebDownload.cs" />
+    <Compile Include="Models\SecurityConfig.cs" />
+    <Compile Include="Extensions\ConfigExtensions.cs" />
+    <Compile Include="BuildTasks\BaseLoadTask.cs" />
+    <Compile Include="Models\ClientConfigDto.cs" />
+    <Compile Include="Models\BaseFieldClientDto.cs" />
+    <Compile Include="Models\StringFieldClientDto.cs" />
+    <Compile Include="Models\MediaFieldClientDto.cs" />
+    <Compile Include="BuildTasks\BaseTask.cs" />
+    <Compile Include="BuildTasks\SetDroidManifest.cs" />
+    <Compile Include="Enums\AppIconFieldType.cs" />
+    <Compile Include="Enums\BuildConfigRecordSetType.cs" />
+    <Compile Include="Enums\Enumeration.cs" />
+    <Compile Include="Enums\FieldType.cs" />
+    <Compile Include="Enums\MasterMediaFieldType.cs" />
+    <Compile Include="Enums\MediaFieldType.cs" />
+    <Compile Include="Enums\PackagingFieldType.cs" />
+    <Compile Include="Enums\ProjectType.cs" />
+    <Compile Include="Enums\SplashFieldType.cs" />
+    <Compile Include="Enums\StringFieldDisplayType.cs" />
+    <Compile Include="Enums\FieldHolderType.cs" />
+    <Compile Include="Enums\StringFieldType.cs" />
+    <Compile Include="Models\ProjectConfig.cs" />
+    <Compile Include="Models\ProjectsConfig.cs" />
+    <Compile Include="Extensions\LoadExtensions.cs" />
+    <Compile Include="Constants\Consts.cs" />
+    <Compile Include="BuildTasks\CleanProjectsConfig.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Ioc\" />
     <Folder Include="Models\" />
     <Folder Include="BuildTasks\" />
+    <Folder Include="Extensions\" />
+    <Folder Include="Enums\" />
+    <Folder Include="Constants\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+
+ <!--   <Content Include="build\*" PackagePath="build\" />-->
+    <Content Include="build\Build.Client.props" PackagePath="build\Build.Client.props" />
+    <Content Include="build\Build.Client.targets" PackagePath="build\Build.Client.targets" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\NuGet.Build.Packaging.0.2.0\build\NuGet.Build.Packaging.targets" Condition="Exists('..\packages\NuGet.Build.Packaging.0.2.0\build\NuGet.Build.Packaging.targets')" />
 </Project>

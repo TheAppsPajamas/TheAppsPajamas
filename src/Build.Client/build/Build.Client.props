@@ -1,0 +1,20 @@
+<!-- 
+  This file is automatically imported by NuGet into a user's project
+  when it targets a single framework, or in classic (pre 2017) csproj projects.
+-->
+<Project TreatAsLocalProperty="BuildClientToolAssembly">
+  <PropertyGroup>	
+
+    <BuildClientToolAssembly>$(MSBuildThisFileDirectory)..\tools\Build.Client.dll</BuildClientToolAssembly>
+
+    <PackagesDir>$(MSBuildThisFileDirectory)..\..\..\</PackagesDir>
+  </PropertyGroup>
+
+
+  <UsingTask TaskName="Build.Client.BuildTasks.HelloWorld" AssemblyFile="$(BuildClientToolAssembly)" />
+
+  <UsingTask TaskName="Build.Client.BuildTasks.LoadRemoteBuildConfig" AssemblyFile="$(BuildClientToolAssembly)" />
+  <UsingTask TaskName="Build.Client.BuildTasks.LoadLocalBuildConfig" AssemblyFile="$(BuildClientToolAssembly)" />
+  <UsingTask TaskName="Build.Client.BuildTasks.SetDroidManifest" AssemblyFile="$(BuildClientToolAssembly)" />
+  <UsingTask TaskName="Build.Client.BuildTasks.CleanProjectsConfig" AssemblyFile="$(BuildClientToolAssembly)" />
+</Project>

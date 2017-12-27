@@ -1,15 +1,9 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/Enums/BuildConfigRecordSetType.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/Extensions/LoadExtensions.cs">
     <Files>
-      <File FileName="Build.Client/BuildTasks/LoadRemoteBuildConfig.cs" Line="65" Column="55" />
-      <File FileName="Build.Client/BuildTasks/WebDownload.cs" Line="154" Column="14" />
-      <File FileName="Build.Client/Extensions/ConfigExtensions.cs" Line="82" Column="36" />
-      <File FileName="Build.Client/Models/BaseFieldClientDto.cs" Line="10" Column="1" />
-      <File FileName="Build.Client/build/Build.Client.targets" Line="6" Column="114" />
-      <File FileName="Build.Client/BuildTasks/SetDroidManifest.cs" Line="59" Column="49" />
-      <File FileName="Build.Client/Enums/AppIconFieldType.cs" Line="1" Column="1" />
-      <File FileName="Build.Client/Enums/Enumeration.cs" Line="40" Column="1" />
-      <File FileName="Build.Client/Enums/BuildConfigRecordSetType.cs" Line="7" Column="45" />
+      <File FileName="Build.Client/BuildTasks/LoadRemoteBuildConfig.cs" Line="29" Column="29" />
+      <File FileName="Build.Client/Extensions/LoadExtensions.cs" Line="53" Column="15" />
+      <File FileName="Build.Client/Constants/Consts.cs" Line="6" Column="50" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

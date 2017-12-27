@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Build.Client.BuildTasks;
+using Build.Client.Constants;
 using Build.Client.Models;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
@@ -11,23 +12,23 @@ namespace Build.Client.Extensions
 {
     public static class ConfigExtensions
     {
-        public static string GetBaseDirectory(this BaseLoadTask baseTask){
-            baseTask.LogDebug("BuildClientResourceBaseDir located at '{0}'", baseTask.BuildClientResourceBaseDir);
-
+        public static string GetBuildResourceDir(this BaseLoadTask baseTask){
+            baseTask.LogDebug("PackagesDir located at '{0}'", baseTask.PackagesDir);
 
             try
             {
-                var buildResourceDir = Path.Combine(baseTask.BuildClientResourceBaseDir, "build-resources");
+                var buildResourceDir = Path.Combine(baseTask.PackagesDir, Consts.BuildResourcesDir);
                 if (!Directory.Exists(buildResourceDir))
                 {
-                    baseTask.LogDebug("Created BuildClientResourceBase at '{0}'", buildResourceDir);
+                    baseTask.LogDebug("Created Build-Resources folder at '{0}'", buildResourceDir);
                     Directory.CreateDirectory(buildResourceDir);
                 }
                 else
                 {
-                    baseTask.LogDebug("BuildClientResourceDir location at '{0}'", buildResourceDir);
+                    baseTask.LogDebug("Build-Resources folder location '{0}'", buildResourceDir);
                 }
-                return buildResourceDir;
+                var directoryInfo = new DirectoryInfo(buildResourceDir);
+                return directoryInfo.FullName;
             } catch (Exception ex){
                 baseTask.Log.LogErrorFromException(ex);
             }
@@ -62,7 +63,7 @@ namespace Build.Client.Extensions
                     }
                     else
                     {
-                        baseTask.LogDebug("Build resources config file read\nAppId '{0}'\nUsername '{1}'", buildResourcesConfig.AppId, buildResourcesConfig.UserName);
+                        baseTask.LogDebug("Build resources config file read from {2}\nAppId '{0}'\nUsername '{1}'", buildResourcesConfig.AppId, buildResourcesConfig.UserName, buildResourcesConfigPath);
                         return buildResourcesConfig;
                     }
                 }
@@ -91,7 +92,7 @@ namespace Build.Client.Extensions
             var output = new List<ITaskItem>();
             foreach(var field in clientConfigDto.PackagingFields){
                 var itemMetadata = new Dictionary<string, string>();
-                itemMetadata.Add("Value", field.CalculatedValue);
+                itemMetadata.Add("Value", field.Value);
                 output.Add(new TaskItem(field.FieldId.ToString(), itemMetadata));
             }
 
@@ -107,7 +108,7 @@ namespace Build.Client.Extensions
             foreach (var field in clientConfigDto.AppIconFields)
             {
                 var itemMetadata = new Dictionary<string, string>();
-                itemMetadata.Add("LogicalName", field.CalculatedValue);
+                itemMetadata.Add("LogicalName", field.Value);
                 output.Add(new TaskItem(field.FieldId.ToString(), itemMetadata));
             }
 
@@ -123,7 +124,7 @@ namespace Build.Client.Extensions
             foreach (var field in clientConfigDto.SplashFields)
             {
                 var itemMetadata = new Dictionary<string, string>();
-                itemMetadata.Add("Value", field.CalculatedValue);
+                itemMetadata.Add("Value", field.Value);
                 output.Add(new TaskItem(field.FieldId.ToString(), itemMetadata));
             }
 

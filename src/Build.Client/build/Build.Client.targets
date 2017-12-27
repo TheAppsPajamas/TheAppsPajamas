@@ -10,7 +10,7 @@
 		<Warning Text="Target framework $(TargetFrameworkIdentifier)" />
 	</Target>
 	<Target Name="RunLoadRemoteBuildConfig" BeforeTargets="_GetReferenceAssemblyPaths">
-		<LoadRemoteBuildConfig Debug="$(BuildDebug)" ProjectName="$(MSBuildProjectName)" BuildConfiguration="$(Configuration)" BuildClientResourceBaseDir="$(BuildClientResourceBaseDir)">
+		<LoadRemoteBuildConfig Debug="$(BuildDebug)" ProjectName="$(MSBuildProjectName)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)">
 			<Output TaskParameter="BuildResourceDir" PropertyName="BuildResourceDir" />
 			<Output TaskParameter="PackagingOutput" ItemName="PackagingFields" />
 			<Output TaskParameter="AppIconOutput" ItemName="AppIconFields" />

@@ -83,6 +83,10 @@
     <Compile Include="Enums\StringFieldDisplayType.cs" />
     <Compile Include="Enums\FieldHolderType.cs" />
     <Compile Include="Enums\StringFieldType.cs" />
+    <Compile Include="Models\ProjectConfig.cs" />
+    <Compile Include="Models\ProjectsConfig.cs" />
+    <Compile Include="Extensions\LoadExtensions.cs" />
+    <Compile Include="Constants\Consts.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Ioc\" />
@@ -90,6 +94,7 @@
     <Folder Include="BuildTasks\" />
     <Folder Include="Extensions\" />
     <Folder Include="Enums\" />
+    <Folder Include="Constants\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -7,7 +7,7 @@
 
     <BuildClientToolAssembly>$(MSBuildThisFileDirectory)..\tools\Build.Client.dll</BuildClientToolAssembly>
 
-    <BuildClientResourceBaseDir>$(MSBuildThisFileDirectory)..\..\..\</BuildClientResourceBaseDir>
+    <PackagesDir>$(MSBuildThisFileDirectory)..\..\..\</PackagesDir>
   </PropertyGroup>
 
 

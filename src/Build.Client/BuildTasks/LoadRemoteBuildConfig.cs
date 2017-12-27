@@ -6,6 +6,7 @@ using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using Newtonsoft.Json;
 using Build.Client.Extensions;
+using System.Linq;
 
 namespace Build.Client.BuildTasks
 {
@@ -25,7 +26,7 @@ namespace Build.Client.BuildTasks
             LogDebug("Project name '{0}'", ProjectName);
             LogDebug("Build configuration '{0}'", BuildConfiguration);
 
-            BuildResourceDir = this.GetBaseDirectory();
+            BuildResourceDir = this.GetBuildResourceDir();
             if (String.IsNullOrEmpty(BuildResourceDir))
                 return false;
 
@@ -62,7 +63,12 @@ namespace Build.Client.BuildTasks
             if (clientConfigDto == null)
                 return false;
 
-            //write to file (in a folder structure???)
+            var projectsConfig = this.GetProjectsConfig();
+
+            var thisProject = this.GetProjectConfig(projectsConfig);
+            thisProject.ClientConfig = clientConfigDto;
+            if (!this.SaveProjects(projectsConfig))
+                return false;
 
             PackagingOutput = this.GetPackagingOutput(clientConfigDto);
             AppIconOutput = this.GetAppIconOutput(clientConfigDto);

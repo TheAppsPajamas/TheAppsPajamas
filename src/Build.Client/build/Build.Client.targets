@@ -15,7 +15,7 @@
         </CleanProjectsConfig>
     </Target>
     
-    <Target Name="RunLoadLocalBuildConfig" BeforeTargets="_GetReferenceAssemblyPaths">
+    <Target Name="LoadLocalBuildConfig" BeforeTargets="_GetReferenceAssemblyPaths">
         <LoadLocalBuildConfig Debug="$(BuildDebug)" ProjectName="$(MSBuildProjectName)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)">
             <Output TaskParameter="BuildResourceDir" PropertyName="BuildResourceDir" />
             <Output TaskParameter="PackagingOutput" ItemName="PackagingFields" />
@@ -25,9 +25,7 @@
         </LoadLocalBuildConfig>
     </Target>
 
-
-    
-	<Target Name="RunLoadRemoteBuildConfig" AfterTargets="RunLoadLocalBuildConfig" Condition="'$(NeedsLoadRemote)' == 'True'">
+	<Target Name="LoadRemoteBuildConfig" AfterTargets="LoadLocalBuildConfig" Condition="'$(NeedsLoadRemote)' == 'True'">
 		<LoadRemoteBuildConfig Debug="$(BuildDebug)" ProjectName="$(MSBuildProjectName)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)">
 			<Output TaskParameter="BuildResourceDir" PropertyName="BuildResourceDir" />
 			<Output TaskParameter="PackagingOutput" ItemName="PackagingFields" />
@@ -35,7 +33,8 @@
 			<Output TaskParameter="SplashOutput" ItemName="SplashFields" />
 		</LoadRemoteBuildConfig>
 	</Target>
-	<Target Name="SetDroidManifest" AfterTargets="RunLoadRemoteBuildConfig" Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid'">
+    
+	<Target Name="SetDroidManifest" AfterTargets="LoadRemoteBuildConfig" Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid'">
 		<SetDroidManifest Debug="$(BuildDebug)" PackagingFields="@(PackagingFields)" AndroidManifest="$(AndroidManifest)">
 		</SetDroidManifest>
 	</Target>

@@ -12,7 +12,7 @@ namespace Build.Client.Extensions
 {
     public static class ConfigExtensions
     {
-        public static string GetBuildResourceDir(this BaseLoadTask baseTask){
+        public static string GetBuildResourceDir(this BaseTask baseTask){
             baseTask.LogDebug("PackagesDir located at '{0}'", baseTask.PackagesDir);
 
             try

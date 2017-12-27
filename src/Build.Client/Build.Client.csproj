@@ -87,6 +87,7 @@
     <Compile Include="Models\ProjectsConfig.cs" />
     <Compile Include="Extensions\LoadExtensions.cs" />
     <Compile Include="Constants\Consts.cs" />
+    <Compile Include="BuildTasks\CleanProjectsConfig.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Ioc\" />

@@ -8,7 +8,7 @@ namespace Build.Client.BuildTasks
     {
         public string ProjectName { get; set; }
         public string BuildConfiguration { get; set; }
-        public string PackagesDir { get; set; }
+
 
 
 

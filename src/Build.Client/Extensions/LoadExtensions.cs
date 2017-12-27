@@ -25,7 +25,7 @@ namespace Build.Client.Extensions
                     projectsConfig = new ProjectsConfig();
                     var json = JsonConvert.SerializeObject(projectsConfig);
                     File.WriteAllText(projectsConfigPath, json);
-                    baseTask.Log.LogError("Projects config file not found, created at {0}", projectsConfigPath);
+                    baseTask.Log.LogMessage("Projects config file not found, created at {0}", projectsConfigPath);
                     return projectsConfig;
                 }
                 else

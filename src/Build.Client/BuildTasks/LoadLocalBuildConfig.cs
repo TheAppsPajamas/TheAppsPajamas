@@ -1,19 +1,43 @@
 ﻿using System;
+using Build.Client.Extensions;
+using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
 namespace Build.Client.BuildTasks
 {
-    public class LoadLocalBuildConfig : Task
+    public class LoadLocalBuildConfig : BaseLoadTask
     {
-        public LoadLocalBuildConfig()
-        {
-        }
+        [Output]
+        public bool NeedsLoadRemote { get; set; }
 
-        //this should load the local config if it exists
-        //or apply a false if it doesn't exist
-        //which should trigger LoadRemoteBuildConfig
         public override bool Execute()
         {
+            LogDebug("Running LoadLocalBuildConfig in debug");
+
+            LogDebug("Project name '{0}'", ProjectName);
+            LogDebug("Build configuration '{0}'", BuildConfiguration);
+
+            BuildResourceDir = this.GetBuildResourceDir();
+            if (String.IsNullOrEmpty(BuildResourceDir)){
+                NeedsLoadRemote = true;
+                Log.LogMessage("Build Resource folder not found, forcing remote load");
+                return true;
+            }
+
+            var projectsConfig = this.GetProjectsConfig();
+
+            var thisProject = this.GetProjectConfig(projectsConfig);
+
+            if (thisProject.ClientConfig == null){
+                Log.LogMessage("Project {0} in configuration {1} not found, forcing remote load", ProjectName, BuildConfiguration);
+                NeedsLoadRemote = true;
+                return true;
+            }
+
+            PackagingOutput = this.GetPackagingOutput(thisProject.ClientConfig);
+            AppIconOutput = this.GetAppIconOutput(thisProject.ClientConfig);
+            SplashOutput = this.GetSplashOutput(thisProject.ClientConfig);
+
             return true;
         }
     }

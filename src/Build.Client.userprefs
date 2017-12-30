@@ -4,9 +4,9 @@
       <File FileName="Build.Client/Extensions/ConfigExtensions.cs" Line="145" Column="114" />
       <File FileName="Build.Client/BuildTasks/DeleteUnusedMediaFiles.cs" Line="30" Column="94" />
       <File FileName="Build.Client/Extensions/LoadExtensions.cs" Line="1" Column="1" />
-      <File FileName="Build.Client/build/Build.Client.targets" Line="55" Column="38" />
+      <File FileName="Build.Client/build/Build.Client.targets" Line="53" Column="15" />
       <File FileName="Build.Client/BuildTasks/LoadRemoteBuildConfig.cs" Line="36" Column="1" />
-      <File FileName="Build.Client/BuildTasks/SetDroidAppIcons.cs" Line="33" Column="17" />
+      <File FileName="Build.Client/BuildTasks/SetDroidAppIcons.cs" Line="36" Column="48" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

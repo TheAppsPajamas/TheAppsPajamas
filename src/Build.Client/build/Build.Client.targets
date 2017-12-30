@@ -51,7 +51,5 @@
 				<LogicalName>%(DroidAppIcons.LogicalName)</LogicalName>
 			</AndroidResource>
 		</ItemGroup>
-
-        <Warning Text="Droid app icon files %(DroidAppIcons.Identity), logical %(DroidAppIcons.LogicalName) " />
 	</Target>
 </Project>

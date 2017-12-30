@@ -91,6 +91,7 @@
     <Compile Include="BuildTasks\DeleteUnusedMediaFiles.cs" />
     <Compile Include="Extensions\MediaExtensions.cs" />
     <Compile Include="BuildTasks\DownloadMediaFiles.cs" />
+    <Compile Include="BuildTasks\SetDroidAppIcons.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Ioc\" />

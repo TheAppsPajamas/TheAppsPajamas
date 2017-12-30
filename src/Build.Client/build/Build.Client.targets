@@ -9,22 +9,19 @@
 	<Target Name="SayHelloAgainWorld" BeforeTargets="_GetReferenceAssemblyPaths">
 		<Warning Text="Target framework $(TargetFrameworkIdentifier)" />
 	</Target>
-    
-    <Target Name="Clean">
-        <CleanProjectsConfig Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)">
-        </CleanProjectsConfig>
-    </Target>
-    
-    <Target Name="LoadLocalBuildConfig" BeforeTargets="_GetReferenceAssemblyPaths">
-        <LoadLocalBuildConfig Debug="$(BuildDebug)" ProjectName="$(MSBuildProjectName)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)">
-            <Output TaskParameter="BuildResourceDir" PropertyName="BuildResourceDir" />
-            <Output TaskParameter="PackagingOutput" ItemName="PackagingFields" />
-            <Output TaskParameter="AppIconOutput" ItemName="AppIconFields" />
-            <Output TaskParameter="SplashOutput" ItemName="SplashFields" />
-            <Output TaskParameter="NeedsLoadRemote" PropertyName="NeedsLoadRemote"/>
-        </LoadLocalBuildConfig>
-    </Target>
-
+	<Target Name="Clean">
+		<CleanProjectsConfig Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)">
+		</CleanProjectsConfig>
+	</Target>
+	<Target Name="LoadLocalBuildConfig" BeforeTargets="_GetReferenceAssemblyPaths">
+		<LoadLocalBuildConfig Debug="$(BuildDebug)" ProjectName="$(MSBuildProjectName)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)">
+			<Output TaskParameter="BuildResourceDir" PropertyName="BuildResourceDir" />
+			<Output TaskParameter="PackagingOutput" ItemName="PackagingFields" />
+			<Output TaskParameter="AppIconOutput" ItemName="AppIconFields" />
+			<Output TaskParameter="SplashOutput" ItemName="SplashFields" />
+			<Output TaskParameter="NeedsLoadRemote" PropertyName="NeedsLoadRemote" />
+		</LoadLocalBuildConfig>
+	</Target>
 	<Target Name="LoadRemoteBuildConfig" AfterTargets="LoadLocalBuildConfig" Condition="'$(NeedsLoadRemote)' == 'True'">
 		<LoadRemoteBuildConfig Debug="$(BuildDebug)" ProjectName="$(MSBuildProjectName)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)">
 			<Output TaskParameter="BuildResourceDir" PropertyName="BuildResourceDir" />
@@ -33,16 +30,28 @@
 			<Output TaskParameter="SplashOutput" ItemName="SplashFields" />
 		</LoadRemoteBuildConfig>
 	</Target>
-    <Target Name="DeleteUnusedMediaFiles" AfterTargets="LoadRemoteBuildConfig" >
-        <DeleteUnusedMediaFiles Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)" AppIconFields="@(AppIconFields)" SplashFields="@(SplashFields)">
-        </DeleteUnusedMediaFiles>
-    </Target>    
-    <Target Name="DownloadMediaFiles" AfterTargets="DeleteUnusedMediaFiles" >
-        <DownloadMediaFiles Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)" AppIconFields="@(AppIconFields)" SplashFields="@(SplashFields)">
-        </DownloadMediaFiles>
-    </Target>      
+	<Target Name="DeleteUnusedMediaFiles" AfterTargets="LoadRemoteBuildConfig">
+		<DeleteUnusedMediaFiles Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)" AppIconFields="@(AppIconFields)" SplashFields="@(SplashFields)">
+		</DeleteUnusedMediaFiles>
+	</Target>
+	<Target Name="DownloadMediaFiles" AfterTargets="DeleteUnusedMediaFiles">
+		<DownloadMediaFiles Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)" AppIconFields="@(AppIconFields)" SplashFields="@(SplashFields)">
+		</DownloadMediaFiles>
+	</Target>
 	<Target Name="SetDroidManifest" AfterTargets="DownloadMediaFiles" Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid'">
 		<SetDroidManifest Debug="$(BuildDebug)" PackagingFields="@(PackagingFields)" AndroidManifest="$(AndroidManifest)">
 		</SetDroidManifest>
+	</Target>
+	<Target Name="SetDroidAppIcons" AfterTargets="SetDroidManifest" Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid'">
+		<SetDroidAppIcons Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)" AppIconFields="@(AppIconFields)">
+			<Output TaskParameter="OutputFiles" ItemName="DroidAppIcons" />
+		</SetDroidAppIcons>
+		<ItemGroup>
+			<AndroidResource Include="%(DroidAppIcons.Identity)">
+				<LogicalName>%(DroidAppIcons.LogicalName)</LogicalName>
+			</AndroidResource>
+		</ItemGroup>
+
+        <Warning Text="Droid app icon files %(DroidAppIcons.Identity), logical %(DroidAppIcons.LogicalName) " />
 	</Target>
 </Project>

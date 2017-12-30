@@ -22,24 +22,24 @@ namespace Build.Client.BuildTasks
 
             LogDebug("{0} media files required", allMediaFields.Count());
             var existingFiles = this.GetExistingMediaFiles().Select(x => new FileHolder(x));
-            LogDebug("{0} existing media files downloaded", existingFiles.Count());
+            LogDebug("{0} existing media files already available", existingFiles.Count());
 
             var mediaResourceDir = this.GetMediaResourceDir();
             try
             {
                 foreach(var field in allMediaFields){
-                    var exists = existingFiles.Any(x => x.FileNoExt == field.GetMetadata("LogicalName"));
+                    var exists = existingFiles.Any(x => x.FileNoExt == field.GetMetadata("MediaFileId"));
                     if (!exists){
                         using (WebClient client = new WebClient())
                         {
-                            var url = String.Concat(Consts.UrlBase, Consts.MediaEndpoint, "/", field.GetMetadata("LogicalName"));
-                            var fileName = Path.Combine(mediaResourceDir, string.Concat(field.GetMetadata("LogicalName"), ".png"));
-                            LogDebug("Downloading mediaFileId {0}, from url {1}", field.GetMetadata("LogicalName"), url);
-                            LogDebug("Saving as local file {0}", fileName);
+                            var url = String.Concat(Consts.UrlBase, Consts.MediaEndpoint, "/", field.GetMetadata("MediaFileId"));
+                            var fileName = Path.Combine(mediaResourceDir, string.Concat(field.GetMetadata("MediaFileId"), ".png"));
+                            LogDebug("Downloading mediaFileId {0}, from url {1}", field.GetMetadata("MediaFileId"), url);
+                            LogDebug("Saving logical file {1} as media-resource file {0}", fileName, field.GetMetadata("LogicalName"));
                             client.DownloadFile(url, fileName);
                         }
                     } else {
-                        LogDebug("{0}.png media file exists, not downloading", field.GetMetadata("LogicalName"));
+                        LogDebug("Logical media-resource {1} exists as {0}.png, not downloading", field.GetMetadata("MediaFileId"), field.GetMetadata("LogicalName"));
                     }
                 }
             }

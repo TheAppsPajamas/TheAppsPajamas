@@ -24,17 +24,17 @@ namespace DAL.Enums
         public static readonly AppIconFieldType AppIconDroidPlaystore
             = new AppIconFieldType.Droid(-6, "Droid playstore app icon", false, false, "droid-playstore.png", 1024);
         public static readonly AppIconFieldType AppIconDroidLdpi
-            = new AppIconFieldType.Droid(-7, "Droid ldpi app icon", false, true, AppIconFieldType.Droid.LauncherName, 36);
+            = new AppIconFieldType.Droid(-7, "Droid ldpi app icon", false, true, "mipmap-ldpi", 36);
         public static readonly AppIconFieldType AppIconDroidMdpi
-            = new AppIconFieldType.Droid(-8, "Droid mdpi app icon", false, true, AppIconFieldType.Droid.LauncherName, 48);
+            = new AppIconFieldType.Droid(-8, "Droid mdpi app icon", false, true, "mipmap-mdpi", 48);
         public static readonly AppIconFieldType AppIconDroidHdpi
-            = new AppIconFieldType.Droid(-9, "Droid hdpi app icon", false, true, AppIconFieldType.Droid.LauncherName, 72);
+            = new AppIconFieldType.Droid(-9, "Droid hdpi app icon", false, true, "mipmap-hdpi", 72);
         public static readonly AppIconFieldType AppIconDroidXhdpi
-            = new AppIconFieldType.Droid(-10, "Droid xhdpi app icon", false, true, AppIconFieldType.Droid.LauncherName, 96);
+            = new AppIconFieldType.Droid(-10, "Droid xhdpi app icon", false, true, "mipmap-xhdpi", 96);
         public static readonly AppIconFieldType AppIconDroidXxhdpi
-            = new AppIconFieldType.Droid(-11, "Droid xxhdpi app icon", false, true, AppIconFieldType.Droid.LauncherName, 144);
+            = new AppIconFieldType.Droid(-11, "Droid xxhdpi app icon", false, true, "mipmap-xxhdpi", 144);
         public static readonly AppIconFieldType AppIconDroidXxxhdpi
-            = new AppIconFieldType.Droid(-12, "Droid xxxhdpi app icon", false, true, AppIconFieldType.Droid.LauncherName, 192);
+            = new AppIconFieldType.Droid(-12, "Droid xxxhdpi app icon", false, true, "mipmap-xxxhdpi", 192);
         
         public static readonly AppIconFieldType AppIconIosMaster
             = new AppIconFieldType.Ios(-15, "Ios master app icon", true, false, "ios-master.png", 1024);

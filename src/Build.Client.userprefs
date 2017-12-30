@@ -1,13 +1,12 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/build/Build.Client.targets">
     <Files>
-      <File FileName="Build.Client/BuildTasks/SetDroidManifest.cs" Line="96" Column="33" />
-      <File FileName="Build.Client/Extensions/ConfigExtensions.cs" Line="129" Column="14" />
-      <File FileName="Build.Client/BuildTasks/DeleteUnusedMediaFiles.cs" Line="16" Column="10" />
-      <File FileName="Build.Client/Extensions/MediaExtensions.cs" Line="13" Column="1" />
+      <File FileName="Build.Client/Extensions/ConfigExtensions.cs" Line="145" Column="114" />
+      <File FileName="Build.Client/BuildTasks/DeleteUnusedMediaFiles.cs" Line="30" Column="94" />
       <File FileName="Build.Client/Extensions/LoadExtensions.cs" Line="1" Column="1" />
-      <File FileName="Build.Client/build/Build.Client.targets" Line="43" Column="16" />
-      <File FileName="Build.Client/BuildTasks/DownloadMediaFiles.cs" Line="38" Column="64" />
+      <File FileName="Build.Client/build/Build.Client.targets" Line="55" Column="38" />
+      <File FileName="Build.Client/BuildTasks/LoadRemoteBuildConfig.cs" Line="36" Column="1" />
+      <File FileName="Build.Client/BuildTasks/SetDroidAppIcons.cs" Line="33" Column="17" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

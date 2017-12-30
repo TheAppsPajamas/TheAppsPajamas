@@ -33,8 +33,15 @@
 			<Output TaskParameter="SplashOutput" ItemName="SplashFields" />
 		</LoadRemoteBuildConfig>
 	</Target>
-    
-	<Target Name="SetDroidManifest" AfterTargets="LoadRemoteBuildConfig" Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid'">
+    <Target Name="DeleteUnusedMediaFiles" AfterTargets="LoadRemoteBuildConfig" >
+        <DeleteUnusedMediaFiles Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)" AppIconFields="@(AppIconFields)" SplashFields="@(SplashFields)">
+        </DeleteUnusedMediaFiles>
+    </Target>    
+    <Target Name="DownloadMediaFiles" AfterTargets="DeleteUnusedMediaFiles" >
+        <DownloadMediaFiles Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)" AppIconFields="@(AppIconFields)" SplashFields="@(SplashFields)">
+        </DownloadMediaFiles>
+    </Target>      
+	<Target Name="SetDroidManifest" AfterTargets="DownloadMediaFiles" Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid'">
 		<SetDroidManifest Debug="$(BuildDebug)" PackagingFields="@(PackagingFields)" AndroidManifest="$(AndroidManifest)">
 		</SetDroidManifest>
 	</Target>

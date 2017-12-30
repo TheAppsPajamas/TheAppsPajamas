@@ -124,14 +124,13 @@ namespace Build.Client.Extensions
             foreach (var field in clientConfigDto.SplashFields)
             {
                 var itemMetadata = new Dictionary<string, string>();
-                itemMetadata.Add("Value", field.Value);
+                itemMetadata.Add("LogicalName", field.Value);
                 output.Add(new TaskItem(field.FieldId.ToString(), itemMetadata));
             }
 
             baseTask.LogDebug("Generated {0} Splash TaskItems", output.Count);
             return output.ToArray();
         }
-
 
     }
 }

@@ -17,4 +17,6 @@
   <UsingTask TaskName="Build.Client.BuildTasks.LoadLocalBuildConfig" AssemblyFile="$(BuildClientToolAssembly)" />
   <UsingTask TaskName="Build.Client.BuildTasks.SetDroidManifest" AssemblyFile="$(BuildClientToolAssembly)" />
   <UsingTask TaskName="Build.Client.BuildTasks.CleanProjectsConfig" AssemblyFile="$(BuildClientToolAssembly)" />
+  <UsingTask TaskName="Build.Client.BuildTasks.DeleteUnusedMediaFiles" AssemblyFile="$(BuildClientToolAssembly)" />
+  <UsingTask TaskName="Build.Client.BuildTasks.DownloadMediaFiles" AssemblyFile="$(BuildClientToolAssembly)" />
 </Project>

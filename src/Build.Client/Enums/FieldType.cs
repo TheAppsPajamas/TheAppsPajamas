@@ -101,6 +101,10 @@ namespace DAL.Enums
             = new PackagingFieldType(-52, "Shared version", ProjectType.Shared, true, false, StringFieldDisplayType.Text);
         public static PackagingFieldType PackagingSharedVersionNumber
             = new PackagingFieldType(-53, "Shared version number", ProjectType.Shared, true, false, StringFieldDisplayType.Number);
+        public static PackagingFieldType PackagingSharedAppIconName
+            = new PackagingFieldType(-67, "Shared app icon name", ProjectType.Shared, true, false, StringFieldDisplayType.Text);
+        public static PackagingFieldType PackagingSharedSplashName
+            = new PackagingFieldType(-68, "Shared splash image name", ProjectType.Shared, true, false, StringFieldDisplayType.Text);
 
         public static PackagingFieldType PackagingDroidName
             = new PackagingFieldType(-54, "Droid name", ProjectType.Droid, true, true, StringFieldDisplayType.Text);
@@ -110,6 +114,10 @@ namespace DAL.Enums
             = new PackagingFieldType(-56, "Droid version", ProjectType.Droid, true, true, StringFieldDisplayType.Text);
         public static PackagingFieldType PackagingDroidVersionNumber
             = new PackagingFieldType(-57, "Droid version number", ProjectType.Droid, true, true, StringFieldDisplayType.Number);
+        public static PackagingFieldType PackagingDroidAppIconName
+            = new PackagingFieldType(-63, "Droid app icon name", ProjectType.Droid, true, true, StringFieldDisplayType.Text);
+        public static PackagingFieldType PackagingDroidSplashName
+            = new PackagingFieldType(-64, "Droid splash image name", ProjectType.Droid, true, true, StringFieldDisplayType.Text);
 
         public static PackagingFieldType PackagingIosName
             = new PackagingFieldType(-58, "Ios name", ProjectType.Ios, true, true, StringFieldDisplayType.Text);
@@ -119,8 +127,13 @@ namespace DAL.Enums
             = new PackagingFieldType(-60, "Ios version", ProjectType.Ios, true, true, StringFieldDisplayType.Text);
         public static PackagingFieldType PackagingIosVersionNumber
             = new PackagingFieldType(-61, "Ios version number", ProjectType.Ios, true, true, StringFieldDisplayType.Number);
+        public static PackagingFieldType PackagingIosAppIconXcAssetsName
+            = new PackagingFieldType(-65, "Ios app icon xcassets name", ProjectType.Ios, true, true, StringFieldDisplayType.Text);
+        public static PackagingFieldType PackagingIosLaunchImageXcAssetsName
+            = new PackagingFieldType(-66, "Ios launch image xcassets name", ProjectType.Ios, true, true, StringFieldDisplayType.Text);
         public static PackagingFieldType PackagingIosUsesNonExemptEncryption
             = new PackagingFieldType(-62, "Ios uses non exempt encryption", ProjectType.Ios, false, true, StringFieldDisplayType.Bool);
+
 
         public static BuildConfigRecordSetType BuildConfigFieldSetCompilerConstants
             = new BuildConfigRecordSetType(-70, "Compiler constants", ProjectType.Shared, true, StringFieldDisplayType.Text);

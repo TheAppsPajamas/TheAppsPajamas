@@ -88,6 +88,9 @@
     <Compile Include="Extensions\LoadExtensions.cs" />
     <Compile Include="Constants\Consts.cs" />
     <Compile Include="BuildTasks\CleanProjectsConfig.cs" />
+    <Compile Include="BuildTasks\DeleteUnusedMediaFiles.cs" />
+    <Compile Include="Extensions\MediaExtensions.cs" />
+    <Compile Include="BuildTasks\DownloadMediaFiles.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Ioc\" />

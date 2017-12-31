@@ -18,7 +18,7 @@ namespace Build.Client.BuildTasks
                 return true;
             }
 
-            var projectsConfigPath = Path.Combine(buildResourceDir, Consts.ProjectsConfig);
+            var projectsConfigPath = Path.Combine(buildResourceDir, Consts.ProjectConfig);
             if (File.Exists(projectsConfigPath)){
                 File.Delete(projectsConfigPath);
                 Log.LogMessage("Build resource project config file deleted");

@@ -24,19 +24,19 @@ namespace Build.Client.BuildTasks
                 return true;
             }
 
-            var projectsConfig = this.GetProjectsConfig();
+            //var projectsConfig = this.GetProjectsConfig();
 
-            var thisProject = this.GetProjectConfig(projectsConfig);
+            var projectConfig = this.GetProjectConfigV2();
 
-            if (thisProject.ClientConfig == null){
+            if (projectConfig.ClientConfig == null){
                 Log.LogMessage("Project {0} in configuration {1} not found, forcing remote load", ProjectName, BuildConfiguration);
                 NeedsLoadRemote = true;
                 return true;
             }
 
-            PackagingOutput = this.GetPackagingOutput(thisProject.ClientConfig);
-            AppIconOutput = this.GetAppIconOutput(thisProject.ClientConfig);
-            SplashOutput = this.GetSplashOutput(thisProject.ClientConfig);
+            PackagingOutput = this.GetPackagingOutput(projectConfig.ClientConfig);
+            AppIconOutput = this.GetAppIconOutput(projectConfig.ClientConfig);
+            SplashOutput = this.GetSplashOutput(projectConfig.ClientConfig);
 
             return true;
         }

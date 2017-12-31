@@ -14,35 +14,12 @@ namespace Build.Client.Extensions
 {
     public static class ConfigExtensions
     {
-        public static string GetBuildResourceDir(this BaseTask baseTask){
-            baseTask.LogDebug("PackagesDir located at '{0}'", baseTask.PackagesDir);
-
-            try
-            {
-                var buildResourceDir = Path.Combine(baseTask.PackagesDir, Consts.BuildResourcesDir);
-                if (!Directory.Exists(buildResourceDir))
-                {
-                    baseTask.LogDebug("Created Build-Resources folder at '{0}'", buildResourceDir);
-                    Directory.CreateDirectory(buildResourceDir);
-                }
-                else
-                {
-                    baseTask.LogDebug("Build-Resources folder location '{0}'", buildResourceDir);
-                }
-                var directoryInfo = new DirectoryInfo(buildResourceDir);
-                return directoryInfo.FullName;
-            } catch (Exception ex){
-                baseTask.Log.LogErrorFromException(ex);
-            }
-            return null;
-        }
-
         public static BuildResourcesConfig GetResourceConfig(this BaseLoadTask baseTask){
             baseTask.LogDebug("Loading build-resources.config file");
 
             try
             {
-                var buildResourcesConfigPath = Path.Combine(Directory.GetParent(baseTask.BuildResourceDir).ToString(), "build-resources.config");
+                var buildResourcesConfigPath = Path.Combine(baseTask.PackagesDir, "build-resources.config");
                 BuildResourcesConfig buildResourcesConfig = null;
                 if (!File.Exists(buildResourcesConfigPath))
                 {

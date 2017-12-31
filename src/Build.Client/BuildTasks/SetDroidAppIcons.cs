@@ -15,15 +15,16 @@ namespace Build.Client.BuildTasks
         public ITaskItem[] OutputFiles { get; set; }
 
 
+        public string BuildConfiguration { get; set; }
         public override bool Execute()
         {
             Log.LogMessage("Set Droid App Icons started");
 
-            var mediaResourcesDir = this.GetMediaResourceDir();
+            var mediaResourcesDir = this.GetMediaResourceDir(BuildConfiguration);
 
             var outputFiles = new List<ITaskItem>();
             foreach(var field in AppIconFields){
-                var filePath = Path.Combine(mediaResourcesDir, String.Concat(field.GetMetadata("MediaFileId"), ".png"));
+                var filePath = Path.Combine(mediaResourcesDir, field.GetMetadata("Path"), String.Concat(field.GetMetadata("MediaName"), ".png"));
 
                 var itemMetadata = new Dictionary<string, string>();
                 itemMetadata.Add("LogicalName", field.GetMetadata("LogicalName"));

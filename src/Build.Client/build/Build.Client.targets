@@ -10,11 +10,11 @@
 		<Warning Text="Target framework $(TargetFrameworkIdentifier)" />
 	</Target>
 	<Target Name="Clean">
-		<CleanProjectsConfig Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)">
+		<CleanProjectsConfig Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)">
 		</CleanProjectsConfig>
 	</Target>
 	<Target Name="LoadLocalBuildConfig" BeforeTargets="_GetReferenceAssemblyPaths">
-		<LoadLocalBuildConfig Debug="$(BuildDebug)" ProjectName="$(MSBuildProjectName)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)">
+		<LoadLocalBuildConfig Debug="$(BuildDebug)" ProjectName="$(MSBuildProjectName)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)">
 			<Output TaskParameter="BuildResourceDir" PropertyName="BuildResourceDir" />
 			<Output TaskParameter="PackagingOutput" ItemName="PackagingFields" />
 			<Output TaskParameter="AppIconOutput" ItemName="AppIconFields" />
@@ -23,7 +23,7 @@
 		</LoadLocalBuildConfig>
 	</Target>
 	<Target Name="LoadRemoteBuildConfig" AfterTargets="LoadLocalBuildConfig" Condition="'$(NeedsLoadRemote)' == 'True'">
-		<LoadRemoteBuildConfig Debug="$(BuildDebug)" ProjectName="$(MSBuildProjectName)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)">
+		<LoadRemoteBuildConfig Debug="$(BuildDebug)" ProjectName="$(MSBuildProjectName)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)">
 			<Output TaskParameter="BuildResourceDir" PropertyName="BuildResourceDir" />
 			<Output TaskParameter="PackagingOutput" ItemName="PackagingFields" />
 			<Output TaskParameter="AppIconOutput" ItemName="AppIconFields" />
@@ -31,19 +31,19 @@
 		</LoadRemoteBuildConfig>
 	</Target>
 	<Target Name="DeleteUnusedMediaFiles" AfterTargets="LoadRemoteBuildConfig">
-		<DeleteUnusedMediaFiles Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)" AppIconFields="@(AppIconFields)" SplashFields="@(SplashFields)">
+		<DeleteUnusedMediaFiles Debug="$(BuildDebug)" ProjectDir="$(MSBuildProjectDirectory)" PackagesDir="$(PackagesDir)" AppIconFields="@(AppIconFields)" SplashFields="@(SplashFields)" BuildConfiguration="$(Configuration)">
 		</DeleteUnusedMediaFiles>
 	</Target>
 	<Target Name="DownloadMediaFiles" AfterTargets="DeleteUnusedMediaFiles">
-		<DownloadMediaFiles Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)" AppIconFields="@(AppIconFields)" SplashFields="@(SplashFields)">
+		<DownloadMediaFiles Debug="$(BuildDebug)" ProjectDir="$(MSBuildProjectDirectory)" PackagesDir="$(PackagesDir)" AppIconFields="@(AppIconFields)" SplashFields="@(SplashFields)" BuildConfiguration="$(Configuration)">
 		</DownloadMediaFiles>
 	</Target>
 	<Target Name="SetDroidManifest" AfterTargets="DownloadMediaFiles" Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid'">
-		<SetDroidManifest Debug="$(BuildDebug)" PackagingFields="@(PackagingFields)" AndroidManifest="$(AndroidManifest)">
+		<SetDroidManifest Debug="$(BuildDebug)" ProjectDir="$(MSBuildProjectDirectory)" PackagingFields="@(PackagingFields)" AndroidManifest="$(AndroidManifest)">
 		</SetDroidManifest>
 	</Target>
 	<Target Name="SetDroidAppIcons" AfterTargets="SetDroidManifest" Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid'">
-		<SetDroidAppIcons Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)" AppIconFields="@(AppIconFields)">
+		<SetDroidAppIcons Debug="$(BuildDebug)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" AppIconFields="@(AppIconFields)" >
 			<Output TaskParameter="OutputFiles" ItemName="DroidAppIcons" />
 		</SetDroidAppIcons>
 		<ItemGroup>

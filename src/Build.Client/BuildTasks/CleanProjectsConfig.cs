@@ -9,7 +9,7 @@ namespace Build.Client.BuildTasks
     {
         public override bool Execute()
         {
-            Log.LogMessage("Cleaning build resource projects.config");
+            Log.LogMessage("Cleaning build resource project.config");
 
             var buildResourceDir = this.GetBuildResourceDir();
             if (String.IsNullOrEmpty(buildResourceDir))
@@ -18,7 +18,7 @@ namespace Build.Client.BuildTasks
                 return true;
             }
 
-            var projectsConfigPath = Path.Combine(buildResourceDir, Consts.ProjectsConfig);
+            var projectsConfigPath = Path.Combine(buildResourceDir, Consts.ProjectConfig);
             if (File.Exists(projectsConfigPath)){
                 File.Delete(projectsConfigPath);
                 Log.LogMessage("Build resource project config file deleted");

@@ -10,11 +10,11 @@ namespace Build.Client.Extensions
 {
     public static class MediaExtensions
     {
-        public static IEnumerable<string> GetExistingMediaFiles(this BaseTask baseTask){
-            var mediaResourceDir = baseTask.GetMediaResourceDir();
+        public static IEnumerable<string> GetExistingMediaFiles(this BaseTask baseTask, string buildConfiguration){
+            var mediaResourceDir = baseTask.GetMediaResourceDir(buildConfiguration);
             try
             {
-                var files = Directory.EnumerateFiles(mediaResourceDir, "*.png");
+                var files = Directory.EnumerateFiles(mediaResourceDir, "*.png", SearchOption.AllDirectories);
                 if (baseTask.Debug)
                 {
                     if (files.Any())
@@ -40,22 +40,23 @@ namespace Build.Client.Extensions
 
         }
 
-        public static string GetMediaResourceDir(this BaseTask baseTask)
+        public static string GetMediaResourceDir(this BaseTask baseTask, string buildConfiguration)
         {
             var buildResourceDir = baseTask.GetBuildResourceDir();
             baseTask.LogDebug("BuildResourceDir located at '{0}'", buildResourceDir);
+            baseTask.LogDebug("BuildConfiguration '{0}'", buildConfiguration);
 
             try
             {
-                var mediaResourceDir = Path.Combine(buildResourceDir, Consts.MediaResourcesDir);
+                var mediaResourceDir = Path.Combine(buildResourceDir, Consts.MediaResourcesDir, buildConfiguration);
                 if (!Directory.Exists(mediaResourceDir))
                 {
-                    baseTask.LogDebug("Created Media-Resources folder at '{0}'", mediaResourceDir);
+                    baseTask.LogDebug("Created media-resources folder at '{0}'", mediaResourceDir);
                     Directory.CreateDirectory(mediaResourceDir);
                 }
                 else
                 {
-                    baseTask.LogDebug("Media-Resources folder location '{0}'", mediaResourceDir);
+                    baseTask.LogDebug("media-resources folder location '{0}'", mediaResourceDir);
                 }
                 var directoryInfo = new DirectoryInfo(mediaResourceDir);
                 return directoryInfo.FullName;

@@ -14,35 +14,12 @@ namespace Build.Client.Extensions
 {
     public static class ConfigExtensions
     {
-        public static string GetBuildResourceDir(this BaseTask baseTask){
-            baseTask.LogDebug("PackagesDir located at '{0}'", baseTask.PackagesDir);
-
-            try
-            {
-                var buildResourceDir = Path.Combine(baseTask.PackagesDir, Consts.BuildResourcesDir);
-                if (!Directory.Exists(buildResourceDir))
-                {
-                    baseTask.LogDebug("Created Build-Resources folder at '{0}'", buildResourceDir);
-                    Directory.CreateDirectory(buildResourceDir);
-                }
-                else
-                {
-                    baseTask.LogDebug("Build-Resources folder location '{0}'", buildResourceDir);
-                }
-                var directoryInfo = new DirectoryInfo(buildResourceDir);
-                return directoryInfo.FullName;
-            } catch (Exception ex){
-                baseTask.Log.LogErrorFromException(ex);
-            }
-            return null;
-        }
-
         public static BuildResourcesConfig GetResourceConfig(this BaseLoadTask baseTask){
             baseTask.LogDebug("Loading build-resources.config file");
 
             try
             {
-                var buildResourcesConfigPath = Path.Combine(Directory.GetParent(baseTask.BuildResourceDir).ToString(), "build-resources.config");
+                var buildResourcesConfigPath = Path.Combine(baseTask.PackagesDir, "build-resources.config");
                 BuildResourcesConfig buildResourcesConfig = null;
                 if (!File.Exists(buildResourcesConfigPath))
                 {
@@ -113,13 +90,19 @@ namespace Build.Client.Extensions
                 var itemMetadata = new Dictionary<string, string>();
                 itemMetadata.Add("MediaFileId", field.Value);
                 var fieldType = FieldType.AppIcons().FirstOrDefault(x => x.Value == field.FieldId);
-                string logicalName = String.Empty; 
+                string logicalName = String.Empty;
+                string path = String.Empty;
+                string mediaName = String.Empty;
                 if (fieldType.ProjectType == ProjectType.Droid){
                     var packagingIcon = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingDroidAppIconName.Value);
 
                     logicalName = Path.Combine(fieldType.OsFileName, string.Concat(packagingIcon.Value, ".png"));
+                    path = Path.Combine(Consts.DroidResources, fieldType.OsFileName);
+                    mediaName = String.Concat(packagingIcon.Value, "_", field.Value);
                 }
+                itemMetadata.Add("Path", path);
                 itemMetadata.Add("LogicalName", logicalName);
+                itemMetadata.Add("MediaName", mediaName);
                 output.Add(new TaskItem(field.FieldId.ToString(), itemMetadata));
             }
 
@@ -137,14 +120,20 @@ namespace Build.Client.Extensions
                 var itemMetadata = new Dictionary<string, string>();
                 itemMetadata.Add("MediaFileId", field.Value);
                 var fieldType = FieldType.Splash().FirstOrDefault(x => x.Value == field.FieldId);
-                string logicalName = String.Empty;
+                string logicalName = String.Empty; 
+                string path = String.Empty;
+                string mediaName = String.Empty;
                 if (fieldType.ProjectType == ProjectType.Droid)
                 {
                     var packagingIcon = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingDroidAppIconName.Value);
 
                     logicalName = Path.Combine(fieldType.OsFileName, string.Concat(packagingIcon.Value, ".png"));
+                    mediaName = String.Concat(packagingIcon.Value, "_", field.Value);
+                    path = Path.Combine(Consts.DroidResources, fieldType.OsFileName);
                 }
+                itemMetadata.Add("Path", path);
                 itemMetadata.Add("LogicalName", logicalName);
+                itemMetadata.Add("MediaName", mediaName);
                 output.Add(new TaskItem(field.FieldId.ToString(), itemMetadata));
             }
 

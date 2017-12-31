@@ -62,13 +62,13 @@ namespace Build.Client.BuildTasks
             if (clientConfigDto == null)
                 return false;
 
-            var projectsConfig = this.GetProjectsConfig();
+            var projectConfig = this.GetProjectConfig();
 
-            var thisProject = this.GetProjectConfig(projectsConfig);
+            //var thisProject = this.GetProjectConfig(projectsConfig);
 
 
-            thisProject.ClientConfig = clientConfigDto;
-            if (!this.SaveProjects(projectsConfig))
+            projectConfig.ClientConfig = clientConfigDto;
+            if (!this.SaveProject(projectConfig))
                 return false;
 
             PackagingOutput = this.GetPackagingOutput(clientConfigDto);

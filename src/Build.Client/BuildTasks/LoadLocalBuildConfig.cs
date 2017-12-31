@@ -26,7 +26,7 @@ namespace Build.Client.BuildTasks
 
             //var projectsConfig = this.GetProjectsConfig();
 
-            var projectConfig = this.GetProjectConfigV2();
+            var projectConfig = this.GetProjectConfig();
 
             if (projectConfig.ClientConfig == null){
                 Log.LogMessage("Project {0} in configuration {1} not found, forcing remote load", ProjectName, BuildConfiguration);

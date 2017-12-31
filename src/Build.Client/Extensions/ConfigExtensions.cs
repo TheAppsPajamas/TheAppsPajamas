@@ -90,13 +90,19 @@ namespace Build.Client.Extensions
                 var itemMetadata = new Dictionary<string, string>();
                 itemMetadata.Add("MediaFileId", field.Value);
                 var fieldType = FieldType.AppIcons().FirstOrDefault(x => x.Value == field.FieldId);
-                string logicalName = String.Empty; 
+                string logicalName = String.Empty;
+                string path = String.Empty;
+                string mediaName = String.Empty;
                 if (fieldType.ProjectType == ProjectType.Droid){
                     var packagingIcon = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingDroidAppIconName.Value);
 
                     logicalName = Path.Combine(fieldType.OsFileName, string.Concat(packagingIcon.Value, ".png"));
+                    path = Path.Combine(Consts.DroidResources, fieldType.OsFileName);
+                    mediaName = String.Concat(packagingIcon.Value, "_", field.Value);
                 }
+                itemMetadata.Add("Path", path);
                 itemMetadata.Add("LogicalName", logicalName);
+                itemMetadata.Add("MediaName", mediaName);
                 output.Add(new TaskItem(field.FieldId.ToString(), itemMetadata));
             }
 
@@ -114,14 +120,20 @@ namespace Build.Client.Extensions
                 var itemMetadata = new Dictionary<string, string>();
                 itemMetadata.Add("MediaFileId", field.Value);
                 var fieldType = FieldType.Splash().FirstOrDefault(x => x.Value == field.FieldId);
-                string logicalName = String.Empty;
+                string logicalName = String.Empty; 
+                string path = String.Empty;
+                string mediaName = String.Empty;
                 if (fieldType.ProjectType == ProjectType.Droid)
                 {
                     var packagingIcon = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingDroidAppIconName.Value);
 
                     logicalName = Path.Combine(fieldType.OsFileName, string.Concat(packagingIcon.Value, ".png"));
+                    mediaName = String.Concat(packagingIcon.Value, "_", field.Value);
+                    path = Path.Combine(Consts.DroidResources, fieldType.OsFileName);
                 }
+                itemMetadata.Add("Path", path);
                 itemMetadata.Add("LogicalName", logicalName);
+                itemMetadata.Add("MediaName", mediaName);
                 output.Add(new TaskItem(field.FieldId.ToString(), itemMetadata));
             }
 

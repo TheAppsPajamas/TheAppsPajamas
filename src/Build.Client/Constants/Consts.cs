@@ -8,6 +8,7 @@ namespace Build.Client.Constants
 
         public const string ProjectConfig = "project.config";
 
+        public const string DroidResources = "Resources";
         public const string UrlBase = "http://buildapidebug.me";
 
         public const string ClientEndpoint = "/api/client";

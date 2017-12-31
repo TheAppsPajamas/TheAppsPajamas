@@ -24,7 +24,7 @@ namespace Build.Client.BuildTasks
 
             var outputFiles = new List<ITaskItem>();
             foreach(var field in AppIconFields){
-                var filePath = Path.Combine(mediaResourcesDir, String.Concat(field.GetMetadata("MediaFileId"), ".png"));
+                var filePath = Path.Combine(mediaResourcesDir, field.GetMetadata("Path"), String.Concat(field.GetMetadata("MediaName"), ".png"));
 
                 var itemMetadata = new Dictionary<string, string>();
                 itemMetadata.Add("LogicalName", field.GetMetadata("LogicalName"));

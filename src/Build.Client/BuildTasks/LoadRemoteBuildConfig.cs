@@ -62,7 +62,7 @@ namespace Build.Client.BuildTasks
             if (clientConfigDto == null)
                 return false;
 
-            var projectConfig = this.GetProjectConfigV2();
+            var projectConfig = this.GetProjectConfig();
 
             //var thisProject = this.GetProjectConfig(projectsConfig);
 

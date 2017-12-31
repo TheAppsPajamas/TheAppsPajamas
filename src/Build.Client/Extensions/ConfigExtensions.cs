@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Build.Client.BuildTasks;
 using Build.Client.Constants;
 using Build.Client.Models;
+using DAL.Enums;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using Newtonsoft.Json;
@@ -105,10 +107,19 @@ namespace Build.Client.Extensions
             baseTask.LogDebug("Generating AppIcon TaskItems");
 
             var output = new List<ITaskItem>();
+
             foreach (var field in clientConfigDto.AppIconFields)
             {
                 var itemMetadata = new Dictionary<string, string>();
-                itemMetadata.Add("LogicalName", field.Value);
+                itemMetadata.Add("MediaFileId", field.Value);
+                var fieldType = FieldType.AppIcons().FirstOrDefault(x => x.Value == field.FieldId);
+                string logicalName = String.Empty; 
+                if (fieldType.ProjectType == ProjectType.Droid){
+                    var packagingIcon = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingDroidAppIconName.Value);
+
+                    logicalName = Path.Combine(fieldType.OsFileName, string.Concat(packagingIcon.Value, ".png"));
+                }
+                itemMetadata.Add("LogicalName", logicalName);
                 output.Add(new TaskItem(field.FieldId.ToString(), itemMetadata));
             }
 
@@ -124,14 +135,22 @@ namespace Build.Client.Extensions
             foreach (var field in clientConfigDto.SplashFields)
             {
                 var itemMetadata = new Dictionary<string, string>();
-                itemMetadata.Add("Value", field.Value);
+                itemMetadata.Add("MediaFileId", field.Value);
+                var fieldType = FieldType.Splash().FirstOrDefault(x => x.Value == field.FieldId);
+                string logicalName = String.Empty;
+                if (fieldType.ProjectType == ProjectType.Droid)
+                {
+                    var packagingIcon = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingDroidAppIconName.Value);
+
+                    logicalName = Path.Combine(fieldType.OsFileName, string.Concat(packagingIcon.Value, ".png"));
+                }
+                itemMetadata.Add("LogicalName", logicalName);
                 output.Add(new TaskItem(field.FieldId.ToString(), itemMetadata));
             }
 
             baseTask.LogDebug("Generated {0} Splash TaskItems", output.Count);
             return output.ToArray();
         }
-
 
     }
 }

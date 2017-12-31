@@ -16,8 +16,8 @@ namespace DAL.Enums
             , bool isMaster
             , bool isForClient
             , string osFileName
-            , double width
-            , double height = 0) : base(value, displayName, projectType, fieldHolderType, isForClient, osFileName, width, height = 0)
+            , int width
+            , int height = 0) : base(value, displayName, projectType, fieldHolderType, isForClient, osFileName, width, height = 0)
         {
             _isMaster = isMaster;
         }

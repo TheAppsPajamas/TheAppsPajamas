@@ -12,8 +12,8 @@ namespace DAL.Enums
             , bool isMaster
             , bool isForClient
             , string osFileName
-            , double width
-            , double height) 
+            , int width
+            , int height) 
             : base(value, displayName, projectType, FieldHolderType.AppIcon, isMaster, isForClient, osFileName, width, height)
         {
         }
@@ -25,8 +25,8 @@ namespace DAL.Enums
                 , bool isMaster
                 , bool isForClient
                 , string osFileName
-                , double width
-                , double height)
+                , int width
+                , int height)
                 : base(value, displayName, ProjectType.Shared, isMaster, isForClient, osFileName, width, height)
             {
             }
@@ -40,8 +40,8 @@ namespace DAL.Enums
                 , bool isMaster
                 , bool isForClient
                 , string osFileName
-                , double width
-                , double height)
+                , int width
+                , int height)
                 : base(value, displayName, ProjectType.Droid, isMaster, isForClient, osFileName, width, height)
             {
             }
@@ -54,8 +54,8 @@ namespace DAL.Enums
                 , bool isMaster
                 , bool isForClient
                 , string osFileName
-                , double width
-                , double height)
+                , int width
+                , int height)
                 : base(value, displayName, ProjectType.Ios, isMaster, isForClient, osFileName, width, height)
             {
             }

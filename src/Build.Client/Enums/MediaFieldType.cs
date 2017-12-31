@@ -10,11 +10,11 @@ namespace DAL.Enums
         public virtual string OsFileName { get { return _osFileName; } }
 
 
-        private double _width;
-        public virtual double Width { get { return _width; } }
+        private int _width;
+        public virtual int Width { get { return _width; } }
 
-        private double _height;
-        public virtual double Height { get { return _height; } }
+        private int _height;
+        public virtual int Height { get { return _height; } }
 
         public MediaFieldType(int value
             , string displayName
@@ -22,8 +22,8 @@ namespace DAL.Enums
             , FieldHolderType fieldHolderType
             , bool isForClient
             , string osFileName
-            , double width
-            , double height = 0) : base(value, displayName, projectType, fieldHolderType, isForClient)
+            , int width
+            , int height = 0) : base(value, displayName, projectType, fieldHolderType, isForClient)
         {
             _osFileName = osFileName;
             _width = width;

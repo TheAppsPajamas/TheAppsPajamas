@@ -7,14 +7,12 @@ using Microsoft.Build.Utilities;
 using Newtonsoft.Json;
 using Build.Client.Extensions;
 using System.Linq;
+using Build.Client.Constants;
 
 namespace Build.Client.BuildTasks
 {
     public class LoadRemoteBuildConfig : BaseLoadTask
     {
-        public LoadRemoteBuildConfig()
-        {
-        }
 
         public override bool Execute()
         {
@@ -35,7 +33,7 @@ namespace Build.Client.BuildTasks
             if (buildResourcesConfig == null)
                 return false;
 
-            var url = String.Concat(_urlBase, _endpoint, "?", "appId=", buildResourcesConfig.AppId, "&projectName=", ProjectName, "&buildConfiguration=", BuildConfiguration );
+            var url = String.Concat(Consts.UrlBase, Consts.ClientEndpoint, "?", "appId=", buildResourcesConfig.AppId, "&projectName=", ProjectName, "&buildConfiguration=", BuildConfiguration );
 
             Log.LogMessage("Loading remote build config from '{0}'", url);
 
@@ -59,6 +57,7 @@ namespace Build.Client.BuildTasks
                 return false;
             }
 
+
             ClientConfigDto clientConfigDto = this.GetClientConfig(jsonClientConfig);
             if (clientConfigDto == null)
                 return false;
@@ -66,6 +65,8 @@ namespace Build.Client.BuildTasks
             var projectsConfig = this.GetProjectsConfig();
 
             var thisProject = this.GetProjectConfig(projectsConfig);
+
+
             thisProject.ClientConfig = clientConfigDto;
             if (!this.SaveProjects(projectsConfig))
                 return false;

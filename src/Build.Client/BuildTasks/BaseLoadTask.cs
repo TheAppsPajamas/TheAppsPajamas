@@ -24,9 +24,6 @@ namespace Build.Client.BuildTasks
         //project name
         //possbile frameworkid
 
-        protected string _urlBase = "http://buildapidebug.me";
-
-        protected string _endpoint = "/api/client";
 
         public string _appId;
 
@@ -41,7 +38,5 @@ namespace Build.Client.BuildTasks
 
         [Output]
         public ITaskItem[] SplashOutput { get; set; }
-
-
     }
 }

@@ -31,11 +31,11 @@
 		</LoadRemoteBuildConfig>
 	</Target>
 	<Target Name="DeleteUnusedMediaFiles" AfterTargets="LoadRemoteBuildConfig">
-		<DeleteUnusedMediaFiles Debug="$(BuildDebug)" ProjectDir="$(MSBuildProjectDirectory)" PackagesDir="$(PackagesDir)" AppIconFields="@(AppIconFields)" SplashFields="@(SplashFields)" >
+		<DeleteUnusedMediaFiles Debug="$(BuildDebug)" ProjectDir="$(MSBuildProjectDirectory)" PackagesDir="$(PackagesDir)" AppIconFields="@(AppIconFields)" SplashFields="@(SplashFields)" BuildConfiguration="$(Configuration)">
 		</DeleteUnusedMediaFiles>
 	</Target>
 	<Target Name="DownloadMediaFiles" AfterTargets="DeleteUnusedMediaFiles">
-		<DownloadMediaFiles Debug="$(BuildDebug)" ProjectDir="$(MSBuildProjectDirectory)" PackagesDir="$(PackagesDir)" AppIconFields="@(AppIconFields)" SplashFields="@(SplashFields)" >
+		<DownloadMediaFiles Debug="$(BuildDebug)" ProjectDir="$(MSBuildProjectDirectory)" PackagesDir="$(PackagesDir)" AppIconFields="@(AppIconFields)" SplashFields="@(SplashFields)" BuildConfiguration="$(Configuration)">
 		</DownloadMediaFiles>
 	</Target>
 	<Target Name="SetDroidManifest" AfterTargets="DownloadMediaFiles" Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid'">
@@ -43,7 +43,7 @@
 		</SetDroidManifest>
 	</Target>
 	<Target Name="SetDroidAppIcons" AfterTargets="SetDroidManifest" Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid'">
-		<SetDroidAppIcons Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" AppIconFields="@(AppIconFields)" >
+		<SetDroidAppIcons Debug="$(BuildDebug)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" AppIconFields="@(AppIconFields)" >
 			<Output TaskParameter="OutputFiles" ItemName="DroidAppIcons" />
 		</SetDroidAppIcons>
 		<ItemGroup>

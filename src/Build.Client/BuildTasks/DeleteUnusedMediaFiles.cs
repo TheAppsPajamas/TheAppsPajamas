@@ -11,6 +11,7 @@ namespace Build.Client.BuildTasks
         public ITaskItem[] AppIconFields { get; set; }
 
         public ITaskItem[] SplashFields { get; set; }
+        public string BuildConfiguration { get; set; }
 
         public override bool Execute()
         {
@@ -18,7 +19,7 @@ namespace Build.Client.BuildTasks
             var allMediaFields = this.CombineMediaFields(AppIconFields, SplashFields);
 
             //get directory or create
-            var existingFiles = this.GetExistingMediaFiles();
+            var existingFiles = this.GetExistingMediaFiles(BuildConfiguration);
 
             try
             {

@@ -13,6 +13,7 @@ namespace Build.Client.BuildTasks
         public ITaskItem[] AppIconFields { get; set; }
 
         public ITaskItem[] SplashFields { get; set; }
+        public string BuildConfiguration { get; set; }
 
         public override bool Execute()
         {
@@ -21,10 +22,10 @@ namespace Build.Client.BuildTasks
             var allMediaFields = this.CombineMediaFields(AppIconFields, SplashFields);
 
             LogDebug("{0} media files required", allMediaFields.Count());
-            var existingFiles = this.GetExistingMediaFiles().Select(x => new FileHolder(x));
+            var existingFiles = this.GetExistingMediaFiles(BuildConfiguration).Select(x => new FileHolder(x));
             LogDebug("{0} existing media files already available", existingFiles.Count());
 
-            var mediaResourceDir = this.GetMediaResourceDir();
+            var mediaResourceDir = this.GetMediaResourceDir(BuildConfiguration);
             try
             {
                 foreach(var field in allMediaFields){

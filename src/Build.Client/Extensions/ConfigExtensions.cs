@@ -100,7 +100,12 @@ namespace Build.Client.Extensions
                     path = Path.Combine(Consts.DroidResources, fieldType.OsFileName);
                     mediaName = String.Concat(packagingIcon.Value, "_", field.Value);
                 } else if (fieldType.ProjectType == ProjectType.Ios){
-                    
+                    var assetCatalogue = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingIosAssetCatalogueName.Value);
+                    if (assetCatalogue == null || String.IsNullOrEmpty(assetCatalogue.Value)){
+                        baseTask.Log.LogError("Asset catalogue undefined");
+                    }
+                    var appIconName = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingIosAppIconXcAssetsName.Value);
+
                 }
                 itemMetadata.Add("Path", path);
                 itemMetadata.Add("LogicalName", logicalName);

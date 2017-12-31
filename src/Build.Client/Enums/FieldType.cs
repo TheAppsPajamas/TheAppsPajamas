@@ -35,7 +35,7 @@ namespace DAL.Enums
             = new AppIconFieldType.Droid(-11, "Droid xxhdpi app icon", false, true, "mipmap-xxhdpi", 144);
         public static readonly AppIconFieldType AppIconDroidXxxhdpi
             = new AppIconFieldType.Droid(-12, "Droid xxxhdpi app icon", false, true, "mipmap-xxxhdpi", 192);
-        
+
         public static readonly AppIconFieldType AppIconIosMaster
             = new AppIconFieldType.Ios(-15, "Ios master app icon", true, false, "ios-master.png", 1024);
 
@@ -101,10 +101,7 @@ namespace DAL.Enums
             = new PackagingFieldType(-52, "Shared version", ProjectType.Shared, true, false, StringFieldDisplayType.Text);
         public static PackagingFieldType PackagingSharedVersionNumber
             = new PackagingFieldType(-53, "Shared version number", ProjectType.Shared, true, false, StringFieldDisplayType.Number);
-        public static PackagingFieldType PackagingSharedAppIconName
-            = new PackagingFieldType(-67, "Shared app icon name", ProjectType.Shared, true, false, StringFieldDisplayType.Text);
-        public static PackagingFieldType PackagingSharedSplashName
-            = new PackagingFieldType(-68, "Shared splash image name", ProjectType.Shared, true, false, StringFieldDisplayType.Text);
+
 
         public static PackagingFieldType PackagingDroidName
             = new PackagingFieldType(-54, "Droid name", ProjectType.Droid, true, true, StringFieldDisplayType.Text);
@@ -115,9 +112,9 @@ namespace DAL.Enums
         public static PackagingFieldType PackagingDroidVersionNumber
             = new PackagingFieldType(-57, "Droid version number", ProjectType.Droid, true, true, StringFieldDisplayType.Number);
         public static PackagingFieldType PackagingDroidAppIconName
-            = new PackagingFieldType(-63, "Droid app icon name", ProjectType.Droid, true, true, StringFieldDisplayType.Text);
+            = new PackagingFieldType(-63, "Droid app icon name", ProjectType.Droid, false, true, StringFieldDisplayType.Text);
         public static PackagingFieldType PackagingDroidSplashName
-            = new PackagingFieldType(-64, "Droid splash image name", ProjectType.Droid, true, true, StringFieldDisplayType.Text);
+            = new PackagingFieldType(-64, "Droid splash image name", ProjectType.Droid, false, true, StringFieldDisplayType.Text);
 
         public static PackagingFieldType PackagingIosName
             = new PackagingFieldType(-58, "Ios name", ProjectType.Ios, true, true, StringFieldDisplayType.Text);
@@ -127,10 +124,12 @@ namespace DAL.Enums
             = new PackagingFieldType(-60, "Ios version", ProjectType.Ios, true, true, StringFieldDisplayType.Text);
         public static PackagingFieldType PackagingIosVersionNumber
             = new PackagingFieldType(-61, "Ios version number", ProjectType.Ios, true, true, StringFieldDisplayType.Number);
+        public static PackagingFieldType PackagingIosAssetCatalogueName
+            = new PackagingFieldType(-67, "Ios asset catalogue name", ProjectType.Ios, false, true, StringFieldDisplayType.Text);
         public static PackagingFieldType PackagingIosAppIconXcAssetsName
-            = new PackagingFieldType(-65, "Ios app icon xcassets name", ProjectType.Ios, true, true, StringFieldDisplayType.Text);
+            = new PackagingFieldType(-65, "Ios app icon xcassets name", ProjectType.Ios, false, true, StringFieldDisplayType.Text);
         public static PackagingFieldType PackagingIosLaunchImageXcAssetsName
-            = new PackagingFieldType(-66, "Ios launch image xcassets name", ProjectType.Ios, true, true, StringFieldDisplayType.Text);
+            = new PackagingFieldType(-66, "Ios launch image xcassets name", ProjectType.Ios, false, true, StringFieldDisplayType.Text);
         public static PackagingFieldType PackagingIosUsesNonExemptEncryption
             = new PackagingFieldType(-62, "Ios uses non exempt encryption", ProjectType.Ios, false, true, StringFieldDisplayType.Bool);
 

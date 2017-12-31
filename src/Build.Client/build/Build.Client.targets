@@ -3,12 +3,7 @@
 	<PropertyGroup>
 		<BuildDebug>true</BuildDebug>
 	</PropertyGroup>
-	<Target Name="SayHelloWorld" BeforeTargets="_GetReferenceAssemblyPaths" Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid'">
-		<HelloWorld />
-	</Target>
-	<Target Name="SayHelloAgainWorld" BeforeTargets="_GetReferenceAssemblyPaths">
-		<Warning Text="Target framework $(TargetFrameworkIdentifier)" />
-	</Target>
+
 	<Target Name="Clean">
 		<CleanProjectsConfig Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)">
 		</CleanProjectsConfig>

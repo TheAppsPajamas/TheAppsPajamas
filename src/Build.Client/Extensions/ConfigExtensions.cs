@@ -99,6 +99,8 @@ namespace Build.Client.Extensions
                     logicalName = Path.Combine(fieldType.OsFileName, string.Concat(packagingIcon.Value, ".png"));
                     path = Path.Combine(Consts.DroidResources, fieldType.OsFileName);
                     mediaName = String.Concat(packagingIcon.Value, "_", field.Value);
+                } else if (fieldType.ProjectType == ProjectType.Ios){
+                    
                 }
                 itemMetadata.Add("Path", path);
                 itemMetadata.Add("LogicalName", logicalName);
@@ -130,7 +132,7 @@ namespace Build.Client.Extensions
                     logicalName = Path.Combine(fieldType.OsFileName, string.Concat(packagingIcon.Value, ".png"));
                     mediaName = String.Concat(packagingIcon.Value, "_", field.Value);
                     path = Path.Combine(Consts.DroidResources, fieldType.OsFileName);
-                }
+                } 
                 itemMetadata.Add("Path", path);
                 itemMetadata.Add("LogicalName", logicalName);
                 itemMetadata.Add("MediaName", mediaName);

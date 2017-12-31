@@ -15,7 +15,7 @@ namespace Build.Client.BuildTasks
 
         public override bool Execute()
         {
-            Log.LogWarning("Deleting unused media files");
+            Log.LogMessage("Deleting unused media files");
             var allMediaFields = this.CombineMediaFields(AppIconFields, SplashFields);
 
             //get directory or create

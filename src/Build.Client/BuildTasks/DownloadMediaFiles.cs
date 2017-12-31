@@ -17,7 +17,7 @@ namespace Build.Client.BuildTasks
 
         public override bool Execute()
         {
-            Log.LogWarning("Downloading media files");
+            Log.LogMessage("Downloading media files");
 
             var allMediaFields = this.CombineMediaFields(AppIconFields, SplashFields);
 
@@ -45,7 +45,7 @@ namespace Build.Client.BuildTasks
                             client.DownloadFile(url, fileName);
                         }
                     } else {
-                        LogDebug("Logical media-resource {1} exists as {0}.png, not downloading", field.GetMetadata("MediaFileId"), field.GetMetadata("LogicalName"));
+                        LogDebug("Logical media-resource {1} exists as {0}.png, not downloading", field.GetMetadata("MediaName"), field.GetMetadata("LogicalName"));
                     }
                 }
             }

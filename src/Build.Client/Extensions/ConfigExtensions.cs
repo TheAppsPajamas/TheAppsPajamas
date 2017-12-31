@@ -95,8 +95,11 @@ namespace Build.Client.Extensions
                 string mediaName = String.Empty;
                 if (fieldType.ProjectType == ProjectType.Droid){
                     var packagingIcon = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingDroidAppIconName.Value);
-
-                    logicalName = Path.Combine(fieldType.OsFileName, string.Concat(packagingIcon.Value, ".png"));
+                    if (packagingIcon == null || String.IsNullOrEmpty(packagingIcon.Value))
+                    {
+                        baseTask.Log.LogError("Icon name undefined");
+                    }
+                    logicalName = Path.Combine(fieldType.OsFileName, packagingIcon.Value.ApplyPngExt());
                     path = Path.Combine(Consts.DroidResources, fieldType.OsFileName);
                     mediaName = String.Concat(packagingIcon.Value, "_", field.Value);
                 } else if (fieldType.ProjectType == ProjectType.Ios){
@@ -105,7 +108,15 @@ namespace Build.Client.Extensions
                         baseTask.Log.LogError("Asset catalogue undefined");
                     }
                     var appIconName = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingIosAppIconXcAssetsName.Value);
-
+                    if (appIconName == null || String.IsNullOrEmpty(appIconName.Value))
+                    {
+                        baseTask.Log.LogError("Icon catalogue name undefined");
+                    }
+                    path = Path.Combine(assetCatalogue.Value.ApplyXcAssetsExt(), appIconName.Value.ApplyAppiconsetExt());
+                    logicalName = Path.Combine(path, fieldType.OsFileName);
+                    mediaName = string.Concat(fieldType.OsFileName.RemovePngExt(), "_", field.Value);
+                    itemMetadata.Add("AssetCatalogueName", assetCatalogue.Value.ApplyXcAssetsExt());
+                    itemMetadata.Add("AppIconSetName", appIconName.Value.ApplyAppiconsetExt());
                 }
                 itemMetadata.Add("Path", path);
                 itemMetadata.Add("LogicalName", logicalName);

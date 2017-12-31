@@ -14,5 +14,7 @@ namespace Build.Client.Constants
         public const string ClientEndpoint = "/api/client";
 
         public const string MediaEndpoint = "/api/media";
+
+        public const string AssetCatalogueContents = "{\r\n  \"info\" : {\r\n    \"version\" : 1,\r\n    \"author\" : \"xcode\"\r\n  }\r\n}";
     }
 }

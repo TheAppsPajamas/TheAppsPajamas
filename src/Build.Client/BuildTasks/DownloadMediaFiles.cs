@@ -29,7 +29,7 @@ namespace Build.Client.BuildTasks
             try
             {
                 foreach(var field in allMediaFields){
-                    var exists = existingFiles.Any(x => x.FileNoExt == field.GetMetadata("MediaFileId"));
+                    var exists = existingFiles.Any(x => x.FileNoExt == field.GetMetadata("MediaName"));
                     if (!exists){
                         using (WebClient client = new WebClient())
                         {

@@ -9,7 +9,7 @@ namespace Build.Client.BuildTasks
     {
         public override bool Execute()
         {
-            Log.LogMessage("Cleaning build resource projects.config");
+            Log.LogMessage("Cleaning build resource project.config");
 
             var buildResourceDir = this.GetBuildResourceDir();
             if (String.IsNullOrEmpty(buildResourceDir))

@@ -28,7 +28,7 @@ namespace Build.Client.BuildTasks
                     var fileInfo = new FileInfo(file);
                     var fileNoExt = Path.GetFileNameWithoutExtension(fileInfo.Name);
 
-                    var field = allMediaFields.FirstOrDefault(x => x.GetMetadata("MediaFileId") == fileNoExt);
+                    var field = allMediaFields.FirstOrDefault(x => x.GetMetadata("MediaName") == fileNoExt);
                     if (field == null)
                     {
                         Log.LogMessage("File {0} no longer required, deleting", fileInfo.Name);

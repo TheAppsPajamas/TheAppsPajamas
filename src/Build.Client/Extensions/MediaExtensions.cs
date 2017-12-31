@@ -14,7 +14,7 @@ namespace Build.Client.Extensions
             var mediaResourceDir = baseTask.GetMediaResourceDir(buildConfiguration);
             try
             {
-                var files = Directory.EnumerateFiles(mediaResourceDir, "*.png");
+                var files = Directory.EnumerateFiles(mediaResourceDir, "*.png", SearchOption.AllDirectories);
                 if (baseTask.Debug)
                 {
                     if (files.Any())

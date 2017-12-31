@@ -50,12 +50,12 @@ namespace Build.Client.Extensions
                 var mediaResourceDir = Path.Combine(buildResourceDir, Consts.MediaResourcesDir);
                 if (!Directory.Exists(mediaResourceDir))
                 {
-                    baseTask.LogDebug("Created Media-Resources folder at '{0}'", mediaResourceDir);
+                    baseTask.LogDebug("Created media-resources folder at '{0}'", mediaResourceDir);
                     Directory.CreateDirectory(mediaResourceDir);
                 }
                 else
                 {
-                    baseTask.LogDebug("Media-Resources folder location '{0}'", mediaResourceDir);
+                    baseTask.LogDebug("media-resources folder location '{0}'", mediaResourceDir);
                 }
                 var directoryInfo = new DirectoryInfo(mediaResourceDir);
                 return directoryInfo.FullName;

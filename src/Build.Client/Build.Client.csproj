@@ -87,6 +87,7 @@
     <Compile Include="Helpers\Plist.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="BuildTasks\SetIosAppIcons.cs" />
+    <Compile Include="Models\AppIconAssetCatalogue.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />

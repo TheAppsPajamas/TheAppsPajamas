@@ -26,6 +26,8 @@ namespace Build.Client.BuildTasks
             {
                 var mediaResourcesDir = this.GetMediaResourceDir(BuildConfiguration);
 
+                var outputFiles = new List<ITaskItem>();
+
                 var firstField = AppIconFields.FirstOrDefault();
                 if (firstField == null)
                 {
@@ -42,10 +44,14 @@ namespace Build.Client.BuildTasks
                 var catMetadata = new Dictionary<string, string>();
                 catMetadata.Add("LogicalName", Path.Combine(firstField.GetMetadata("AssetCatalogueName"), "Contents.json"));
                 var catItem = new TaskItem(assetCatalogue, catMetadata);
+                outputFiles.Add(catItem);
 
-                var appiconset = firstField.GetMetadata("AppIconSetName");
+                var appIconSet = firstField.GetMetadata("AppIconSetName");
+                var appIconSetMetadata = new Dictionary<string, string>();
+                appIconSetMetadata.Add("LogicalName", Path.Combine(firstField.GetMetadata("AppIconSetName"), "Contents.json"));
+                var appIconSetItem = new TaskItem(assetCatalogue, catMetadata);
+                outputFiles.Add(appIconSetItem);
 
-                var outputFiles = new List<ITaskItem>();
                 foreach (var field in AppIconFields)
                 {
                     var filePath = Path.Combine(mediaResourcesDir, field.GetMetadata("Path"), String.Concat(field.GetMetadata("MediaName"), ".png"));

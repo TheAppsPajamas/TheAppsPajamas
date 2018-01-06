@@ -16,7 +16,11 @@ namespace Build.Client.BuildTasks
         public ITaskItem[] AppIconFields { get; set; }
 
         [Output]
-        public ITaskItem[] OutputFiles { get; set; }
+        public ITaskItem[] OutputImageAssets { get; set; }
+
+
+        [Output]
+        public ITaskItem[] OutputITunesArtwork { get; set; }
 
 
         public string BuildConfiguration { get; set; }
@@ -34,7 +38,8 @@ namespace Build.Client.BuildTasks
                     Log.LogError("App Icon Field set malformed");
                 }
 
-                var outputFiles = new List<ITaskItem>();
+                var outputImageAssets = new List<ITaskItem>();
+                var outputITunesArtwork = new List<ITaskItem>();
 
                 //we clone into packages/project dir because of weirdness with xamarin actool task
                 var baseOutputDir = firstField.GetMetadata("DefiningProjectDirectory");
@@ -65,7 +70,7 @@ namespace Build.Client.BuildTasks
                 }
 
                 var assetCatalogueItem = new TaskItem(assetCatalogueContentsPath);
-                outputFiles.Add(assetCatalogueItem);
+                outputImageAssets.Add(assetCatalogueItem);
 
                 LogDebug("Added asset catalogue contents.json to taskitems at path {0}", assetCatalogueItem.ItemSpec);
 
@@ -80,14 +85,26 @@ namespace Build.Client.BuildTasks
 
                 var appIconSetContentsPath = Path.Combine(baseOutputDir, assetCatalogueName, appIconSetName, "Contents.json");
                 var appIconSetItem = new TaskItem(appIconSetContentsPath);
-                outputFiles.Add(appIconSetItem);
+                outputImageAssets.Add(appIconSetItem);
 
                 var appIconSetContents = JsonConvert.DeserializeObject<AppIconAssetCatalogue>(Consts.AppIconSetDefaultContents);
 
-                LogDebug("Added AppIconSet contents.json to taskitems at path {0}", assetCatalogueItem.ItemSpec);
+                LogDebug("Added AppIconSet contents.json to taskitems at path {0}", appIconSetItem.ItemSpec);
 
                 foreach (var field in AppIconFields)
                 {
+                    //do itunes artwork first
+                    if (String.IsNullOrEmpty(field.GetMetadata("idiom"))){
+
+                        var existingFilePath = Path.Combine(mediaResourcesBuildConfigDir, String.Concat(field.GetMetadata("MediaName"), ".png"));
+
+                        var filePath = Path.Combine(base.ProjectDir, field.GetMetadata("LogicalName"));
+                        File.Copy(existingFilePath, filePath, true);
+                        var artworkTaskItem = new TaskItem(field.GetMetadata("LogicalName"));
+                        outputITunesArtwork.Add(artworkTaskItem);
+                        continue;
+                    }
+
                     var imageCatalogue = appIconSetContents.images.FirstOrDefault(x => x.size == field.GetMetadata("size")
                                                                    && x.idiom == field.GetMetadata("idiom")
                                                                    && x.scale == field.GetMetadata("scale"));
@@ -119,7 +136,7 @@ namespace Build.Client.BuildTasks
                         LogDebug("Adding file {0} to task items with logical path {1}", filePath, logicalFilePath);
 
                         var taskItem = new TaskItem(logicalFilePath);
-                        outputFiles.Add(taskItem);
+                        outputImageAssets.Add(taskItem);
                     }
                 }
 
@@ -130,7 +147,8 @@ namespace Build.Client.BuildTasks
                 LogDebug("Saving AppIcon catalogue to {0}", appCatalogueOutputPath);
                 File.WriteAllText(appCatalogueOutputPath, appCatalogueOutput);
 
-                OutputFiles = outputFiles.ToArray();
+                OutputImageAssets = outputImageAssets.ToArray();
+                OutputITunesArtwork = outputITunesArtwork.ToArray();
                 return true;
             } catch (Exception ex){
                 Log.LogErrorFromException(ex);

@@ -49,12 +49,13 @@
     </Target>
     <Target Name="SetIosAppIcons" AfterTargets="SetDroidManifest" Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS'">
         <SetIosAppIcons Debug="$(BuildDebug)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" AppIconFields="@(AppIconFields)" >
-            <Output TaskParameter="OutputFiles" ItemName="IosAppIcons" />
+            <Output TaskParameter="OutputImageAssets" ItemName="IosAppIcons" />            
+            <Output TaskParameter="OutputITunesArtwork" ItemName="IosITunesArtwork" />
         </SetIosAppIcons>
        <ItemGroup>
             <ImageAsset Include="%(IosAppIcons.Identity)">
             </ImageAsset>
-
+                <ITunesArtwork Include="%(IosITunesArtwork.Identity)" />
         </ItemGroup>
 <!--                    <Warning Text="ImageAsset %(IosAppIcons.Identity)" />-->
 <!--

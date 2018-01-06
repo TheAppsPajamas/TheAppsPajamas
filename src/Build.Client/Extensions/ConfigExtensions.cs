@@ -103,25 +103,36 @@ namespace Build.Client.Extensions
                     path = Path.Combine(Consts.DroidResources, fieldType.OsFileName);
                     mediaName = String.Concat(packagingIcon.Value, "_", field.Value);
                 } else if (fieldType.ProjectType == ProjectType.Ios){
-                    var assetCatalogue = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingIosAssetCatalogueName.Value);
-                    if (assetCatalogue == null || String.IsNullOrEmpty(assetCatalogue.Value)){
-                        baseTask.Log.LogError("Asset catalogue undefined");
-                    }
-                    var appIconName = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingIosAppIconXcAssetsName.Value);
-                    if (appIconName == null || String.IsNullOrEmpty(appIconName.Value))
+                    if (String.IsNullOrEmpty(fieldType.GetMetadata("idiom")))
                     {
-                        baseTask.Log.LogError("AppIconSet catalogue name undefined");
+                        path = String.Empty;
+                        mediaName = string.Concat(fieldType.OsFileName.RemovePngExt(), "_", field.Value);
+                        logicalName = fieldType.OsFileName.RemovePngExt();
                     }
-                    path = Path.Combine(assetCatalogue.Value.ApplyXcAssetsExt(), appIconName.Value.ApplyAppiconsetExt());
-                    logicalName = Path.Combine(path, fieldType.OsFileName);
-                    mediaName = string.Concat(fieldType.OsFileName.RemovePngExt(), "_", field.Value);
-                    itemMetadata.Add("AssetCatalogueName", assetCatalogue.Value.ApplyXcAssetsExt());
-                    itemMetadata.Add("AppIconSetName", appIconName.Value.ApplyAppiconsetExt());
+                    else
+                    {
 
-                    itemMetadata.Add("size", fieldType.GetMetadata("size"));
-                    itemMetadata.Add("idiom", fieldType.GetMetadata("idiom"));
-                    itemMetadata.Add("scale", fieldType.GetMetadata("scale"));
-                    itemMetadata.Add("CatalogueName", fieldType.OsFileName);
+                        var assetCatalogue = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingIosAssetCatalogueName.Value);
+                        if (assetCatalogue == null || String.IsNullOrEmpty(assetCatalogue.Value))
+                        {
+                            baseTask.Log.LogError("Asset catalogue undefined");
+                        }
+                        var appIconName = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingIosAppIconXcAssetsName.Value);
+                        if (appIconName == null || String.IsNullOrEmpty(appIconName.Value))
+                        {
+                            baseTask.Log.LogError("AppIconSet catalogue name undefined");
+                        }
+                        path = Path.Combine(assetCatalogue.Value.ApplyXcAssetsExt(), appIconName.Value.ApplyAppiconsetExt());
+                        logicalName = Path.Combine(path, fieldType.OsFileName);
+                        mediaName = string.Concat(fieldType.OsFileName.RemovePngExt(), "_", field.Value);
+                        itemMetadata.Add("AssetCatalogueName", assetCatalogue.Value.ApplyXcAssetsExt());
+                        itemMetadata.Add("AppIconSetName", appIconName.Value.ApplyAppiconsetExt());
+
+                        itemMetadata.Add("size", fieldType.GetMetadata("size"));
+                        itemMetadata.Add("idiom", fieldType.GetMetadata("idiom"));
+                        itemMetadata.Add("scale", fieldType.GetMetadata("scale"));
+                        itemMetadata.Add("CatalogueName", fieldType.OsFileName);
+                    }
                 }
                 itemMetadata.Add("Path", path);
                 itemMetadata.Add("LogicalName", logicalName);

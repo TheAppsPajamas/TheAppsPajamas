@@ -1,12 +1,14 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/BuildTasks/SetIosAppIcons.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/Extensions/ConfigExtensions.cs">
     <Files>
       <File FileName="Build.Client/BuildTasks/DeleteUnusedMediaFiles.cs" Line="22" Column="44" />
       <File FileName="Build.Client/BuildTasks/DownloadMediaFiles.cs" Line="42" Column="94" />
-      <File FileName="Build.Client/build/Build.Client.targets" Line="55" Column="1" />
-      <File FileName="Build.Client/BuildTasks/SetIosAppIcons.cs" Line="101" Column="102" />
+      <File FileName="Build.Client/build/Build.Client.targets" Line="7" Column="38" />
+      <File FileName="Build.Client/BuildTasks/SetIosAppIcons.cs" Line="131" Column="26" />
       <File FileName="Build.Client/Constants/Consts.cs" Line="9" Column="1" />
       <File FileName="Build.Client/BuildTasks/TestImageAssets.cs" Line="13" Column="10" />
+      <File FileName="Build.Client/Enums/FieldType.cs" Line="206" Column="41" />
+      <File FileName="Build.Client/Extensions/ConfigExtensions.cs" Line="133" Column="49" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

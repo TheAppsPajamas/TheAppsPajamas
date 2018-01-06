@@ -115,13 +115,20 @@ namespace Build.Client.BuildTasks
                                      , field.GetMetadata("size")
                                      , field.GetMetadata("idiom")
                                      , field.GetMetadata("scale"));
-                        //return false;
+                        return false;
                     }
                     else
                     {
-
                         imageCatalogue.filename = field.GetMetadata("CatalogueName");
                         LogDebug("Set asset catalogue filename to {0}", imageCatalogue.filename);
+
+                        var imageCatalogue2 = appIconSetContents.images.FirstOrDefault(x => x.size == field.GetMetadata("size")
+                                                                   && x.idiom == field.GetMetadata("idiom2")
+                                                                   && x.scale == field.GetMetadata("scale"));
+                        if (imageCatalogue2 != null){
+                            imageCatalogue2.filename = field.GetMetadata("CatalogueName");
+                            LogDebug("Set second asset catalogue filename to {0}", imageCatalogue2.filename);
+                        }
 
                         var existingFilePath = Path.Combine(mediaResourcesBuildConfigDir, field.GetMetadata("Path"), String.Concat(field.GetMetadata("MediaName"), ".png"));
 

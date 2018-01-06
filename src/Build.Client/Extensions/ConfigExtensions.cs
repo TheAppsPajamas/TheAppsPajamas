@@ -130,6 +130,7 @@ namespace Build.Client.Extensions
 
                         itemMetadata.Add("size", fieldType.GetMetadata("size"));
                         itemMetadata.Add("idiom", fieldType.GetMetadata("idiom"));
+                        itemMetadata.Add("idiom2", fieldType.GetMetadata("idiom2"));
                         itemMetadata.Add("scale", fieldType.GetMetadata("scale"));
                         itemMetadata.Add("CatalogueName", fieldType.OsFileName);
                     }

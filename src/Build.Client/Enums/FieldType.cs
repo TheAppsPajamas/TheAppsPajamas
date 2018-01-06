@@ -59,6 +59,35 @@ namespace DAL.Enums
                                         {"scale", "1x"}
                                     },
                 "Icon-Marketing.png", 1024);
+
+        public static readonly AppIconFieldType AppIconIosIcon20_1x
+            = new AppIconFieldType.Ios(-38, "Ios icon-20@1x", false, true
+                , new Dictionary<string, string>{
+                                        {"size", "20x20"},
+                                        {"idiom", "ipad"},
+                                        {"scale", "1x"}
+                                    },
+                "Icon-20@1x.png", 20);
+        
+        public static readonly AppIconFieldType AppIconIosIcon20_2x
+            = new AppIconFieldType.Ios(-39, "Ios icon-20@2x", false, true
+                , new Dictionary<string, string>{
+                                        {"size", "20x20"},
+                                        {"idiom", "iphone"},
+                                        {"idiom", "ipad"},
+                                        {"scale", "2x"}
+                                    },
+                "Icon-20@2x.png", 40);
+
+        public static readonly AppIconFieldType AppIconIosIcon20_3x
+            = new AppIconFieldType.Ios(-40, "Ios icon-20@2x", false, true
+                , new Dictionary<string, string>{
+                                        {"size", "20x20"},
+                                        {"idiom", "iphone"},
+                                        {"scale", "3x"}
+                                    },
+                "Icon-20@2x.png", 60);
+
         //d
         public static readonly AppIconFieldType AppIconIosIcon60_2x
             = new AppIconFieldType.Ios(-19, "Ios icon-60@2x", false, true
@@ -111,6 +140,7 @@ namespace DAL.Enums
                 , new Dictionary<string, string>{
                                         {"size", "40x40"},
                                         {"idiom", "ipad"},
+                                        {"idiom2", "iphone"},
                                         {"scale", "1x"}
                                     },
                 "Icon-Small-40.png", 40);
@@ -120,8 +150,9 @@ namespace DAL.Enums
             = new AppIconFieldType.Ios(-25, "Ios icon-small-40@2x", false, true
                 , new Dictionary<string, string>{
                                         {"size", "40x40"},
-                                        {"idiom", "ipad"},
-                                        {"scale", "2x"}
+                                        {"idiom", "iphone"},
+                                        {"scale", "2x"},
+                                        {"idoim2", "ipad"}
                                     },
                 "Icon-Small-40@2x.png", 80);
 
@@ -129,7 +160,7 @@ namespace DAL.Enums
         public static readonly AppIconFieldType AppIconIosIconSmall40_3x
             = new AppIconFieldType.Ios(-26, "Ios icon-small-40@3x", false, true
                 , new Dictionary<string, string>{
-                                        {"size", "40x40"},
+            {                           "size", "40x40"},
                                         {"idiom", "iphone"},
                                         {"scale", "3x"}
                                     },
@@ -140,8 +171,9 @@ namespace DAL.Enums
             = new AppIconFieldType.Ios(-27, "Ios icon-small", false, true
                 , new Dictionary<string, string>{
                                         {"size", "29x29"},
-                                        {"idiom", "iphone"},
-                                        {"scale", "1x"}
+                                        {"idiom", "ipad"},
+                                        {"scale", "1x"},
+
                                     },
                 "Icon-Small.png", 29);
 
@@ -150,7 +182,8 @@ namespace DAL.Enums
                                    , new Dictionary<string, string>{
                                         {"size", "29x29"},
                                         {"idiom", "iphone"},
-                                        {"scale", "2x"}
+                                        {"scale", "2x"},
+                                        {"idiom2", "ipad"}
                                     },
                 "Icon-Small@2x.png", 58);
 
@@ -159,7 +192,8 @@ namespace DAL.Enums
                 , new Dictionary<string, string>{
                                         {"size", "29x29"},
                                         {"idiom", "iphone"},
-                                        {"scale", "3x"}
+                                        {"scale", "3x"},
+                                        {"idiom2", "ipad"}
                                     },
                 "Icon-Small@3x.png", 87);
 
@@ -200,7 +234,7 @@ namespace DAL.Enums
             = new AppIconFieldType.Ios(-33, "Ios icon-watch-98@2x", false, true
                 , new Dictionary<string, string>{
                                         {"size", "98x98"},
-                                        {"idiom", "iphone"},
+                                        {"idiom", "watch"},
                                         {"scale", "2x"},
                                         { "role", "quickLook" },
                                         { "subtype", "42mm" }

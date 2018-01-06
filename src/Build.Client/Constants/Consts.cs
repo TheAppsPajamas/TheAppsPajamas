@@ -5,6 +5,7 @@ namespace Build.Client.Constants
     {
         public const string BuildResourcesDir = "build-resources";
         public const string MediaResourcesDir = "media-resources";
+        public const string AssetCatalogueOutputDir = "asset-catalogue-output";
 
         public const string ProjectConfig = "project.config";
 

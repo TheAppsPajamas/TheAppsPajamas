@@ -11,10 +11,11 @@ namespace DAL.Enums
             , ProjectType projectType
             , bool isMaster
             , bool isForClient
+            , Dictionary<string, string> metadata
             , string osFileName
             , int width
             , int height) 
-            : base(value, displayName, projectType, FieldHolderType.AppIcon, isMaster, isForClient, osFileName, width, height)
+            : base(value, displayName, projectType, FieldHolderType.AppIcon, isMaster, isForClient, metadata, osFileName, width, height)
         {
         }
 
@@ -24,10 +25,11 @@ namespace DAL.Enums
                 , string displayName
                 , bool isMaster
                 , bool isForClient
+                , Dictionary<string, string> metadata
                 , string osFileName
                 , int width
                 , int height)
-                : base(value, displayName, ProjectType.Shared, isMaster, isForClient, osFileName, width, height)
+                : base(value, displayName, ProjectType.Shared, isMaster, isForClient, metadata, osFileName, width, height)
             {
             }
         }
@@ -39,10 +41,11 @@ namespace DAL.Enums
                 , string displayName
                 , bool isMaster
                 , bool isForClient
+                , Dictionary<string, string> metadata
                 , string osFileName
                 , int width
                 , int height)
-                : base(value, displayName, ProjectType.Droid, isMaster, isForClient, osFileName, width, height)
+                : base(value, displayName, ProjectType.Droid, isMaster, isForClient, metadata, osFileName, width, height)
             {
             }
         }
@@ -53,10 +56,11 @@ namespace DAL.Enums
                 , string displayName
                 , bool isMaster
                 , bool isForClient
+                , Dictionary<string, string> metadata
                 , string osFileName
                 , int width
                 , int height)
-                : base(value, displayName, ProjectType.Ios, isMaster, isForClient, osFileName, width, height)
+                : base(value, displayName, ProjectType.Ios, isMaster, isForClient, metadata, osFileName, width, height)
             {
             }
         }

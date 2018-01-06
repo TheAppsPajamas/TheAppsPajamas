@@ -113,13 +113,23 @@ namespace Build.Client.Extensions
                         baseTask.Log.LogError("Icon catalogue name undefined");
                     }
                     path = Path.Combine(assetCatalogue.Value.ApplyXcAssetsExt(), appIconName.Value.ApplyAppiconsetExt());
-                    logicalName = Path.Combine(path, fieldType.OsFileName);
+                    //logicalName = Path.Combine(path, fieldType.OsFileName);
+                    logicalName = String.Empty;
                     mediaName = string.Concat(fieldType.OsFileName.RemovePngExt(), "_", field.Value);
                     itemMetadata.Add("AssetCatalogueName", assetCatalogue.Value.ApplyXcAssetsExt());
                     itemMetadata.Add("AppIconSetName", appIconName.Value.ApplyAppiconsetExt());
+
+                    itemMetadata.Add("size", fieldType.GetMetadata("size"));
+                    itemMetadata.Add("idiom", fieldType.GetMetadata("idiom"));
+                    itemMetadata.Add("scale", fieldType.GetMetadata("scale"));
+                    itemMetadata.Add("CatalogueName", string.Concat(fieldType.OsFileName.RemovePngExt(), "_", field.Value).ApplyPngExt());
+                    itemMetadata.Add("NewCatalogueName", fieldType.OsFileName);
                 }
-                itemMetadata.Add("Path", path);
-                itemMetadata.Add("LogicalName", logicalName);
+                itemMetadata.Add("TestPath", path);
+                if (!String.IsNullOrEmpty(logicalName))
+                {
+                    itemMetadata.Add("LogicalName", logicalName);
+                }
                 itemMetadata.Add("MediaName", mediaName);
                 output.Add(new TaskItem(field.FieldId.ToString(), itemMetadata));
             }

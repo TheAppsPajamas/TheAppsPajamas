@@ -68,6 +68,36 @@ namespace Build.Client.Extensions
             return null;
         }
 
+        public static string GetAssetCatalogueOutputDir(this BaseTask baseTask)
+        {
+            var buildResourceDir = baseTask.GetBuildResourceDir();
+            baseTask.LogDebug("BuildResourceDir located at '{0}'", buildResourceDir);
+
+            try
+            {
+                var mediaResourceDir = Path.Combine(buildResourceDir, Consts.AssetCatalogueOutputDir);
+                if (!Directory.Exists(mediaResourceDir))
+                {
+                    baseTask.LogDebug("Created asset-catalogue-output folder at '{0}'", mediaResourceDir);
+                    Directory.CreateDirectory(mediaResourceDir);
+                }
+                else
+                {
+                    Directory.Delete(mediaResourceDir, true);
+                    baseTask.LogDebug("Deleted existing asset-catalogue-output folder at {0}", mediaResourceDir);
+                    Directory.CreateDirectory(mediaResourceDir);
+                    baseTask.LogDebug("Created asset-catalogue-output folder at '{0}'", mediaResourceDir);
+                }
+                var directoryInfo = new DirectoryInfo(mediaResourceDir);
+                return directoryInfo.FullName;
+            }
+            catch (Exception ex)
+            {
+                baseTask.Log.LogErrorFromException(ex);
+            }
+            return null;
+        }
+
         public static IEnumerable<ITaskItem> CombineMediaFields(this BaseTask baseTask, ITaskItem[] AppIconFields, ITaskItem[] SplashFields){
             IEnumerable<ITaskItem> allMediaFields = null;
 

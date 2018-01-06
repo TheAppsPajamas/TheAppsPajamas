@@ -19,7 +19,7 @@ namespace Build.Client.Extensions
                 {
                     if (files.Any())
                     {
-                        baseTask.Log.LogMessage("{0} png files found in media resources folder", files.Count());
+                        baseTask.Log.LogMessage("{0} png files found in media resources folder {1}", files.Count(), mediaResourceDir);
                         foreach (var file in files)
                         {
                             baseTask.LogDebug("Media file found {0}", file);
@@ -27,7 +27,7 @@ namespace Build.Client.Extensions
                     }
                     else
                     {
-                        baseTask.Log.LogMessage("No files found in media resources folder");
+                        baseTask.Log.LogMessage("No files found in media resources folder {0}", mediaResourceDir);
                     }
                 }
                 return files;

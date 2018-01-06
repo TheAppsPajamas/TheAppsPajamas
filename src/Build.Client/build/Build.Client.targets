@@ -4,7 +4,7 @@
         <BuildDebug>true</BuildDebug>
     </PropertyGroup>
 
-    <Target Name="Clean">
+    <Target Name="CleanProjectsConfig" AfterTargets="Clean">
         <CleanProjectsConfig Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)">
         </CleanProjectsConfig>
     </Target>

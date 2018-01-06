@@ -149,7 +149,10 @@ namespace Build.Client.BuildTasks
 
                 appIconSetContents.images = appIconSetContents.images.Where(x => !String.IsNullOrEmpty(x.filename)).ToList();
 
-                var appCatalogueOutput = JsonConvert.SerializeObject(appIconSetContents, Formatting.Indented);
+                var appCatalogueOutput = JsonConvert.SerializeObject(appIconSetContents, Formatting.Indented
+                    , new JsonSerializerSettings {
+                        NullValueHandling = NullValueHandling.Ignore
+                    });
                 var appCatalogueOutputPath = Path.Combine(baseOutputDir, assetCatalogueName, appIconSetName, "Contents.json");
                 LogDebug("Saving AppIcon catalogue to {0}", appCatalogueOutputPath);
                 File.WriteAllText(appCatalogueOutputPath, appCatalogueOutput);

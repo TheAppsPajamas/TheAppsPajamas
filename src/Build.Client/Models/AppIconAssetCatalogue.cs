@@ -15,6 +15,8 @@ namespace Build.Client.Models
         public string idiom { get; set; }
         public string filename { get; set; }
         public string scale { get; set; }
+        public string role { get; set; }
+        public string subtype { get; set; }
     }
 
     public class Info

@@ -74,19 +74,19 @@ namespace DAL.Enums
                 , new Dictionary<string, string>{
                                         {"size", "20x20"},
                                         {"idiom", "iphone"},
-                                        {"idiom", "ipad"},
+                                        {"idiom2", "ipad"},
                                         {"scale", "2x"}
                                     },
                 "Icon-20@2x.png", 40);
 
         public static readonly AppIconFieldType AppIconIosIcon20_3x
-            = new AppIconFieldType.Ios(-40, "Ios icon-20@2x", false, true
+            = new AppIconFieldType.Ios(-40, "Ios icon-20@3x", false, true
                 , new Dictionary<string, string>{
                                         {"size", "20x20"},
                                         {"idiom", "iphone"},
                                         {"scale", "3x"}
                                     },
-                "Icon-20@2x.png", 60);
+                "Icon-20@3x.png", 60);
 
         //d
         public static readonly AppIconFieldType AppIconIosIcon60_2x
@@ -134,25 +134,22 @@ namespace DAL.Enums
                                     },
                 "Icon-83.5@2x.png", 167);
 
-        //TODO seems to be ipad and iphone idioms, might have to make different?
         public static readonly AppIconFieldType AppIconIosIconSmall40
             = new AppIconFieldType.Ios(-24, "Ios icon-small-40", false, true
                 , new Dictionary<string, string>{
                                         {"size", "40x40"},
                                         {"idiom", "ipad"},
-                                        {"idiom2", "iphone"},
                                         {"scale", "1x"}
                                     },
                 "Icon-Small-40.png", 40);
 
-        //TODO seems to be ipad and iphone idioms, might have to make different?
         public static readonly AppIconFieldType AppIconIosIconSmall40_2x
             = new AppIconFieldType.Ios(-25, "Ios icon-small-40@2x", false, true
                 , new Dictionary<string, string>{
                                         {"size", "40x40"},
                                         {"idiom", "iphone"},
                                         {"scale", "2x"},
-                                        {"idoim2", "ipad"}
+                                        {"idiom2", "ipad"}
                                     },
                 "Icon-Small-40@2x.png", 80);
 

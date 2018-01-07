@@ -44,7 +44,7 @@ namespace Build.Client.BuildTasks
                             client.DownloadFile(url, fileName);
                         }
                     } else {
-                        Log.LogMessage("Media file {1} exists, skipping", field.GetMetadata("LogicalName"));
+                        Log.LogMessage("Media file {0} exists, skipping", field.GetMetadata("LogicalName"));
                     }
                 }
             }

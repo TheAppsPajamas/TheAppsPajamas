@@ -63,18 +63,6 @@
     <Compile Include="Models\MediaFieldClientDto.cs" />
     <Compile Include="BuildTasks\BaseTask.cs" />
     <Compile Include="BuildTasks\SetDroidManifest.cs" />
-    <Compile Include="Enums\AppIconFieldType.cs" />
-    <Compile Include="Enums\BuildConfigRecordSetType.cs" />
-    <Compile Include="Enums\Enumeration.cs" />
-    <Compile Include="Enums\FieldType.cs" />
-    <Compile Include="Enums\MasterMediaFieldType.cs" />
-    <Compile Include="Enums\MediaFieldType.cs" />
-    <Compile Include="Enums\PackagingFieldType.cs" />
-    <Compile Include="Enums\ProjectType.cs" />
-    <Compile Include="Enums\SplashFieldType.cs" />
-    <Compile Include="Enums\StringFieldDisplayType.cs" />
-    <Compile Include="Enums\FieldHolderType.cs" />
-    <Compile Include="Enums\StringFieldType.cs" />
     <Compile Include="Models\ProjectConfig.cs" />
     <Compile Include="Models\ProjectsConfig.cs" />
     <Compile Include="Extensions\LoadExtensions.cs" />
@@ -88,15 +76,26 @@
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="BuildTasks\SetIosAppIcons.cs" />
     <Compile Include="Models\AppIconAssetCatalogue.cs" />
-    <Compile Include="Enums\FieldTypeHelpers.cs" />
     <Compile Include="BuildTasks\CleanAssetCatalogues.cs" />
     <Compile Include="BuildTasks\SetIosPlist.cs" />
+    <Compile Include="Shared\FieldType.cs" />
+    <Compile Include="Shared\AppIconFieldType.cs" />
+    <Compile Include="Shared\BuildConfigRecordSetType.cs" />
+    <Compile Include="Shared\Enumeration.cs" />
+    <Compile Include="Shared\FieldHolderType.cs" />
+    <Compile Include="Shared\FieldTypeHelpers.cs" />
+    <Compile Include="Shared\MasterMediaFieldType.cs" />
+    <Compile Include="Shared\MediaFieldType.cs" />
+    <Compile Include="Shared\PackagingFieldType.cs" />
+    <Compile Include="Shared\ProjectType.cs" />
+    <Compile Include="Shared\SplashFieldType.cs" />
+    <Compile Include="Shared\StringFieldDisplayType.cs" />
+    <Compile Include="Shared\StringFieldType.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
     <Folder Include="BuildTasks\" />
     <Folder Include="Extensions\" />
-    <Folder Include="Enums\" />
     <Folder Include="Constants\" />
     <Folder Include="Helpers\" />
   </ItemGroup>

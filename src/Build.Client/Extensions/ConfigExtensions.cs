@@ -99,28 +99,28 @@ namespace Build.Client.Extensions
                     {
                         baseTask.Log.LogError("Icon name undefined");
                     }
-                    logicalName = Path.Combine(fieldType.OsFileName, packagingIcon.Value.ApplyPngExt());
-                    path = Path.Combine(Consts.DroidResources, fieldType.OsFileName);
+                    logicalName = Path.Combine(fieldType.GetMetadata("folder"), packagingIcon.Value.ApplyPngExt());
+                    path = Path.Combine(Consts.DroidResources, fieldType.GetMetadata("folder"));
                     mediaName = String.Concat(packagingIcon.Value, "_", field.Value);
                 } else if (fieldType.ProjectType == ProjectType.Ios){
                     //do iTunesArtWork
                     if (String.IsNullOrEmpty(fieldType.GetMetadata("idiom")))
                     {
                         path = String.Empty;
-                        mediaName = string.Concat(fieldType.OsFileName.RemovePngExt(), "_", field.Value);
-                        logicalName = fieldType.OsFileName.RemovePngExt();
+                        mediaName = string.Concat(fieldType.GetMetadata("osFileName").RemovePngExt(), "_", field.Value);
+                        logicalName = fieldType.GetMetadata("osFileName").RemovePngExt();
                     }
                     else //do asset catalogue
                     {
                         path = Path.Combine(assetCatalogueName.ItemSpec, appIconCatalogueName.ItemSpec);
-                        logicalName = Path.Combine(path, fieldType.OsFileName);
-                        mediaName = string.Concat(fieldType.OsFileName.RemovePngExt(), "_", field.Value);
+                        logicalName = Path.Combine(path, fieldType.GetMetadata("osFileName"));
+                        mediaName = string.Concat(fieldType.GetMetadata("osFileName").RemovePngExt(), "_", field.Value);
 
                         itemMetadata.Add("size", fieldType.GetMetadata("size"));
                         itemMetadata.Add("idiom", fieldType.GetMetadata("idiom"));
                         itemMetadata.Add("idiom2", fieldType.GetMetadata("idiom2"));
                         itemMetadata.Add("scale", fieldType.GetMetadata("scale"));
-                        itemMetadata.Add("CatalogueName", fieldType.OsFileName);
+                        itemMetadata.Add("CatalogueName", fieldType.GetMetadata("osFileName"));
                     }
                 }
                 itemMetadata.Add("Path", path);
@@ -151,9 +151,9 @@ namespace Build.Client.Extensions
                 {
                     var packagingIcon = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingDroidAppIconName.Value);
 
-                    logicalName = Path.Combine(fieldType.OsFileName, string.Concat(packagingIcon.Value, ".png"));
+                    logicalName = Path.Combine(fieldType.GetMetadata("folder"), string.Concat(packagingIcon.Value, ".png"));
                     mediaName = String.Concat(packagingIcon.Value, "_", field.Value);
-                    path = Path.Combine(Consts.DroidResources, fieldType.OsFileName);
+                    path = Path.Combine(Consts.DroidResources, fieldType.GetMetadata("folder"));
                 } 
                 itemMetadata.Add("Path", path);
                 itemMetadata.Add("LogicalName", logicalName);

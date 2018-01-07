@@ -1,0 +1,3 @@
+[submodule "src/Build.Client/Shared"]
+	path = src/Build.Client/Shared
+	url = git@bitbucket.org:buildweaver/build.shared.git

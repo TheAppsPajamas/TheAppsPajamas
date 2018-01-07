@@ -57,7 +57,13 @@
             </AndroidResource>
         </ItemGroup>
     </Target>
-    <Target Name="SetIosAppIcons" AfterTargets="SetDroidManifest" Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS'">
+
+    <Target Name="SetIosPlist" AfterTargets="DownloadMediaFiles" Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS'">
+        <SetIosPlist Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" PackagingFields="@(PackagingFields)" IosPlist="$(_AppManifest)">
+            </SetIosPlist>
+
+    </Target>
+    <Target Name="SetIosAppIcons" AfterTargets="SetIosPlist" Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS'">
         <SetIosAppIcons Debug="$(BuildDebug)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" AppIconFields="@(AppIconFields)" AssetCatalogueName="$(AssetCatalogueName)" AppIconCatalogueName="$(AppIconCatalogueName)" BaseOutputDir="$(MSBuildThisFileDirectory)">
             <Output TaskParameter="OutputImageAssets" ItemName="IosAppIcons" />            
             <Output TaskParameter="OutputITunesArtwork" ItemName="IosITunesArtwork" />

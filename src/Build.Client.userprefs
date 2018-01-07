@@ -1,11 +1,11 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/Extensions/LoadExtensions.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/BuildTasks/SetIosPlist.cs">
     <Files>
-      <File FileName="Build.Client/Extensions/ConfigExtensions.cs" Line="114" Column="22" />
-      <File FileName="Build.Client/BuildTasks/BaseLoadTask.cs" Line="24" Column="1" />
-      <File FileName="Build.Client/build/Build.Client.targets" Line="61" Column="290" />
-      <File FileName="Build.Client/BuildTasks/SetIosAppIcons.cs" Line="159" Column="132" />
-      <File FileName="Build.Client/Extensions/LoadExtensions.cs" Line="117" Column="71" />
+      <File FileName="Build.Client/BuildTasks/SetDroidManifest.cs" Line="193" Column="18" />
+      <File FileName="Build.Client/BuildTasks/SetIosPlist.cs" Line="185" Column="103" />
+      <File FileName="Build.Client/build/Build.Client.props" Line="23" Column="11" />
+      <File FileName="Build.Client/build/Build.Client.targets" Line="63" Column="2" />
+      <File FileName="Build.Client/BuildTasks/BaseTask.cs" Line="6" Column="27" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

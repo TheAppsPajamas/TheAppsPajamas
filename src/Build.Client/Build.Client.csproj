@@ -90,6 +90,7 @@
     <Compile Include="Models\AppIconAssetCatalogue.cs" />
     <Compile Include="Enums\FieldTypeHelpers.cs" />
     <Compile Include="BuildTasks\CleanAssetCatalogues.cs" />
+    <Compile Include="BuildTasks\SetIosPlist.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />

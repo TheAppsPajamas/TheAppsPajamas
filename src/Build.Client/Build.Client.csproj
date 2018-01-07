@@ -89,7 +89,7 @@
     <Compile Include="BuildTasks\SetIosAppIcons.cs" />
     <Compile Include="Models\AppIconAssetCatalogue.cs" />
     <Compile Include="Enums\FieldTypeHelpers.cs" />
-    <Compile Include="BuildTasks\TestImageAssets.cs" />
+    <Compile Include="BuildTasks\CleanAssetCatalogues.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />

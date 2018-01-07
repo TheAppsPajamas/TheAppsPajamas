@@ -1,55 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Project>
-	<PropertyGroup>
-		<BuildDebug>true</BuildDebug>
-	</PropertyGroup>
-	<Target Name="SayHelloWorld" BeforeTargets="_GetReferenceAssemblyPaths" Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid'">
-		<HelloWorld />
-	</Target>
-	<Target Name="SayHelloAgainWorld" BeforeTargets="_GetReferenceAssemblyPaths">
-		<Warning Text="Target framework $(TargetFrameworkIdentifier)" />
-	</Target>
-	<Target Name="Clean">
-		<CleanProjectsConfig Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)">
-		</CleanProjectsConfig>
-	</Target>
-	<Target Name="LoadLocalBuildConfig" BeforeTargets="_GetReferenceAssemblyPaths">
-		<LoadLocalBuildConfig Debug="$(BuildDebug)" ProjectName="$(MSBuildProjectName)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)">
-			<Output TaskParameter="BuildResourceDir" PropertyName="BuildResourceDir" />
-			<Output TaskParameter="PackagingOutput" ItemName="PackagingFields" />
-			<Output TaskParameter="AppIconOutput" ItemName="AppIconFields" />
-			<Output TaskParameter="SplashOutput" ItemName="SplashFields" />
-			<Output TaskParameter="NeedsLoadRemote" PropertyName="NeedsLoadRemote" />
-		</LoadLocalBuildConfig>
-	</Target>
-	<Target Name="LoadRemoteBuildConfig" AfterTargets="LoadLocalBuildConfig" Condition="'$(NeedsLoadRemote)' == 'True'">
-		<LoadRemoteBuildConfig Debug="$(BuildDebug)" ProjectName="$(MSBuildProjectName)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)">
-			<Output TaskParameter="BuildResourceDir" PropertyName="BuildResourceDir" />
-			<Output TaskParameter="PackagingOutput" ItemName="PackagingFields" />
-			<Output TaskParameter="AppIconOutput" ItemName="AppIconFields" />
-			<Output TaskParameter="SplashOutput" ItemName="SplashFields" />
-		</LoadRemoteBuildConfig>
-	</Target>
-	<Target Name="DeleteUnusedMediaFiles" AfterTargets="LoadRemoteBuildConfig">
-		<DeleteUnusedMediaFiles Debug="$(BuildDebug)" ProjectDir="$(MSBuildProjectDirectory)" PackagesDir="$(PackagesDir)" AppIconFields="@(AppIconFields)" SplashFields="@(SplashFields)" BuildConfiguration="$(Configuration)">
-		</DeleteUnusedMediaFiles>
-	</Target>
-	<Target Name="DownloadMediaFiles" AfterTargets="DeleteUnusedMediaFiles">
-		<DownloadMediaFiles Debug="$(BuildDebug)" ProjectDir="$(MSBuildProjectDirectory)" PackagesDir="$(PackagesDir)" AppIconFields="@(AppIconFields)" SplashFields="@(SplashFields)" BuildConfiguration="$(Configuration)">
-		</DownloadMediaFiles>
-	</Target>
-	<Target Name="SetDroidManifest" AfterTargets="DownloadMediaFiles" Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid'">
-		<SetDroidManifest Debug="$(BuildDebug)" ProjectDir="$(MSBuildProjectDirectory)" PackagingFields="@(PackagingFields)" AndroidManifest="$(AndroidManifest)">
-		</SetDroidManifest>
-	</Target>
-	<Target Name="SetDroidAppIcons" AfterTargets="SetDroidManifest" Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid'">
-		<SetDroidAppIcons Debug="$(BuildDebug)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" AppIconFields="@(AppIconFields)" >
-			<Output TaskParameter="OutputFiles" ItemName="DroidAppIcons" />
-		</SetDroidAppIcons>
-		<ItemGroup>
-			<AndroidResource Include="%(DroidAppIcons.Identity)">
-				<LogicalName>%(DroidAppIcons.LogicalName)</LogicalName>
-			</AndroidResource>
-		</ItemGroup>
-	</Target>
+    <PropertyGroup>
+        <BuildDebug>false</BuildDebug>
+    </PropertyGroup>
+
+    <Target Name="CleanProjectsConfig" AfterTargets="Clean">
+        <CleanProjectsConfig Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)">
+        </CleanProjectsConfig>
+    </Target>
+    <Target Name="CleanAssetCatalogues" AfterTargets="Clean" Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS'">
+        <CleanAssetCatalogues Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" TargetsDir="$(MSBuildThisFileDirectory)">
+        </CleanAssetCatalogues>
+    </Target>
+
+    
+    <Target Name="LoadLocalBuildConfig" BeforeTargets="_GetReferenceAssemblyPaths;_BeforeCoreCompileInterfaceDefinitions">
+        <LoadLocalBuildConfig Debug="$(BuildDebug)" ProjectName="$(MSBuildProjectName)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" TargetFrameworkIdentifier='$(TargetFrameworkIdentifier)'>
+            <Output TaskParameter="BuildResourceDir" PropertyName="BuildResourceDir" />
+            <Output TaskParameter="PackagingOutput" ItemName="PackagingFields" />
+            <Output TaskParameter="AppIconOutput" ItemName="AppIconFields" />
+            <Output TaskParameter="AssetCatalogueName" PropertyName="AssetCatalogueName"/>
+            <Output TaskParameter="AppIconCatalogueName" PropertyName="AppIconCatalogueName"/>
+            <Output TaskParameter="SplashOutput" ItemName="SplashFields" />
+            <Output TaskParameter="NeedsLoadRemote" PropertyName="NeedsLoadRemote" />
+        </LoadLocalBuildConfig>
+    </Target>
+    <Target Name="LoadRemoteBuildConfig" AfterTargets="LoadLocalBuildConfig" Condition="'$(NeedsLoadRemote)' == 'True'">
+        <LoadRemoteBuildConfig Debug="$(BuildDebug)" ProjectName="$(MSBuildProjectName)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" TargetFrameworkIdentifier='$(TargetFrameworkIdentifier)'>
+            <Output TaskParameter="BuildResourceDir" PropertyName="BuildResourceDir" />
+            <Output TaskParameter="PackagingOutput" ItemName="PackagingFields" />
+            <Output TaskParameter="AppIconOutput" ItemName="AppIconFields" />
+            <Output TaskParameter="AssetCatalogueName" PropertyName="AssetCatalogueName"/>
+            <Output TaskParameter="AppIconCatalogueName" PropertyName="AppIconCatalogueName"/>
+            <Output TaskParameter="SplashOutput" ItemName="SplashFields" />
+        </LoadRemoteBuildConfig>
+    </Target>
+    <Target Name="DeleteUnusedMediaFiles" AfterTargets="LoadRemoteBuildConfig">
+        <DeleteUnusedMediaFiles Debug="$(BuildDebug)" ProjectDir="$(MSBuildProjectDirectory)" PackagesDir="$(PackagesDir)" AppIconFields="@(AppIconFields)" SplashFields="@(SplashFields)" BuildConfiguration="$(Configuration)">
+        </DeleteUnusedMediaFiles>
+    </Target>
+    <Target Name="DownloadMediaFiles" AfterTargets="DeleteUnusedMediaFiles">
+        <DownloadMediaFiles Debug="$(BuildDebug)" ProjectDir="$(MSBuildProjectDirectory)" PackagesDir="$(PackagesDir)" AppIconFields="@(AppIconFields)" SplashFields="@(SplashFields)" BuildConfiguration="$(Configuration)">
+        </DownloadMediaFiles>
+    </Target>
+    <Target Name="SetDroidManifest" AfterTargets="DownloadMediaFiles" Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid'">
+        <SetDroidManifest Debug="$(BuildDebug)" ProjectDir="$(MSBuildProjectDirectory)" PackagingFields="@(PackagingFields)" AndroidManifest="$(AndroidManifest)">
+        </SetDroidManifest>
+    </Target>
+    <Target Name="SetDroidAppIcons" AfterTargets="SetDroidManifest" Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid'">
+        <SetDroidAppIcons Debug="$(BuildDebug)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" AppIconFields="@(AppIconFields)" >
+            <Output TaskParameter="OutputFiles" ItemName="DroidAppIcons" />
+        </SetDroidAppIcons>
+        <ItemGroup>
+            <AndroidResource Include="%(DroidAppIcons.Identity)">
+                <LogicalName>%(DroidAppIcons.LogicalName)</LogicalName>
+            </AndroidResource>
+        </ItemGroup>
+    </Target>
+
+    <Target Name="SetIosPlist" AfterTargets="DownloadMediaFiles" Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS'">
+        <SetIosPlist Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" PackagingFields="@(PackagingFields)" IosPlist="$(_AppManifest)">
+            </SetIosPlist>
+
+    </Target>
+    <Target Name="SetIosAppIcons" AfterTargets="SetIosPlist" Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS'">
+        <SetIosAppIcons Debug="$(BuildDebug)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" AppIconFields="@(AppIconFields)" AssetCatalogueName="$(AssetCatalogueName)" AppIconCatalogueName="$(AppIconCatalogueName)" BaseOutputDir="$(MSBuildThisFileDirectory)">
+            <Output TaskParameter="OutputImageAssets" ItemName="IosAppIcons" />            
+            <Output TaskParameter="OutputITunesArtwork" ItemName="IosITunesArtwork" />
+        </SetIosAppIcons>
+       <ItemGroup>
+            <ImageAsset Include="%(IosAppIcons.Identity)">
+            </ImageAsset>
+                <ITunesArtwork Include="%(IosITunesArtwork.Identity)" />
+        </ItemGroup>
+<!--                    <Warning Text="ImageAsset %(IosAppIcons.Identity)" />-->
+<!--
+                <LogicalName>%(IosAppIcons.LogicalName)</LogicalName>-->
+    </Target>
+
 </Project>

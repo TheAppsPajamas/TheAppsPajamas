@@ -51,17 +51,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Ioc\IServiceResolver.cs" />
-    <Compile Include="Ioc\ServiceResolver.cs" />
-    <Compile Include="Ioc\InjectAttribute.cs" />
-    <Compile Include="Ioc\DependencyInjector.cs" />
-    <Compile Include="FetchBuildResources.cs" />
-    <Compile Include="BuildTasks\GetDroidAppIcons.cs" />
-    <Compile Include="BuildTasks\HelloWorld.cs" />
     <Compile Include="BuildTasks\LoadLocalBuildConfig.cs" />
     <Compile Include="BuildTasks\LoadRemoteBuildConfig.cs" />
     <Compile Include="Models\BuildResourcesConfig.cs" />
-    <Compile Include="BuildTasks\WebDownload.cs" />
     <Compile Include="Models\SecurityConfig.cs" />
     <Compile Include="Extensions\ConfigExtensions.cs" />
     <Compile Include="BuildTasks\BaseLoadTask.cs" />
@@ -92,14 +84,21 @@
     <Compile Include="Extensions\MediaExtensions.cs" />
     <Compile Include="BuildTasks\DownloadMediaFiles.cs" />
     <Compile Include="BuildTasks\SetDroidAppIcons.cs" />
+    <Compile Include="Helpers\Plist.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="BuildTasks\SetIosAppIcons.cs" />
+    <Compile Include="Models\AppIconAssetCatalogue.cs" />
+    <Compile Include="Enums\FieldTypeHelpers.cs" />
+    <Compile Include="BuildTasks\CleanAssetCatalogues.cs" />
+    <Compile Include="BuildTasks\SetIosPlist.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Ioc\" />
     <Folder Include="Models\" />
     <Folder Include="BuildTasks\" />
     <Folder Include="Extensions\" />
     <Folder Include="Enums\" />
     <Folder Include="Constants\" />
+    <Folder Include="Helpers\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

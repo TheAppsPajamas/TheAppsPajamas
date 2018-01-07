@@ -17,9 +17,7 @@ namespace Build.Client.BuildTasks
         public override bool Execute()
         {
 
-
-            //going to need to load up the _something_file and get the appId
-            LogDebug("Running LoadRemoteBuildConfig in debug");
+            Log.LogMessage("Running LoadRemoteBuildConfig");
 
             LogDebug("Project name '{0}'", ProjectName);
             LogDebug("Build configuration '{0}'", BuildConfiguration);
@@ -64,15 +62,17 @@ namespace Build.Client.BuildTasks
 
             var projectConfig = this.GetProjectConfig();
 
-            //var thisProject = this.GetProjectConfig(projectsConfig);
-
-
             projectConfig.ClientConfig = clientConfigDto;
             if (!this.SaveProject(projectConfig))
                 return false;
+            if (TargetFrameworkIdentifier == "Xamarin.iOS")
+            {
+                AssetCatalogueName = this.GetAssetCatalogueName(projectConfig.ClientConfig);
+                AppIconCatalogueName = this.GetAppIconCatalogueName(projectConfig.ClientConfig);
 
+            }
             PackagingOutput = this.GetPackagingOutput(clientConfigDto);
-            AppIconOutput = this.GetAppIconOutput(clientConfigDto);
+            AppIconOutput = this.GetAppIconOutput(projectConfig.ClientConfig, AssetCatalogueName, AppIconCatalogueName);
             SplashOutput = this.GetSplashOutput(clientConfigDto);
 
             return true;

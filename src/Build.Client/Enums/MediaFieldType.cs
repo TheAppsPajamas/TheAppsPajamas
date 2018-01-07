@@ -21,9 +21,10 @@ namespace DAL.Enums
             , ProjectType projectType
             , FieldHolderType fieldHolderType
             , bool isForClient
+            , Dictionary<string, string> metadata
             , string osFileName
             , int width
-            , int height = 0) : base(value, displayName, projectType, fieldHolderType, isForClient)
+            , int height = 0) : base(value, displayName, projectType, fieldHolderType, isForClient, metadata)
         {
             _osFileName = osFileName;
             _width = width;

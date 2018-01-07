@@ -1,13 +1,12 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/BuildTasks/DownloadMediaFiles.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/BuildTasks/CleanAssetCatalogues.cs">
     <Files>
-      <File FileName="Build.Client/BuildTasks/DeleteUnusedMediaFiles.cs" Line="31" Column="92" />
-      <File FileName="Build.Client/BuildTasks/SetDroidAppIcons.cs" Line="28" Column="17" />
-      <File FileName="Build.Client/build/Build.Client.targets" Line="46" Column="81" />
-      <File FileName="Build.Client/BuildTasks/LoadRemoteBuildConfig.cs" Line="75" Column="46" />
-      <File FileName="Build.Client/Extensions/ConfigExtensions.cs" Line="105" Column="58" />
-      <File FileName="Build.Client/BuildTasks/DownloadMediaFiles.cs" Line="32" Column="100" />
-      <File FileName="Build.Client/Extensions/LoadExtensions.cs" Line="70" Column="10" />
+      <File FileName="Build.Client/BuildTasks/DeleteUnusedMediaFiles.cs" Line="39" Column="74" />
+      <File FileName="Build.Client/BuildTasks/DownloadMediaFiles.cs" Line="43" Column="88" />
+      <File FileName="Build.Client/BuildTasks/SetIosPlist.cs" Line="230" Column="1" />
+      <File FileName="Build.Client/build/Build.Client.targets" Line="4" Column="26" />
+      <File FileName="Build.Client/BuildTasks/SetIosAppIcons.cs" Line="160" Column="69" />
+      <File FileName="Build.Client/BuildTasks/CleanAssetCatalogues.cs" Line="23" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

@@ -10,14 +10,14 @@
     <PackagesDir>$(MSBuildThisFileDirectory)..\..\..\</PackagesDir>
   </PropertyGroup>
 
-
-  <UsingTask TaskName="Build.Client.BuildTasks.HelloWorld" AssemblyFile="$(BuildClientToolAssembly)" />
-
   <UsingTask TaskName="Build.Client.BuildTasks.LoadRemoteBuildConfig" AssemblyFile="$(BuildClientToolAssembly)" />
   <UsingTask TaskName="Build.Client.BuildTasks.LoadLocalBuildConfig" AssemblyFile="$(BuildClientToolAssembly)" />
   <UsingTask TaskName="Build.Client.BuildTasks.SetDroidManifest" AssemblyFile="$(BuildClientToolAssembly)" />
   <UsingTask TaskName="Build.Client.BuildTasks.CleanProjectsConfig" AssemblyFile="$(BuildClientToolAssembly)" />
+  <UsingTask TaskName="Build.Client.BuildTasks.CleanAssetCatalogues" AssemblyFile="$(BuildClientToolAssembly)" />
   <UsingTask TaskName="Build.Client.BuildTasks.DeleteUnusedMediaFiles" AssemblyFile="$(BuildClientToolAssembly)" />
   <UsingTask TaskName="Build.Client.BuildTasks.DownloadMediaFiles" AssemblyFile="$(BuildClientToolAssembly)" />
   <UsingTask TaskName="Build.Client.BuildTasks.SetDroidAppIcons" AssemblyFile="$(BuildClientToolAssembly)" />
+  <UsingTask TaskName="Build.Client.BuildTasks.SetIosAppIcons" AssemblyFile="$(BuildClientToolAssembly)" />
+  <UsingTask TaskName="Build.Client.BuildTasks.SetIosPlist" AssemblyFile="$(BuildClientToolAssembly)" />
 </Project>

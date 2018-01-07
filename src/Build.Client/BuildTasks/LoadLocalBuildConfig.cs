@@ -12,7 +12,7 @@ namespace Build.Client.BuildTasks
 
         public override bool Execute()
         {
-            LogDebug("Running LoadLocalBuildConfig in debug");
+            Log.LogMessage("Running LoadLocalBuildConfig");
 
             LogDebug("Project name '{0}'", ProjectName);
             LogDebug("Build configuration '{0}'", BuildConfiguration);
@@ -24,19 +24,25 @@ namespace Build.Client.BuildTasks
                 return true;
             }
 
-            //var projectsConfig = this.GetProjectsConfig();
-
             var projectConfig = this.GetProjectConfig();
 
             if (projectConfig.ClientConfig == null){
-                Log.LogMessage("Project {0} in configuration {1} not found, forcing remote load", ProjectName, BuildConfiguration);
+                Log.LogMessage("{1} configuration not found for project {0} in project.config, forcing remote load", ProjectName, BuildConfiguration);
                 NeedsLoadRemote = true;
                 return true;
             }
+            if (TargetFrameworkIdentifier == "Xamarin.iOS")
+            {
+                AssetCatalogueName = this.GetAssetCatalogueName(projectConfig.ClientConfig);
+                AppIconCatalogueName = this.GetAppIconCatalogueName(projectConfig.ClientConfig);
 
+            }
             PackagingOutput = this.GetPackagingOutput(projectConfig.ClientConfig);
-            AppIconOutput = this.GetAppIconOutput(projectConfig.ClientConfig);
+            AppIconOutput = this.GetAppIconOutput(projectConfig.ClientConfig, AssetCatalogueName, AppIconCatalogueName);
             SplashOutput = this.GetSplashOutput(projectConfig.ClientConfig);
+
+
+
 
             return true;
         }

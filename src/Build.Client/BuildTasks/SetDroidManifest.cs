@@ -18,14 +18,16 @@ namespace Build.Client.BuildTasks
         {
             Log.LogMessage("Setting Droid manifest file");
 
-            LogDebug("Manifest file name '{0}'", AndroidManifest);
-            LogDebug("Packaging fields: '{0}'", PackagingFields.Count());
-
             if (String.IsNullOrEmpty(AndroidManifest))
             {
                 Log.LogMessage("Android manifest file name empty, aborting SetDroidManifest as ran successful");
                 return true;
             }
+
+            LogDebug("Manifest file name '{0}'", AndroidManifest);
+            LogDebug("Packaging fields: '{0}'", PackagingFields.Count());
+
+
 
             try
             {
@@ -38,7 +40,7 @@ namespace Build.Client.BuildTasks
 
                 if (xml.DocumentElement == null)
                 {
-                    LogDebug("Android Manifest not readable");
+                    Log.LogError("Android Manifest not readable");
                     return false;
                 }
 
@@ -64,17 +66,17 @@ namespace Build.Client.BuildTasks
                             }
                             else
                             {
-                                LogDebug("Package label unchanged not setting");
+                                LogDebug("Package label unchanged, skipping");
                             }
                         }
                         else
                         {
-                            LogDebug("Package label attribute not found in Android Manifest");
+                            Log.LogWarning("Package label attribute not found in Android Manifest");
                         }
                     }
                     else
                     {
-                        LogDebug("Package name not sent from server");
+                        Log.LogWarning("Package name not found in packaging fields");
                     }
                     //icon
                     var iconName = PackagingFields
@@ -95,17 +97,17 @@ namespace Build.Client.BuildTasks
                             }
                             else
                             {
-                                LogDebug("Package app icon unchanged not setting");
+                                LogDebug("Package app icon unchanged, skipping");
                             }
                         }
                         else
                         {
-                            LogDebug("Package app icon attribute not found in Android Manifest");
+                            Log.LogWarning("Package app icon attribute not found in Android Manifest");
                         }
                     }
                     else
                     {
-                        LogDebug("Package app icon not sent from server");
+                        Log.LogWarning("Package app icon not found in packaging fields");
                     }
 
                 }
@@ -128,12 +130,12 @@ namespace Build.Client.BuildTasks
                     }
                     else
                     {
-                        LogDebug("Package identifier unchanged not setting");
+                        LogDebug("Package identifier unchanged, skipping");
                     }
                 }
                 else
                 {
-                    LogDebug("Package identifier not found");
+                    Log.LogWarning("Package identifier not found in packaging fields");
                 }
 
                 var packageVersionName = PackagingFields
@@ -150,12 +152,12 @@ namespace Build.Client.BuildTasks
                     }
                     else
                     {
-                        LogDebug("Package version name unchanged not setting");
+                        LogDebug("Package version name unchanged, skipping");
                     }
                 }
                 else
                 {
-                    LogDebug("Package version name not found");
+                    Log.LogWarning("Package version name not found in packaging fields");
                 }
 
                 var packageVersionCode = PackagingFields
@@ -172,22 +174,22 @@ namespace Build.Client.BuildTasks
                     }
                     else
                     {
-                        LogDebug("Package version code unchanged not setting");
+                        LogDebug("Package version code unchanged, skipping");
                     }
                 }
                 else
                 {
-                    LogDebug("Package version code not found");
+                    Log.LogWarning("Package version code not found in packaging fields");
                 }
 
                 if (touched)
                 {
-                    LogDebug("Manifest touched, saving");
+                    Log.LogMessage("Manifest touched, saving");
                     xml.Save(AndroidManifest);
                 }
                 else
                 {
-                    LogDebug("Manifest untouched, not saving");
+                    Log.LogMessage("Manifest untouched, skipping");
                 }
 
                 return true;

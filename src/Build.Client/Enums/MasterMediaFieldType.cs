@@ -15,9 +15,10 @@ namespace DAL.Enums
             , FieldHolderType fieldHolderType
             , bool isMaster
             , bool isForClient
+            , Dictionary<string, string> metadata
             , string osFileName
             , int width
-            , int height = 0) : base(value, displayName, projectType, fieldHolderType, isForClient, osFileName, width, height = 0)
+            , int height = 0) : base(value, displayName, projectType, fieldHolderType, isForClient, metadata, osFileName, width, height = 0)
         {
             _isMaster = isMaster;
         }

@@ -75,7 +75,7 @@ namespace Build.Client.BuildTasks
                 var assetCatalogueItem = new TaskItem(assetCatalogueContentsPath);
                 outputImageAssets.Add(assetCatalogueItem);
 
-                LogDebug("Added asset catalogue contents.json to taskitems at path {0}", assetCatalogueItem.ItemSpec);
+                Log.LogMessage("Saving {1} Contents.json to path {0}", assetCatalogueItem.ItemSpec, AssetCatalogueName.ItemSpec);
 
                 //create appiconset folder, and contents.json
                 var appIconSetDir = Path.Combine(BaseOutputDir, AssetCatalogueName.ItemSpec, AppIconCatalogueName.ItemSpec);
@@ -92,7 +92,7 @@ namespace Build.Client.BuildTasks
 
                 var appIconSetContents = JsonConvert.DeserializeObject<AppIconAssetCatalogue>(Consts.AppIconSetDefaultContents);
 
-                LogDebug("Added AppIconSet contents.json to taskitems at path {0}", appIconSetItem.ItemSpec);
+                LogDebug("Added {0} Contents.json at path {0}", appIconSetItem.ItemSpec, AppIconCatalogueName.ItemSpec);
 
                 foreach (var field in AppIconFields)
                 {
@@ -143,7 +143,7 @@ namespace Build.Client.BuildTasks
 
                         var logicalFilePath = Path.Combine(BaseOutputDir, field.GetMetadata("Path"), field.GetMetadata("CatalogueName"));
 
-                        LogDebug("Adding file {0} to task items with logical path {1}", filePath, logicalFilePath);
+                        Log.LogMessage("Adding file {0} at path {1}", filePath, logicalFilePath);
 
                         var taskItem = new TaskItem(logicalFilePath);
                         outputImageAssets.Add(taskItem);
@@ -157,7 +157,7 @@ namespace Build.Client.BuildTasks
                         NullValueHandling = NullValueHandling.Ignore
                     });
                 var appCatalogueOutputPath = Path.Combine(BaseOutputDir, AssetCatalogueName.ItemSpec, AppIconCatalogueName.ItemSpec, "Contents.json");
-                LogDebug("Saving AppIcon catalogue to {0}", appCatalogueOutputPath);
+                Log.LogMessage("Saving {1} Contents.json to {0}", appCatalogueOutputPath, AppIconCatalogueName.ItemSpec);
                 File.WriteAllText(appCatalogueOutputPath, appCatalogueOutput);
 
                 OutputImageAssets = outputImageAssets.ToArray();

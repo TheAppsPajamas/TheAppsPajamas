@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Project>
     <PropertyGroup>
-        <BuildDebug>true</BuildDebug>
+        <BuildDebug>false</BuildDebug>
     </PropertyGroup>
 
     <Target Name="CleanProjectsConfig" AfterTargets="Clean">

@@ -21,6 +21,7 @@ namespace Build.Client.BuildTasks
             //get directory or create
             var existingFiles = this.GetExistingMediaFiles(BuildConfiguration);
 
+            Log.LogMessage("Found {0} existing media files", existingFiles.Count());
             try
             {
                 foreach (var file in existingFiles)
@@ -33,6 +34,9 @@ namespace Build.Client.BuildTasks
                     {
                         Log.LogMessage("File {0} no longer required, deleting", fileInfo.Name);
                         fileInfo.Delete();
+                    } else {
+
+                        Log.LogMessage("File {0} still required, skipping", fileInfo.Name);
                     }
                 }
             }

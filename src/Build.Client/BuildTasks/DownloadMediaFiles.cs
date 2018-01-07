@@ -21,9 +21,9 @@ namespace Build.Client.BuildTasks
 
             var allMediaFields = this.CombineMediaFields(AppIconFields, SplashFields);
 
-            LogDebug("{0} media files required", allMediaFields.Count());
             var existingFiles = this.GetExistingMediaFiles(BuildConfiguration).Select(x => new FileHolder(x));
-            LogDebug("{0} existing media files already available", existingFiles.Count());
+            Log.LogMessage("{0} media files required, {1} media files already available", allMediaFields.Count(), existingFiles.Count());
+
 
             var mediaResourceDir = this.GetMediaResourceDir(BuildConfiguration);
             try
@@ -40,12 +40,11 @@ namespace Build.Client.BuildTasks
                                 Directory.CreateDirectory(directory);
                             }
                             var fileName = Path.Combine(mediaResourceDir, field.GetMetadata("Path"), string.Concat(field.GetMetadata("MediaName"), ".png"));
-                            LogDebug("Downloading mediaFileId {0}, from url {1}", field.GetMetadata("MediaFileId"), url);
-                            LogDebug("Saving logical file {1} as media-resource file {0}", fileName, field.GetMetadata("LogicalName"));
+                            Log.LogMessage("Downloading media file {0}, from url {1}", field.GetMetadata("LogicalName"), url);
                             client.DownloadFile(url, fileName);
                         }
                     } else {
-                        LogDebug("Logical media-resource {1} exists as {0}.png, not downloading", field.GetMetadata("MediaName"), field.GetMetadata("LogicalName"));
+                        Log.LogMessage("Media file {1} exists, skipping", field.GetMetadata("LogicalName"));
                     }
                 }
             }

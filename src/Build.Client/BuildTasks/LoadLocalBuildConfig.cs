@@ -12,7 +12,7 @@ namespace Build.Client.BuildTasks
 
         public override bool Execute()
         {
-            LogDebug("Running LoadLocalBuildConfig in debug");
+            Log.LogMessage("Running LoadLocalBuildConfig");
 
             LogDebug("Project name '{0}'", ProjectName);
             LogDebug("Build configuration '{0}'", BuildConfiguration);
@@ -27,7 +27,7 @@ namespace Build.Client.BuildTasks
             var projectConfig = this.GetProjectConfig();
 
             if (projectConfig.ClientConfig == null){
-                Log.LogMessage("Project {0} in configuration {1} not found, forcing remote load", ProjectName, BuildConfiguration);
+                Log.LogMessage("{1} configuration not found for project {0} in project.config, forcing remote load", ProjectName, BuildConfiguration);
                 NeedsLoadRemote = true;
                 return true;
             }

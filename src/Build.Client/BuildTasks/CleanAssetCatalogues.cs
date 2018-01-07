@@ -27,6 +27,9 @@ namespace Build.Client.BuildTasks
                     Directory.Delete(catalogue, true);
                 }
 
+                if (catalogues.Any() == false){
+                    Log.LogMessage("No asset catalogues found to clean");
+                }
                 return true;
             } catch (Exception ex){
                 Log.LogErrorFromException(ex);

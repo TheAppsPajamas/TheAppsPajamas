@@ -75,7 +75,7 @@ namespace Build.Client.Extensions
                 output.Add(new TaskItem(field.FieldId.ToString(), itemMetadata));
             }
 
-            baseTask.LogDebug("Generated {0} Packaging TaskItems",output.Count);
+            baseTask.Log.LogMessage("Generated {0} Packaging TaskItems",output.Count);
             return output.ToArray();  
         }
 
@@ -130,7 +130,7 @@ namespace Build.Client.Extensions
                 output.Add(new TaskItem(field.FieldId.ToString(), itemMetadata));
             }
 
-            baseTask.LogDebug("Generated {0} AppIcon TaskItems", output.Count);
+            baseTask.Log.LogMessage("Generated {0} AppIcon TaskItems", output.Count);
             return output.ToArray();
         }
 
@@ -161,7 +161,7 @@ namespace Build.Client.Extensions
                 output.Add(new TaskItem(field.FieldId.ToString(), itemMetadata));
             }
 
-            baseTask.LogDebug("Generated {0} Splash TaskItems", output.Count);
+            baseTask.Log.LogMessage("Generated {0} Splash TaskItems", output.Count);
             return output.ToArray();
         }
 

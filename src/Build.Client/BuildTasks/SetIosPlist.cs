@@ -48,7 +48,7 @@ namespace Build.Client.BuildTasks
                             Log.LogMessage("Package name / Bundle name changed to '{0}', setting Plist", plist["CFBundleName"]);
                             touched = true;
                         } else {
-                            Log.LogMessage("Package name / Bundle name unchanged, not setting");
+                            Log.LogMessage("Package name / Bundle name unchanged, skipping");
                         }
                     } else {
                         Log.LogWarning("Package name / Bundle name not found in Plist");
@@ -65,7 +65,7 @@ namespace Build.Client.BuildTasks
                         }
                         else
                         {
-                            Log.LogMessage("Package name / Bundle display name unchanged, not setting");
+                            Log.LogMessage("Package name / Bundle display name unchanged, skipping");
                         }
                     }
                     else
@@ -96,7 +96,7 @@ namespace Build.Client.BuildTasks
                         }
                         else
                         {
-                            Log.LogMessage("Package identifier unchanged, not setting");
+                            Log.LogMessage("Package identifier unchanged, skipping");
                         }
                     }
                     else
@@ -129,7 +129,7 @@ namespace Build.Client.BuildTasks
                         }
                         else
                         {
-                            Log.LogMessage("Package version text / Bundle short version string unchanged, not setting");
+                            Log.LogMessage("Package version text / Bundle short version string unchanged, skipping");
                         }
                     }
                     else
@@ -162,7 +162,7 @@ namespace Build.Client.BuildTasks
                         }
                         else
                         {
-                            Log.LogMessage("Package version number / Bundle version unchanged, not setting");
+                            Log.LogMessage("Package version number / Bundle version unchanged, skipping");
                         }
                     }
                     else
@@ -203,7 +203,7 @@ namespace Build.Client.BuildTasks
                         }
                         else
                         {
-                            Log.LogMessage("Package app icon catalogue unchanged, not setting");
+                            Log.LogMessage("Package app icon catalogue unchanged, skipping");
                         }
                     }
                     else
@@ -225,7 +225,7 @@ namespace Build.Client.BuildTasks
                 }
                 else
                 {
-                    Log.LogMessage("Plist untouched, not saving");
+                    Log.LogMessage("Plist untouched, skipping");
                 }
 
             } catch (Exception ex){

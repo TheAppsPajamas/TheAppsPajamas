@@ -50,11 +50,10 @@ namespace Build.Client.Extensions
                 ProjectConfig projectConfig = null;
                 if (!File.Exists(projectConfigPath))
                 {
-                    baseTask.LogDebug("Creating blank project.config at {0}", projectConfigPath);
+                    baseTask.Log.LogMessage("Project config file file not found, created at {0}", projectConfigPath);
                     projectConfig = new ProjectConfig();
                     var json = JsonConvert.SerializeObject(projectConfig);
                     File.WriteAllText(projectConfigPath, json);
-                    baseTask.Log.LogMessage("Project config file not found, created at {0}", projectConfigPath);
                     return projectConfig;
                 }
                 else
@@ -80,10 +79,9 @@ namespace Build.Client.Extensions
             {
                 var projectConfigPath = Path.Combine(baseTask.BuildResourceDir, Consts.ProjectConfig);
 
-                baseTask.LogDebug("Saving project config at {0}", projectConfigPath);
+                baseTask.Log.LogMessage("Saving project config at {0}", projectConfigPath);
                 var json = JsonConvert.SerializeObject(projectConfig);
                 File.WriteAllText(projectConfigPath, json);
-                baseTask.LogDebug("Saved project config at {0}", projectConfigPath);
 
             }
             catch (Exception ex)
@@ -101,7 +99,7 @@ namespace Build.Client.Extensions
                 baseTask.Log.LogError("Asset catalogue undefined");
             }
 
-            baseTask.LogDebug("AssetCatalogue name {0}", assetCatalogue.Value.ApplyXcAssetsExt());
+            baseTask.Log.LogMessage("AssetCatalogue name {0}", assetCatalogue.Value.ApplyXcAssetsExt());
             return new TaskItem(assetCatalogue.Value.ApplyXcAssetsExt());
         }
 
@@ -113,7 +111,7 @@ namespace Build.Client.Extensions
             {
                 baseTask.Log.LogError("AppIconSet catalogue name undefined");
             }
-            baseTask.LogDebug("AppIconCatalogue name {0}", appIconName.Value.ApplyAppiconsetExt());
+            baseTask.Log.LogMessage("AppIconCatalogue name {0}", appIconName.Value.ApplyAppiconsetExt());
             return new TaskItem(appIconName.Value.ApplyAppiconsetExt());
         }
     }

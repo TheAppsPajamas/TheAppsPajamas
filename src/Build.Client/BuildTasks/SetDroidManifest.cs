@@ -66,7 +66,7 @@ namespace Build.Client.BuildTasks
                             }
                             else
                             {
-                                LogDebug("Package label unchanged not setting");
+                                LogDebug("Package label unchanged, skipping");
                             }
                         }
                         else
@@ -97,7 +97,7 @@ namespace Build.Client.BuildTasks
                             }
                             else
                             {
-                                LogDebug("Package app icon unchanged not setting");
+                                LogDebug("Package app icon unchanged, skipping");
                             }
                         }
                         else
@@ -130,7 +130,7 @@ namespace Build.Client.BuildTasks
                     }
                     else
                     {
-                        LogDebug("Package identifier unchanged not setting");
+                        LogDebug("Package identifier unchanged, skipping");
                     }
                 }
                 else
@@ -152,7 +152,7 @@ namespace Build.Client.BuildTasks
                     }
                     else
                     {
-                        LogDebug("Package version name unchanged not setting");
+                        LogDebug("Package version name unchanged, skipping");
                     }
                 }
                 else
@@ -174,7 +174,7 @@ namespace Build.Client.BuildTasks
                     }
                     else
                     {
-                        LogDebug("Package version code unchanged not setting");
+                        LogDebug("Package version code unchanged, skipping");
                     }
                 }
                 else
@@ -189,7 +189,7 @@ namespace Build.Client.BuildTasks
                 }
                 else
                 {
-                    Log.LogMessage("Manifest untouched, not saving");
+                    Log.LogMessage("Manifest untouched, skipping");
                 }
 
                 return true;

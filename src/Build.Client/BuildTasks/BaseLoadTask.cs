@@ -8,22 +8,7 @@ namespace Build.Client.BuildTasks
     {
         public string ProjectName { get; set; }
         public string BuildConfiguration { get; set; }
-
-
-
-
-        //this should connect to remote server
-        //get it's data
-        //save it to the build-resources folder in the solution folder
-        //and return the same string of variables that the loadlocal returns?
-        //or should somehow trigger that task - which would then have to load the file of disc
-        //but that shouldn't matter too much really?
-
-        //it's going to need to know
-        //solution folder
-        //project name
-        //possbile frameworkid
-
+        public string TargetFrameworkIdentifier { get; set; }
 
         public string _appId;
 
@@ -35,6 +20,12 @@ namespace Build.Client.BuildTasks
 
         [Output]
         public ITaskItem[] AppIconOutput { get; set; }
+
+        [Output]
+        public ITaskItem AssetCatalogueName { get; set; }
+
+        [Output]
+        public ITaskItem AppIconCatalogueName { get; set; }
 
         [Output]
         public ITaskItem[] SplashOutput { get; set; }

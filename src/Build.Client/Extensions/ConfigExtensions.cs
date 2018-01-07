@@ -79,7 +79,7 @@ namespace Build.Client.Extensions
             return output.ToArray();  
         }
 
-        public static ITaskItem[] GetAppIconOutput(this BaseLoadTask baseTask, ClientConfigDto clientConfigDto)
+        public static ITaskItem[] GetAppIconOutput(this BaseLoadTask baseTask, ClientConfigDto clientConfigDto, ITaskItem assetCatalogueName, ITaskItem appIconCatalogueName)
         {
             baseTask.LogDebug("Generating AppIcon TaskItems");
 
@@ -103,30 +103,18 @@ namespace Build.Client.Extensions
                     path = Path.Combine(Consts.DroidResources, fieldType.OsFileName);
                     mediaName = String.Concat(packagingIcon.Value, "_", field.Value);
                 } else if (fieldType.ProjectType == ProjectType.Ios){
+                    //do iTunesArtWork
                     if (String.IsNullOrEmpty(fieldType.GetMetadata("idiom")))
                     {
                         path = String.Empty;
                         mediaName = string.Concat(fieldType.OsFileName.RemovePngExt(), "_", field.Value);
                         logicalName = fieldType.OsFileName.RemovePngExt();
                     }
-                    else
+                    else //do asset catalogue
                     {
-
-                        var assetCatalogue = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingIosAssetCatalogueName.Value);
-                        if (assetCatalogue == null || String.IsNullOrEmpty(assetCatalogue.Value))
-                        {
-                            baseTask.Log.LogError("Asset catalogue undefined");
-                        }
-                        var appIconName = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingIosAppIconXcAssetsName.Value);
-                        if (appIconName == null || String.IsNullOrEmpty(appIconName.Value))
-                        {
-                            baseTask.Log.LogError("AppIconSet catalogue name undefined");
-                        }
-                        path = Path.Combine(assetCatalogue.Value.ApplyXcAssetsExt(), appIconName.Value.ApplyAppiconsetExt());
+                        path = Path.Combine(assetCatalogueName.ItemSpec, appIconCatalogueName.ItemSpec);
                         logicalName = Path.Combine(path, fieldType.OsFileName);
                         mediaName = string.Concat(fieldType.OsFileName.RemovePngExt(), "_", field.Value);
-                        itemMetadata.Add("AssetCatalogueName", assetCatalogue.Value.ApplyXcAssetsExt());
-                        itemMetadata.Add("AppIconSetName", appIconName.Value.ApplyAppiconsetExt());
 
                         itemMetadata.Add("size", fieldType.GetMetadata("size"));
                         itemMetadata.Add("idiom", fieldType.GetMetadata("idiom"));

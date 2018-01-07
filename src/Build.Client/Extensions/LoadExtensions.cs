@@ -5,6 +5,9 @@ using System.Linq;
 using Build.Client.BuildTasks;
 using Build.Client.Constants;
 using Build.Client.Models;
+using DAL.Enums;
+using Microsoft.Build.Framework;
+using Microsoft.Build.Utilities;
 using Newtonsoft.Json;
 
 namespace Build.Client.Extensions
@@ -88,6 +91,30 @@ namespace Build.Client.Extensions
                 baseTask.Log.LogErrorFromException(ex);
             }
             return true;
+        }
+
+        public static ITaskItem GetAssetCatalogueName(this BaseLoadTask baseTask, ClientConfigDto clientConfigDto)
+        {
+            var assetCatalogue = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingIosAssetCatalogueName.Value);
+            if (assetCatalogue == null || String.IsNullOrEmpty(assetCatalogue.Value))
+            {
+                baseTask.Log.LogError("Asset catalogue undefined");
+            }
+
+            baseTask.LogDebug("AssetCatalogue name {0}", assetCatalogue.Value.ApplyXcAssetsExt());
+            return new TaskItem(assetCatalogue.Value.ApplyXcAssetsExt());
+        }
+
+        public static ITaskItem GetAppIconCatalogueName(this BaseLoadTask baseTask, ClientConfigDto clientConfigDto)
+        {
+
+            var appIconName = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingIosAppIconXcAssetsName.Value);
+            if (appIconName == null || String.IsNullOrEmpty(appIconName.Value))
+            {
+                baseTask.Log.LogError("AppIconSet catalogue name undefined");
+            }
+            baseTask.LogDebug("AppIconCatalogue name {0}", appIconName.Value.ApplyAppiconsetExt());
+            return new TaskItem(appIconName.Value.ApplyAppiconsetExt());
         }
     }
 }

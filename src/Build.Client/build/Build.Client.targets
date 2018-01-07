@@ -15,19 +15,23 @@
 
     
     <Target Name="LoadLocalBuildConfig" BeforeTargets="_GetReferenceAssemblyPaths;_BeforeCoreCompileInterfaceDefinitions">
-        <LoadLocalBuildConfig Debug="$(BuildDebug)" ProjectName="$(MSBuildProjectName)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)">
+        <LoadLocalBuildConfig Debug="$(BuildDebug)" ProjectName="$(MSBuildProjectName)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" TargetFrameworkIdentifier='$(TargetFrameworkIdentifier)'>
             <Output TaskParameter="BuildResourceDir" PropertyName="BuildResourceDir" />
             <Output TaskParameter="PackagingOutput" ItemName="PackagingFields" />
             <Output TaskParameter="AppIconOutput" ItemName="AppIconFields" />
+            <Output TaskParameter="AssetCatalogueName" PropertyName="AssetCatalogueName"/>
+            <Output TaskParameter="AppIconCatalogueName" PropertyName="AppIconCatalogueName"/>
             <Output TaskParameter="SplashOutput" ItemName="SplashFields" />
             <Output TaskParameter="NeedsLoadRemote" PropertyName="NeedsLoadRemote" />
         </LoadLocalBuildConfig>
     </Target>
     <Target Name="LoadRemoteBuildConfig" AfterTargets="LoadLocalBuildConfig" Condition="'$(NeedsLoadRemote)' == 'True'">
-        <LoadRemoteBuildConfig Debug="$(BuildDebug)" ProjectName="$(MSBuildProjectName)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)">
+        <LoadRemoteBuildConfig Debug="$(BuildDebug)" ProjectName="$(MSBuildProjectName)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" TargetFrameworkIdentifier='$(TargetFrameworkIdentifier)'>
             <Output TaskParameter="BuildResourceDir" PropertyName="BuildResourceDir" />
             <Output TaskParameter="PackagingOutput" ItemName="PackagingFields" />
             <Output TaskParameter="AppIconOutput" ItemName="AppIconFields" />
+            <Output TaskParameter="AssetCatalogueName" PropertyName="AssetCatalogueName"/>
+            <Output TaskParameter="AppIconCatalogueName" PropertyName="AppIconCatalogueName"/>
             <Output TaskParameter="SplashOutput" ItemName="SplashFields" />
         </LoadRemoteBuildConfig>
     </Target>
@@ -54,7 +58,7 @@
         </ItemGroup>
     </Target>
     <Target Name="SetIosAppIcons" AfterTargets="SetDroidManifest" Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS'">
-        <SetIosAppIcons Debug="$(BuildDebug)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" AppIconFields="@(AppIconFields)" >
+        <SetIosAppIcons Debug="$(BuildDebug)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" AppIconFields="@(AppIconFields)" AssetCatalogueName="$(AssetCatalogueName)" AppIconCatalogueName="$(AppIconCatalogueName)" BaseOutputDir="$(MSBuildThisFileDirectory)">
             <Output TaskParameter="OutputImageAssets" ItemName="IosAppIcons" />            
             <Output TaskParameter="OutputITunesArtwork" ItemName="IosITunesArtwork" />
         </SetIosAppIcons>

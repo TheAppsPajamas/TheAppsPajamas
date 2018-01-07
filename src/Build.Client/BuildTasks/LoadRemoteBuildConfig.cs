@@ -70,9 +70,14 @@ namespace Build.Client.BuildTasks
             projectConfig.ClientConfig = clientConfigDto;
             if (!this.SaveProject(projectConfig))
                 return false;
+            if (TargetFrameworkIdentifier == "Xamarin.iOS")
+            {
+                AssetCatalogueName = this.GetAssetCatalogueName(projectConfig.ClientConfig);
+                AppIconCatalogueName = this.GetAppIconCatalogueName(projectConfig.ClientConfig);
 
+            }
             PackagingOutput = this.GetPackagingOutput(clientConfigDto);
-            AppIconOutput = this.GetAppIconOutput(clientConfigDto);
+            AppIconOutput = this.GetAppIconOutput(projectConfig.ClientConfig, AssetCatalogueName, AppIconCatalogueName);
             SplashOutput = this.GetSplashOutput(clientConfigDto);
 
             return true;

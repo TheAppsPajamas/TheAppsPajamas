@@ -15,15 +15,22 @@ namespace Build.Client.BuildTasks
     {
         public ITaskItem[] AppIconFields { get; set; }
 
+        public string BuildConfiguration { get; set; }
+
+        public ITaskItem AssetCatalogueName { get; set; }
+
+        public ITaskItem AppIconCatalogueName { get; set; }
+
+        //we clone into packages/project dir because of weirdness with xamarin actool task
+        public string BaseOutputDir { get; set; }
+
         [Output]
         public ITaskItem[] OutputImageAssets { get; set; }
-
 
         [Output]
         public ITaskItem[] OutputITunesArtwork { get; set; }
 
 
-        public string BuildConfiguration { get; set; }
         public override bool Execute()
         {
             Log.LogMessage("Set Ios App Icons started");
@@ -41,28 +48,24 @@ namespace Build.Client.BuildTasks
                 var outputImageAssets = new List<ITaskItem>();
                 var outputITunesArtwork = new List<ITaskItem>();
 
-                //we clone into packages/project dir because of weirdness with xamarin actool task
-                var baseOutputDir = firstField.GetMetadata("DefiningProjectDirectory");
 
-                var assetCatalogueName = firstField.GetMetadata("AssetCatalogueName");
-                LogDebug("Asset catalogue name {0}", assetCatalogueName);
+                LogDebug("Asset catalogue name {0}", AssetCatalogueName.ItemSpec);
 
-                var appIconSetName = firstField.GetMetadata("AppIconSetName");
-                LogDebug("AppIconSet name {0}", appIconSetName);
+                LogDebug("AppIconSet name {0}", AppIconCatalogueName.ItemSpec);
 
                 //create asset catalogue folder, and contents.json
-                var assetCatalogueDir = Path.Combine(baseOutputDir, assetCatalogueName);
+                var assetCatalogueDir = Path.Combine(BaseOutputDir, AssetCatalogueName.ItemSpec);
 
                 if (!Directory.Exists(assetCatalogueDir)){
                     Directory.CreateDirectory(assetCatalogueDir);
-                    LogDebug("Created {0} folder at {1}", assetCatalogueName, assetCatalogueDir);
+                    LogDebug("Created {0} folder at {1}", AssetCatalogueName, assetCatalogueDir);
                 } else {
                     Directory.Delete(assetCatalogueDir, true);
                     Directory.CreateDirectory(assetCatalogueDir);
-                    LogDebug("Cleaned and Created {0} folder at {1}", assetCatalogueName, assetCatalogueDir);
+                    LogDebug("Cleaned and Created {0} folder at {1}", AssetCatalogueName, assetCatalogueDir);
                 }
                                              
-                var assetCatalogueContentsPath = Path.Combine(baseOutputDir, assetCatalogueName, "Contents.json");
+                var assetCatalogueContentsPath = Path.Combine(BaseOutputDir, AssetCatalogueName.ItemSpec, "Contents.json");
 
                 if (!File.Exists(assetCatalogueContentsPath)){
                     LogDebug("Creating Asset catalogue Contents.json at {0}", assetCatalogueContentsPath);
@@ -75,7 +78,7 @@ namespace Build.Client.BuildTasks
                 LogDebug("Added asset catalogue contents.json to taskitems at path {0}", assetCatalogueItem.ItemSpec);
 
                 //create appiconset folder, and contents.json
-                var appIconSetDir = Path.Combine(baseOutputDir, assetCatalogueName, appIconSetName);
+                var appIconSetDir = Path.Combine(BaseOutputDir, AssetCatalogueName.ItemSpec, AppIconCatalogueName.ItemSpec);
 
                 if (!Directory.Exists(appIconSetDir))
                 {
@@ -83,7 +86,7 @@ namespace Build.Client.BuildTasks
                     LogDebug("Created app-icon-set folder at {0}", appIconSetDir);
                 }                          
 
-                var appIconSetContentsPath = Path.Combine(baseOutputDir, assetCatalogueName, appIconSetName, "Contents.json");
+                var appIconSetContentsPath = Path.Combine(BaseOutputDir, AssetCatalogueName.ItemSpec, AppIconCatalogueName.ItemSpec, "Contents.json");
                 var appIconSetItem = new TaskItem(appIconSetContentsPath);
                 outputImageAssets.Add(appIconSetItem);
 
@@ -133,12 +136,12 @@ namespace Build.Client.BuildTasks
                         var existingFilePath = Path.Combine(mediaResourcesBuildConfigDir, field.GetMetadata("Path"), String.Concat(field.GetMetadata("MediaName"), ".png"));
 
 
-                        var filePath = Path.Combine(baseOutputDir, field.GetMetadata("Path"), field.GetMetadata("CatalogueName"));
+                        var filePath = Path.Combine(BaseOutputDir, field.GetMetadata("Path"), field.GetMetadata("CatalogueName"));
 
                         LogDebug("Copying file {0} to {1}", existingFilePath, filePath);
                         File.Copy(existingFilePath, filePath);
 
-                        var logicalFilePath = Path.Combine(baseOutputDir, field.GetMetadata("Path"), field.GetMetadata("CatalogueName"));
+                        var logicalFilePath = Path.Combine(BaseOutputDir, field.GetMetadata("Path"), field.GetMetadata("CatalogueName"));
 
                         LogDebug("Adding file {0} to task items with logical path {1}", filePath, logicalFilePath);
 
@@ -153,7 +156,7 @@ namespace Build.Client.BuildTasks
                     , new JsonSerializerSettings {
                         NullValueHandling = NullValueHandling.Ignore
                     });
-                var appCatalogueOutputPath = Path.Combine(baseOutputDir, assetCatalogueName, appIconSetName, "Contents.json");
+                var appCatalogueOutputPath = Path.Combine(BaseOutputDir, AssetCatalogueName.ItemSpec, AppIconCatalogueName.ItemSpec, "Contents.json");
                 LogDebug("Saving AppIcon catalogue to {0}", appCatalogueOutputPath);
                 File.WriteAllText(appCatalogueOutputPath, appCatalogueOutput);
 

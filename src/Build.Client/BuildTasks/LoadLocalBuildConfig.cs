@@ -24,8 +24,6 @@ namespace Build.Client.BuildTasks
                 return true;
             }
 
-            //var projectsConfig = this.GetProjectsConfig();
-
             var projectConfig = this.GetProjectConfig();
 
             if (projectConfig.ClientConfig == null){
@@ -33,10 +31,18 @@ namespace Build.Client.BuildTasks
                 NeedsLoadRemote = true;
                 return true;
             }
+            if (TargetFrameworkIdentifier == "Xamarin.iOS")
+            {
+                AssetCatalogueName = this.GetAssetCatalogueName(projectConfig.ClientConfig);
+                AppIconCatalogueName = this.GetAppIconCatalogueName(projectConfig.ClientConfig);
 
+            }
             PackagingOutput = this.GetPackagingOutput(projectConfig.ClientConfig);
-            AppIconOutput = this.GetAppIconOutput(projectConfig.ClientConfig);
+            AppIconOutput = this.GetAppIconOutput(projectConfig.ClientConfig, AssetCatalogueName, AppIconCatalogueName);
             SplashOutput = this.GetSplashOutput(projectConfig.ClientConfig);
+
+
+
 
             return true;
         }

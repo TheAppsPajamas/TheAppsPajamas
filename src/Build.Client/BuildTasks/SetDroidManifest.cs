@@ -2,7 +2,7 @@
 using System.Linq;
 using Microsoft.Build.Framework;
 using System.Xml;
-using DAL.Enums;
+using Build.Shared.Types;
 
 namespace Build.Client.BuildTasks
 {

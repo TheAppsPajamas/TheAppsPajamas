@@ -2,7 +2,7 @@
   <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/Extensions/ConfigExtensions.cs">
     <Files>
       <File FileName="Build.Client/BuildTasks/SetDroidAppIcons.cs" Line="1" Column="1" />
-      <File FileName="Build.Client/Extensions/ConfigExtensions.cs" Line="103" Column="93" />
+      <File FileName="Build.Client/Extensions/ConfigExtensions.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using Build.Client.Extensions;
 using Build.Client.Helpers;
-using DAL.Enums;
+using Build.Shared.Types;
 using Microsoft.Build.Framework;
 
 namespace Build.Client.BuildTasks

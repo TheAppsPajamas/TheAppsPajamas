@@ -5,7 +5,7 @@ using System.Linq;
 using Build.Client.BuildTasks;
 using Build.Client.Constants;
 using Build.Client.Models;
-using DAL.Enums;
+using Build.Shared.Types;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using Newtonsoft.Json;

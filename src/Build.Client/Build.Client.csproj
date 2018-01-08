@@ -78,19 +78,19 @@
     <Compile Include="Models\AppIconAssetCatalogue.cs" />
     <Compile Include="BuildTasks\CleanAssetCatalogues.cs" />
     <Compile Include="BuildTasks\SetIosPlist.cs" />
-    <Compile Include="Shared\FieldType.cs" />
-    <Compile Include="Shared\AppIconFieldType.cs" />
-    <Compile Include="Shared\BuildConfigRecordSetType.cs" />
-    <Compile Include="Shared\Enumeration.cs" />
-    <Compile Include="Shared\FieldHolderType.cs" />
-    <Compile Include="Shared\FieldTypeHelpers.cs" />
-    <Compile Include="Shared\MasterMediaFieldType.cs" />
-    <Compile Include="Shared\MediaFieldType.cs" />
-    <Compile Include="Shared\PackagingFieldType.cs" />
-    <Compile Include="Shared\ProjectType.cs" />
-    <Compile Include="Shared\SplashFieldType.cs" />
-    <Compile Include="Shared\StringFieldDisplayType.cs" />
-    <Compile Include="Shared\StringFieldType.cs" />
+    <Compile Include="Shared\Types\AppIconFieldType.cs" />
+    <Compile Include="Shared\Types\BuildConfigRecordSetType.cs" />
+    <Compile Include="Shared\Types\Enumeration.cs" />
+    <Compile Include="Shared\Types\FieldHolderType.cs" />
+    <Compile Include="Shared\Types\FieldType.cs" />
+    <Compile Include="Shared\Types\FieldTypeHelpers.cs" />
+    <Compile Include="Shared\Types\MasterMediaFieldType.cs" />
+    <Compile Include="Shared\Types\MediaFieldType.cs" />
+    <Compile Include="Shared\Types\PackagingFieldType.cs" />
+    <Compile Include="Shared\Types\ProjectType.cs" />
+    <Compile Include="Shared\Types\SplashFieldType.cs" />
+    <Compile Include="Shared\Types\StringFieldDisplayType.cs" />
+    <Compile Include="Shared\Types\StringFieldType.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
@@ -98,6 +98,7 @@
     <Folder Include="Extensions\" />
     <Folder Include="Constants\" />
     <Folder Include="Helpers\" />
+    <Folder Include="Shared\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

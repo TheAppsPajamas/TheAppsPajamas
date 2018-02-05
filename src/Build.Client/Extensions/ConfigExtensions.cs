@@ -37,16 +37,57 @@ namespace Build.Client.Extensions
 
                     if (buildResourcesConfig.AppId == null)
                     {
-                        baseTask.Log.LogError("Build resources config appId is null, please complete appId, username, and password at {0} and restart build process", buildResourcesConfigPath);
+                        baseTask.Log.LogError("Build resources config appId is null, please complete username, and password at {0} and restart build process", buildResourcesConfigPath);
                         return null;
                     }
                     else
                     {
-                        baseTask.LogDebug("Build resources config file read from {2}\nAppId '{0}'\nUsername '{1}'", buildResourcesConfig.AppId, buildResourcesConfig.UserName, buildResourcesConfigPath);
+                        baseTask.LogDebug("Build resources config file read from {1}\nAppId '{0}'\n'", buildResourcesConfig.AppId,  buildResourcesConfigPath);
                         return buildResourcesConfig;
                     }
                 }
             } catch (Exception ex){
+                baseTask.Log.LogErrorFromException(ex);
+            }
+            return null;
+        }
+
+        public static SecurityConfig GetSecurityConfig(this BaseLoadTask baseTask)
+        {
+            baseTask.LogDebug("Loading build-security.config file");
+
+            try
+            {
+                var buildSecurityConfigPath = Path.Combine(baseTask.PackagesDir, "build-security.config");
+                SecurityConfig buildSecurityConfig = null;
+                if (!File.Exists(buildSecurityConfigPath))
+                {
+                    baseTask.LogDebug("Creating blank build security config at {0}", buildSecurityConfigPath);
+                    buildSecurityConfig = new SecurityConfig();
+                    var json = JsonConvert.SerializeObject(buildSecurityConfig);
+                    File.WriteAllText(buildSecurityConfigPath, json);
+                    baseTask.Log.LogError("Build security config file not found, created at {0}. Please complete username, and password and restart build process", buildSecurityConfigPath);
+                    return null;
+                }
+                else
+                {
+                    var json = File.ReadAllText(buildSecurityConfigPath);
+                    buildSecurityConfig = JsonConvert.DeserializeObject<SecurityConfig>(json);
+
+                    if (String.IsNullOrEmpty(buildSecurityConfig.UserName) || String.IsNullOrEmpty(buildSecurityConfig.Password))
+                    {
+                        baseTask.Log.LogError("Build security config username or password is null, please complete username, and password at {0} and restart build process", buildSecurityConfigPath);
+                        return null;
+                    }
+                    else
+                    {
+                        baseTask.LogDebug("Build security config file read from {1}\nUsername '{0}'", buildSecurityConfig.UserName, buildSecurityConfigPath);
+                        return buildSecurityConfig;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
                 baseTask.Log.LogErrorFromException(ex);
             }
             return null;

@@ -14,6 +14,7 @@ namespace Build.Client.Constants
         public const string UrlBase = "http://buildapidebug.me";
 
         public const string ClientEndpoint = "/api/client";
+        public const string TokenEndpoint = "/connect/token";
 
         public const string MediaEndpoint = "/api/media";
 

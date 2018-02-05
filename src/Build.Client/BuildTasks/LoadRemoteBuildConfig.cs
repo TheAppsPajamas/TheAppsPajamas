@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Build.Client.Extensions;
 using System.Linq;
 using Build.Client.Constants;
+using System.Text;
 
 namespace Build.Client.BuildTasks
 {
@@ -36,6 +37,7 @@ namespace Build.Client.BuildTasks
             if (buildResourcesConfig == null || securityConfig == null)
                 return false;
 
+            LoginResponseDto token;
             //authenticate
             try{
                 using (WebClient client = new WebClient())
@@ -46,9 +48,33 @@ namespace Build.Client.BuildTasks
                     //use existing token recieved, or authenticate again (this method might not have run)
                     var tokenUrl = String.Concat(Consts.UrlBase, Consts.TokenEndpoint);
 
-                    client.Credentials = new NetworkCredential(securityConfig.UserName, securityConfig.Password);
-                    var tokenResult = client.DownloadString(tokenUrl);
-                    LogDebug("Token result recieved\n{0}", tokenResult);
+                //    let header = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
+                //let params = new HttpParams()
+                  //.append('username', userName)
+                  //.append('password', password)
+                  //.append('grant_type', 'password')
+                  //.append('scope', 'openid email plantype profile offline_access roles')
+                  //.append('resource', window.location.origin);
+
+
+                    System.Collections.Specialized.NameValueCollection postData =
+                        new System.Collections.Specialized.NameValueCollection()
+                       {
+                        { "username", securityConfig.UserName },
+                        { "password", securityConfig.Password },
+                        { "grant_type", "password" },
+                        { "scope", "openid email plantype profile offline_access roles"},
+                        { "resource", "loadremotebuildconfig"}
+
+                       };
+
+     
+                    var tokenResult = Encoding.UTF8.GetString(client.UploadValues(tokenUrl, postData));
+
+                    token = JsonConvert.DeserializeObject<LoginResponseDto>(tokenResult);
+                    //client.Credentials = new NetworkCredential(securityConfig.UserName, securityConfig.Password);
+                    //var tokenResult = client.DownloadString(tokenUrl);
+                    LogDebug("Token result recieved\n{0}", token.access_token);
                 }
             } catch (Exception ex){
                     Log.LogErrorFromException(ex);
@@ -66,11 +92,9 @@ namespace Build.Client.BuildTasks
             {
                 using (WebClient client = new WebClient())
                 {
-     
 
-                    //client.Credentials = new NetworkCredential(securityConfig.UserName, securityConfig.Password);
+                    client.Headers.Add("Authorization", $"Bearer {token.access_token}");
 
-                    //client.Credentials = GetConfiguredCredentials();
                     jsonClientConfig = client.DownloadString(url);
                     Log.LogMessage("Successfully loaded remote build config from '{0}', recieved '{1}'", url, jsonClientConfig.Length);
                     LogDebug("Json data recieved\n{0}", jsonClientConfig);

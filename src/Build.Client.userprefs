@@ -1,9 +1,11 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/Constants/Consts.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/Models/LoginResponseDto.cs">
     <Files>
-      <File FileName="Build.Client/BuildTasks/LoadRemoteBuildConfig.cs" Line="52" Column="18" />
+      <File FileName="Build.Client/BuildTasks/LoadRemoteBuildConfig.cs" Line="75" Column="73" />
       <File FileName="Build.Client/Extensions/ConfigExtensions.cs" Line="45" Column="84" />
       <File FileName="Build.Client/Constants/Consts.cs" Line="7" Column="67" />
+      <File FileName="Build.Client/build/Build.Client.targets" Line="4" Column="25" />
+      <File FileName="Build.Client/Models/LoginResponseDto.cs" Line="6" Column="16" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

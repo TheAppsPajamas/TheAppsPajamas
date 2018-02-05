@@ -94,6 +94,7 @@
     <Compile Include="Shared\Types\SplashFieldType.cs" />
     <Compile Include="Shared\Types\StringFieldDisplayType.cs" />
     <Compile Include="Shared\Types\StringFieldType.cs" />
+    <Compile Include="Models\LoginResponseDto.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />

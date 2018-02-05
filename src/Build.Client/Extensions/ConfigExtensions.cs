@@ -52,7 +52,7 @@ namespace Build.Client.Extensions
             return null;
         }
 
-        public static SecurityConfig GetSecurityConfig(this BaseLoadTask baseTask)
+        public static SecurityConfig GetSecurityConfig(this BaseTask baseTask)
         {
             baseTask.LogDebug("Loading build-security.config file");
 

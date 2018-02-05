@@ -14,6 +14,8 @@ namespace Build.Client.BuildTasks
 {
     public class LoadRemoteBuildConfig : BaseLoadTask
     {
+        [Output] 
+        public ITaskItem Token { get; set; }
 
         public override bool Execute()
         {
@@ -37,51 +39,11 @@ namespace Build.Client.BuildTasks
             if (buildResourcesConfig == null || securityConfig == null)
                 return false;
 
-            LoginResponseDto token;
-            //authenticate
-            try{
-                using (WebClient client = new WebClient())
-                {
-                    //so this needs to either use a recieved token
-                    //or create one,
-                    //and the other place we use it, either needds to
-                    //use existing token recieved, or authenticate again (this method might not have run)
-                    var tokenUrl = String.Concat(Consts.UrlBase, Consts.TokenEndpoint);
-
-                //    let header = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded' });
-                //let params = new HttpParams()
-                  //.append('username', userName)
-                  //.append('password', password)
-                  //.append('grant_type', 'password')
-                  //.append('scope', 'openid email plantype profile offline_access roles')
-                  //.append('resource', window.location.origin);
-
-
-                    System.Collections.Specialized.NameValueCollection postData =
-                        new System.Collections.Specialized.NameValueCollection()
-                       {
-                        { "username", securityConfig.UserName },
-                        { "password", securityConfig.Password },
-                        { "grant_type", "password" },
-                        { "scope", "openid email plantype profile offline_access roles"},
-                        { "resource", "loadremotebuildconfig"}
-
-                       };
-
-     
-                    var tokenResult = Encoding.UTF8.GetString(client.UploadValues(tokenUrl, postData));
-
-                    token = JsonConvert.DeserializeObject<LoginResponseDto>(tokenResult);
-                    //client.Credentials = new NetworkCredential(securityConfig.UserName, securityConfig.Password);
-                    //var tokenResult = client.DownloadString(tokenUrl);
-                    LogDebug("Token result recieved\n{0}", token.access_token);
-                }
-            } catch (Exception ex){
-                    Log.LogErrorFromException(ex);
+            Token = this.Login(securityConfig);
+            if (Token == null){
+                Log.LogError("Authentication failure");
                 return false;
             }
-
-
 
             var url = String.Concat(Consts.UrlBase, Consts.ClientEndpoint, "?", "appId=", buildResourcesConfig.AppId, "&projectName=", ProjectName, "&buildConfiguration=", BuildConfiguration );
 
@@ -92,8 +54,7 @@ namespace Build.Client.BuildTasks
             {
                 using (WebClient client = new WebClient())
                 {
-
-                    client.Headers.Add("Authorization", $"Bearer {token.access_token}");
+                    client.SetWebClientHeaders(Token);
 
                     jsonClientConfig = client.DownloadString(url);
                     Log.LogMessage("Successfully loaded remote build config from '{0}', recieved '{1}'", url, jsonClientConfig.Length);

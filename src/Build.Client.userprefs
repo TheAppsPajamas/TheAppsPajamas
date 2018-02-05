@@ -1,11 +1,14 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/Models/LoginResponseDto.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/build/Build.Client.targets">
     <Files>
-      <File FileName="Build.Client/BuildTasks/LoadRemoteBuildConfig.cs" Line="75" Column="73" />
-      <File FileName="Build.Client/Extensions/ConfigExtensions.cs" Line="45" Column="84" />
+      <File FileName="Build.Client/BuildTasks/LoadRemoteBuildConfig.cs" Line="56" Column="18" />
+      <File FileName="Build.Client/Extensions/ConfigExtensions.cs" Line="89" Column="33" />
       <File FileName="Build.Client/Constants/Consts.cs" Line="7" Column="67" />
-      <File FileName="Build.Client/build/Build.Client.targets" Line="4" Column="25" />
-      <File FileName="Build.Client/Models/LoginResponseDto.cs" Line="6" Column="16" />
+      <File FileName="Build.Client/build/Build.Client.targets" Line="68" Column="126" />
+      <File FileName="Build.Client/Models/LoginResponseDto.cs" Line="10" Column="6" />
+      <File FileName="Build.Client/Extensions/AuthenticationExtensions.cs" Line="59" Column="80" />
+      <File FileName="Build.Client/BuildTasks/SetDroidAppIcons.cs" Line="12" Column="25" />
+      <File FileName="Build.Client/BuildTasks/DownloadMediaFiles.cs" Line="51" Column="63" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

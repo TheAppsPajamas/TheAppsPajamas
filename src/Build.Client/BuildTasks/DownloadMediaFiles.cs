@@ -14,6 +14,7 @@ namespace Build.Client.BuildTasks
 
         public ITaskItem[] SplashFields { get; set; }
         public string BuildConfiguration { get; set; }
+        public ITaskItem Token { get; set; }
 
         public override bool Execute()
         {
@@ -24,6 +25,20 @@ namespace Build.Client.BuildTasks
             var existingFiles = this.GetExistingMediaFiles(BuildConfiguration).Select(x => new FileHolder(x));
             Log.LogMessage("{0} media files required, {1} media files already available", allMediaFields.Count(), existingFiles.Count());
 
+            if (Token == null || String.IsNullOrEmpty(Token.ItemSpec)){
+                var securityConfig = this.GetSecurityConfig();
+
+                if (securityConfig == null)
+                    return false;
+                
+                Token = this.Login(securityConfig);
+                if (Token == null)
+                {
+                    Log.LogError("Authentication failure");
+                    return false;
+                }
+            }
+
 
             var mediaResourceDir = this.GetMediaResourceDir(BuildConfiguration);
             try
@@ -33,6 +48,7 @@ namespace Build.Client.BuildTasks
                     if (!exists){
                         using (WebClient client = new WebClient())
                         {
+                            client.SetWebClientHeaders(Token);
                             var url = String.Concat(Consts.UrlBase, Consts.MediaEndpoint, "/", field.GetMetadata("MediaFileId"));
                             var directory = Path.Combine(mediaResourceDir, field.GetMetadata("Path"));
                             if (!Directory.Exists(directory)){

@@ -52,7 +52,7 @@ namespace Build.Client.Extensions
                 {
                     baseTask.Log.LogMessage("Project config file file not found, created at {0}", projectConfigPath);
                     projectConfig = new ProjectConfig();
-                    var json = JsonConvert.SerializeObject(projectConfig);
+                    var json = JsonConvert.SerializeObject(projectConfig, Formatting.Indented);
                     File.WriteAllText(projectConfigPath, json);
                     return projectConfig;
                 }
@@ -80,7 +80,7 @@ namespace Build.Client.Extensions
                 var projectConfigPath = Path.Combine(baseTask.BuildResourceDir, Consts.ProjectConfig);
 
                 baseTask.Log.LogMessage("Saving project config at {0}", projectConfigPath);
-                var json = JsonConvert.SerializeObject(projectConfig);
+                var json = JsonConvert.SerializeObject(projectConfig, Formatting.Indented);
                 File.WriteAllText(projectConfigPath, json);
 
             }

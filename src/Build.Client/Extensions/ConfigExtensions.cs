@@ -25,7 +25,7 @@ namespace Build.Client.Extensions
                 {
                     baseTask.LogDebug("Creating blank build resources config at {0}", buildResourcesConfigPath);
                     buildResourcesConfig = new BuildResourcesConfig();
-                    var json = JsonConvert.SerializeObject(buildResourcesConfig);
+                    var json = JsonConvert.SerializeObject(buildResourcesConfig, Formatting.Indented);
                     File.WriteAllText(buildResourcesConfigPath, json);
                     baseTask.Log.LogError("Build resources config file not found, created at {0}. Please complete appId and restart build process", buildResourcesConfigPath);
                     return null;
@@ -64,7 +64,7 @@ namespace Build.Client.Extensions
                 {
                     baseTask.LogDebug("Creating blank build security config at {0}", buildSecurityConfigPath);
                     buildSecurityConfig = new SecurityConfig();
-                    var json = JsonConvert.SerializeObject(buildSecurityConfig);
+                    var json = JsonConvert.SerializeObject(buildSecurityConfig, Formatting.Indented);
                     File.WriteAllText(buildSecurityConfigPath, json);
                     baseTask.Log.LogError("Build security config file not found, created at {0}. Please complete username, and password and restart build process", buildSecurityConfigPath);
                     return null;

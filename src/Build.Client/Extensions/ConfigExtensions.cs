@@ -27,7 +27,7 @@ namespace Build.Client.Extensions
                     buildResourcesConfig = new BuildResourcesConfig();
                     var json = JsonConvert.SerializeObject(buildResourcesConfig);
                     File.WriteAllText(buildResourcesConfigPath, json);
-                    baseTask.Log.LogError("Build resources config file not found, created at {0}. Please complete appId, username, and password and restart build process", buildResourcesConfigPath);
+                    baseTask.Log.LogError("Build resources config file not found, created at {0}. Please complete appId and restart build process", buildResourcesConfigPath);
                     return null;
                 }
                 else
@@ -35,9 +35,9 @@ namespace Build.Client.Extensions
                     var json = File.ReadAllText(buildResourcesConfigPath);
                     buildResourcesConfig = JsonConvert.DeserializeObject<BuildResourcesConfig>(json);
 
-                    if (buildResourcesConfig.AppId == null)
+                    if (buildResourcesConfig.AppId == 0)
                     {
-                        baseTask.Log.LogError("Build resources config appId is null, please complete username, and password at {0} and restart build process", buildResourcesConfigPath);
+                        baseTask.Log.LogError("Build resources config appId is 0, please complete appId at {0} and restart build process", buildResourcesConfigPath);
                         return null;
                     }
                     else

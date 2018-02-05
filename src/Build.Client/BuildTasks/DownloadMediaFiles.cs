@@ -15,6 +15,7 @@ namespace Build.Client.BuildTasks
         public ITaskItem[] SplashFields { get; set; }
         public string BuildConfiguration { get; set; }
         public ITaskItem Token { get; set; }
+        public ITaskItem BuildAppId { get; set; }
 
         public override bool Execute()
         {
@@ -49,7 +50,7 @@ namespace Build.Client.BuildTasks
                         using (WebClient client = new WebClient())
                         {
                             client.SetWebClientHeaders(Token);
-                            var url = String.Concat(Consts.UrlBase, Consts.MediaEndpoint, "/", field.GetMetadata("MediaFileId"));
+                            var url = String.Concat(Consts.UrlBase, Consts.MediaEndpoint, "/", BuildAppId.ItemSpec, "/", field.GetMetadata("MediaFileId"));
                             var directory = Path.Combine(mediaResourceDir, field.GetMetadata("Path"));
                             if (!Directory.Exists(directory)){
                                 LogDebug("Created folder {0}", directory);

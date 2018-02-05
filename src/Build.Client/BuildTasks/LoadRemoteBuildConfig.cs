@@ -17,6 +17,9 @@ namespace Build.Client.BuildTasks
         [Output] 
         public ITaskItem Token { get; set; }
 
+        [Output]
+        public ITaskItem BuildAppId { get; set; }
+
         public override bool Execute()
         {
 
@@ -31,13 +34,15 @@ namespace Build.Client.BuildTasks
 
             var buildResourcesConfig = this.GetResourceConfig();
 
-            if (buildResourcesConfig == null)
-                return false;
-
             var securityConfig = this.GetSecurityConfig();
 
             if (buildResourcesConfig == null || securityConfig == null)
+            {
+                Log.LogError("Build configuration files not set, please see solution root and complete");
                 return false;
+            }
+
+            BuildAppId = new TaskItem(buildResourcesConfig.AppId.ToString());
 
             Token = this.Login(securityConfig);
             if (Token == null){

@@ -33,6 +33,7 @@
             <Output TaskParameter="AssetCatalogueName" PropertyName="AssetCatalogueName"/>
             <Output TaskParameter="AppIconCatalogueName" PropertyName="AppIconCatalogueName"/>
             <Output TaskParameter="Token" PropertyName="BuildAccessToken"/>
+            <Output TaskParameter="BuildAppId" PropertyName="BuildAppId" />
             <Output TaskParameter="SplashOutput" ItemName="SplashFields" />
         </LoadRemoteBuildConfig>
     </Target>
@@ -41,7 +42,7 @@
         </DeleteUnusedMediaFiles>
     </Target>
     <Target Name="DownloadMediaFiles" AfterTargets="DeleteUnusedMediaFiles">
-        <DownloadMediaFiles Debug="$(BuildDebug)" ProjectDir="$(MSBuildProjectDirectory)" Token="$(BuildAccessToken)" PackagesDir="$(PackagesDir)" AppIconFields="@(AppIconFields)" SplashFields="@(SplashFields)" BuildConfiguration="$(Configuration)">
+        <DownloadMediaFiles Debug="$(BuildDebug)" BuildAppid="$(BuildAppId)" ProjectDir="$(MSBuildProjectDirectory)" Token="$(BuildAccessToken)" PackagesDir="$(PackagesDir)" AppIconFields="@(AppIconFields)" SplashFields="@(SplashFields)" BuildConfiguration="$(Configuration)">
         </DownloadMediaFiles>
     </Target>
     <Target Name="SetDroidManifest" AfterTargets="DownloadMediaFiles" Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid'">

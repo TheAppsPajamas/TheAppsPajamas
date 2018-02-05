@@ -29,5 +29,6 @@ namespace Build.Client.BuildTasks
 
         [Output]
         public ITaskItem[] SplashOutput { get; set; }
+
     }
 }

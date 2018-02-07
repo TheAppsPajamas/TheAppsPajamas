@@ -13,6 +13,7 @@
         </CleanAssetCatalogues>
     </Target>
 
+
     
     <Target Name="LoadLocalBuildConfig" BeforeTargets="_GetReferenceAssemblyPaths;_BeforeCoreCompileInterfaceDefinitions">
         <LoadLocalBuildConfig Debug="$(BuildDebug)" ProjectName="$(MSBuildProjectName)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" TargetFrameworkIdentifier='$(TargetFrameworkIdentifier)'>
@@ -24,7 +25,15 @@
             <Output TaskParameter="SplashOutput" ItemName="SplashFields" />
             <Output TaskParameter="NeedsLoadRemote" PropertyName="NeedsLoadRemote" />
         </LoadLocalBuildConfig>
+
     </Target>
+
+        <Target Name="BuildPath" BeforeTargets="LoadLocalBuildConfig" Condition="'$(BuildDebug)' == 'True'">
+        <Warning Text="MSBuildBinPath: $(MSBuildBinPath)" />
+
+        <Warning Text="MSBuildExtensionsPath: $(MSBuildExtensionsPath)" />
+        </Target>
+    
     <Target Name="LoadRemoteBuildConfig" AfterTargets="LoadLocalBuildConfig" Condition="'$(NeedsLoadRemote)' == 'True'">
         <LoadRemoteBuildConfig Debug="$(BuildDebug)" ProjectName="$(MSBuildProjectName)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" TargetFrameworkIdentifier='$(TargetFrameworkIdentifier)'>
             <Output TaskParameter="BuildResourceDir" PropertyName="BuildResourceDir" />

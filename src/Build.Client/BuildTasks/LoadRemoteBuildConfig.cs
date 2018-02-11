@@ -93,7 +93,7 @@ namespace Build.Client.BuildTasks
             }
             PackagingOutput = this.GetPackagingOutput(clientConfigDto);
             AppIconOutput = this.GetAppIconOutput(projectConfig.ClientConfig, AssetCatalogueName, AppIconCatalogueName);
-            SplashOutput = this.GetSplashOutput(clientConfigDto);
+            //SplashOutput = this.GetSplashOutput(clientConfigDto);
 
             return true;
         }

@@ -1,11 +1,10 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/build/Build.Client.targets">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/NugetContent/build/Xamarin.iOS.WatchApp.Common.targets">
     <Files>
-      <File FileName="Build.Client/Extensions/ConfigExtensions.cs" Line="87" Column="18" />
-      <File FileName="Build.Client/Extensions/LoadExtensions.cs" Line="83" Column="92" />
-      <File FileName="Build.Client/BuildTasks/SetIosAppIcons.cs" Line="155" Column="54" />
-      <File FileName="Build.Client/build/Build.Client.targets" Line="31" Column="106" />
-      <File FileName="Build.Client/Build.Client.csproj" Line="53" Column="1" />
+      <File FileName="Build.Client/NugetContent/build/Build.Client.targets" Line="8" Column="13" />
+      <File FileName="Build.Client/Build.Client.csproj" Line="120" Column="119" />
+      <File FileName="Build.Client/NugetContent/build/Xamarin.iOS.Common.targets" Line="381" Column="5" />
+      <File FileName="Build.Client/NugetContent/build/Xamarin.iOS.WatchApp.Common.targets" Line="19" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

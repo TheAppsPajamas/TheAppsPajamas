@@ -1,21 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Project>
+    <Import Project="$(MSBuildThisFileDirectory)Xamarin.iOS.Common.targets"
+            Condition="Exists('$(MSBuildThisFileDirectory)Xamarin.iOS.Common.targets') And '$(IsTheAppPajamaClientProject)' != 'true' " />
+
+    <Import Project="$(MSBuildThisFileDirectory)Xamarin.iOS.WatchApp.Common.targets"
+            Condition="Exists('$(MSBuildThisFileDirectory)Xamarin.iOS.WatchApp.Common.targets') And '$(IsTheAppPajamaClientProject)' != 'true' " />
+
+    
+    <Import Project="$(MSBuildThisFileDirectory)Microsoft.Common.targets"
+            Condition="Exists('$(MSBuildThisFileDirectory)Microsoft.Common.targets') And '$(IsTheAppPajamaClientProject)' != 'true' " />
+
+
+   <!--     <Import Project="$(MSBuildThisFileDirectory)Xamarin.iOS.Common.targets"/>-->
+
     <PropertyGroup>
         <BuildDebug>true</BuildDebug>
     </PropertyGroup>
 
-    <Target Name="CleanProjectsConfig" AfterTargets="Clean">
+
+    <Target Name="CleanProjectsConfig" 
+        AfterTargets="Clean" 
+        Condition=" '$(IsTheAppPajamaClientProject)' == 'true' ">
         <CleanProjectsConfig Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)">
         </CleanProjectsConfig>
     </Target>
-    <Target Name="CleanAssetCatalogues" AfterTargets="Clean" Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS'">
+    <Target Name="CleanAssetCatalogues" 
+        AfterTargets="Clean" 
+        Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' And '$(IsTheAppPajamaClientProject)' == 'true'">
         <CleanAssetCatalogues Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" TargetsDir="$(MSBuildThisFileDirectory)">
         </CleanAssetCatalogues>
     </Target>
 
 
     
-    <Target Name="LoadLocalBuildConfig" BeforeTargets="_GetReferenceAssemblyPaths;_BeforeCoreCompileInterfaceDefinitions">
+    <Target Name="LoadLocalBuildConfig" 
+        BeforeTargets="_GetReferenceAssemblyPaths;_BeforeCoreCompileInterfaceDefinitions" 
+        Condition=" '$(IsTheAppPajamaClientProject)' == 'true' ">
         <LoadLocalBuildConfig Debug="$(BuildDebug)" ProjectName="$(MSBuildProjectName)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" TargetFrameworkIdentifier='$(TargetFrameworkIdentifier)'>
             <Output TaskParameter="BuildResourceDir" PropertyName="BuildResourceDir" />
             <Output TaskParameter="PackagingOutput" ItemName="PackagingFields" />
@@ -28,13 +48,17 @@
 
     </Target>
 
-        <Target Name="BuildPath" BeforeTargets="LoadLocalBuildConfig" Condition="'$(BuildDebug)' == 'True'">
+        <Target Name="BuildPath" 
+        BeforeTargets="LoadLocalBuildConfig" 
+        Condition="'$(BuildDebug)' == 'True' And '$(IsTheAppPajamaClientProject)' == 'true'">
         <Warning Text="MSBuildBinPath: $(MSBuildBinPath)" />
-
+        <Warning Text="$(IsTheAppPajamaClientProject" />
         <Warning Text="MSBuildExtensionsPath: $(MSBuildExtensionsPath)" />
         </Target>
     
-    <Target Name="LoadRemoteBuildConfig" AfterTargets="LoadLocalBuildConfig" Condition="'$(NeedsLoadRemote)' == 'True'">
+    <Target Name="LoadRemoteBuildConfig" 
+        AfterTargets="LoadLocalBuildConfig" 
+        Condition="'$(NeedsLoadRemote)' == 'True' And '$(IsTheAppPajamaClientProject)' == 'true'">
         <LoadRemoteBuildConfig Debug="$(BuildDebug)" ProjectName="$(MSBuildProjectName)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" TargetFrameworkIdentifier='$(TargetFrameworkIdentifier)'>
             <Output TaskParameter="BuildResourceDir" PropertyName="BuildResourceDir" />
             <Output TaskParameter="PackagingOutput" ItemName="PackagingFields" />
@@ -46,19 +70,27 @@
             <Output TaskParameter="SplashOutput" ItemName="SplashFields" />
         </LoadRemoteBuildConfig>
     </Target>
-    <Target Name="DeleteUnusedMediaFiles" AfterTargets="LoadRemoteBuildConfig">
+    <Target Name="DeleteUnusedMediaFiles" 
+        AfterTargets="LoadRemoteBuildConfig"
+        Condition=" '$(IsTheAppPajamaClientProject)' == 'true' ">
         <DeleteUnusedMediaFiles Debug="$(BuildDebug)" ProjectDir="$(MSBuildProjectDirectory)" PackagesDir="$(PackagesDir)" AppIconFields="@(AppIconFields)" SplashFields="@(SplashFields)" BuildConfiguration="$(Configuration)">
         </DeleteUnusedMediaFiles>
     </Target>
-    <Target Name="DownloadMediaFiles" AfterTargets="DeleteUnusedMediaFiles">
+    <Target Name="DownloadMediaFiles" 
+        AfterTargets="DeleteUnusedMediaFiles"
+        Condition=" '$(IsTheAppPajamaClientProject)' == 'true' ">
         <DownloadMediaFiles Debug="$(BuildDebug)" BuildAppid="$(BuildAppId)" ProjectDir="$(MSBuildProjectDirectory)" Token="$(BuildAccessToken)" PackagesDir="$(PackagesDir)" AppIconFields="@(AppIconFields)" SplashFields="@(SplashFields)" BuildConfiguration="$(Configuration)">
         </DownloadMediaFiles>
     </Target>
-    <Target Name="SetDroidManifest" AfterTargets="DownloadMediaFiles" Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid'">
+    <Target Name="SetDroidManifest" 
+        AfterTargets="DownloadMediaFiles" 
+        Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid' And '$(IsTheAppPajamaClientProject)' == 'true'">
         <SetDroidManifest Debug="$(BuildDebug)" ProjectDir="$(MSBuildProjectDirectory)" PackagingFields="@(PackagingFields)" AndroidManifest="$(AndroidManifest)">
         </SetDroidManifest>
     </Target>
-    <Target Name="SetDroidAppIcons" AfterTargets="SetDroidManifest" Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid'">
+    <Target Name="SetDroidAppIcons" 
+        AfterTargets="SetDroidManifest" 
+        Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid' And '$(IsTheAppPajamaClientProject)' == 'true'">
         <SetDroidAppIcons Debug="$(BuildDebug)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" AppIconFields="@(AppIconFields)" >
             <Output TaskParameter="OutputFiles" ItemName="DroidAppIcons" />
         </SetDroidAppIcons>
@@ -69,12 +101,16 @@
         </ItemGroup>
     </Target>
 
-    <Target Name="SetIosPlist" AfterTargets="DownloadMediaFiles" Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS'">
+    <Target Name="SetIosPlist" 
+        AfterTargets="DownloadMediaFiles" 
+        Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' And '$(IsTheAppPajamaClientProject)' == 'true'">
         <SetIosPlist Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" PackagingFields="@(PackagingFields)" IosPlist="$(_AppManifest)">
             </SetIosPlist>
 
     </Target>
-    <Target Name="SetIosAppIcons" AfterTargets="SetIosPlist" Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS'">
+    <Target Name="SetIosAppIcons" 
+        AfterTargets="SetIosPlist" 
+        Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' And '$(IsTheAppPajamaClientProject)' == 'true'">
         <SetIosAppIcons Debug="$(BuildDebug)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" AppIconFields="@(AppIconFields)" AssetCatalogueName="$(AssetCatalogueName)" AppIconCatalogueName="$(AppIconCatalogueName)" BaseOutputDir="$(MSBuildThisFileDirectory)">
             <Output TaskParameter="OutputImageAssets" ItemName="IosAppIcons" />            
             <Output TaskParameter="OutputITunesArtwork" ItemName="IosITunesArtwork" />

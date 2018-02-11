@@ -1,0 +1,787 @@
+<!--
+***********************************************************************************************
+Xamarin.iOS.Common.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+  created a backup copy.  Incorrect changes to this file will make it
+  impossible to load or build your projects from the command-line or the IDE.
+
+This file imports the version- and platform-specific targets for the project importing
+this file. This file also defines targets to produce an error if the specified targets
+file does not exist, but the project is built anyway (command-line or IDE build).
+
+Copyright (C) 2013-2016 Xamarin. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+
+	<!-- *** Code Analysis Setup *** -->
+	<!-- Library projects aren't supported, if we enable Xamarin.Analysis on them, we'll need to revisit the rules and deactivate some (e.g XIA0002). -->
+
+	<PropertyGroup>
+		<!-- '$(OutputType)' == 'Exe' because we don't want to run Xamarin.Analysis on library projects, the XIA rules don't apply. -->
+		<XamarinAnalysisTargetsFile Condition="Exists ('$(MSBuildThisFileDirectory)Xamarin.iOS.Analysis.targets') And '$(OutputType)' == 'Exe'">$(MSBuildThisFileDirectory)Xamarin.iOS.Analysis.targets</XamarinAnalysisTargetsFile>
+		<IsXBuild Condition="'$(MSBuildRuntimeVersion)' == ''">true</IsXBuild>
+	</PropertyGroup>
+
+<!-- TODO put back in --> 
+	<!-- <Import Project="$(MSBuildThisFileDirectory)Xamarin.Analysis.targets"
+			Condition="Exists('$(MSBuildThisFileDirectory)Xamarin.Analysis.targets') And '$(OutputType)' == 'Exe'" /> -->
+
+	<PropertyGroup>
+		<!-- Switching to a new property allows us to potentially switch from iPhone to simulator builds
+			 dynamically based on the user's selection when starting the project. This allows us to 
+			 eventually even (optionally) switch back to AnyCPU platform in the IDE, therefore 
+			 fixing a key pain point in managing solution configurations. -->
+		<ComputedPlatform Condition="'$(ComputedPlatform)' == ''">$(Platform)</ComputedPlatform>
+		<ComputedPlatform Condition="'$(ComputedPlatform)' == 'AnyCPU'">iPhone</ComputedPlatform>
+
+		<_CanOutputAppBundle>False</_CanOutputAppBundle>
+		<_CanOutputAppBundle Condition="'$(OutputType)' == 'Exe' Or '$(IsAppExtension)' == 'true' Or '$(IsWatchApp)' == 'true'">True</_CanOutputAppBundle>
+
+		<_CanArchive>False</_CanArchive>
+		<_CanArchive Condition="'$(OutputType)' == 'Exe' And '$(ComputedPlatform)' == 'iPhone' And '$(IsAppExtension)' == 'false' And '$(IsWatchApp)' == 'false'">True</_CanArchive>
+
+		<_CanDeployToDeviceOrSimulator>False</_CanDeployToDeviceOrSimulator>
+		<_CanDeployToDeviceOrSimulator Condition="('$(OutputType)' == 'Exe' Or '$(IsAppExtension)' == 'true') And '$(IsWatchApp)' == 'false'">True</_CanDeployToDeviceOrSimulator>
+
+		<_RequireCodeSigning>False</_RequireCodeSigning>
+		<_RequireCodeSigning Condition="'$(ComputedPlatform)' == 'iPhone'">True</_RequireCodeSigning>
+
+		<_RequireProvisioningProfile>False</_RequireProvisioningProfile>
+		<_RequireProvisioningProfile Condition="'$(ComputedPlatform)' == 'iPhone' Or '$(CodesignEntitlements)' != ''">True</_RequireProvisioningProfile>
+
+		<_PreparedResourceRules></_PreparedResourceRules>
+		<_AppBundleName>$(AssemblyName)</_AppBundleName>
+
+		<AppBundleExtension Condition="'$(AppBundleExtension)' == ''">.app</AppBundleExtension>
+
+		<DeviceSpecificIntermediateOutputPath>$(IntermediateOutputPath)</DeviceSpecificIntermediateOutputPath>
+		<DeviceSpecificOutputPath>$(OutputPath)</DeviceSpecificOutputPath>
+	</PropertyGroup>
+	
+	<PropertyGroup>
+		<ImplicitlyExpandDesignTimeFacades>true</ImplicitlyExpandDesignTimeFacades>
+		<CheckForSystemRuntimeDependency>true</CheckForSystemRuntimeDependency>
+
+		<ResolveReferencesDependsOn>
+			_SeparateAppExtensionReferences;
+			_SeparateWatchAppReferences;
+			$(ResolveReferencesDependsOn);
+			ImplicitlyExpandDesignTimeFacades
+		</ResolveReferencesDependsOn>
+
+		<ImplicitlyExpandDesignTimeFacadesDependsOn>
+			$(ImplicitlyExpandDesignTimeFacadesDependsOn);
+			GetReferenceAssemblyPaths
+		</ImplicitlyExpandDesignTimeFacadesDependsOn>
+	</PropertyGroup>
+
+	<ItemDefinitionGroup>
+		<!-- MSBuild will honor this default metadata, but xbuild will not, so we still need to use CreateItem -->
+		<_BundleResourceWithLogicalName>
+			<Optimize />
+		</_BundleResourceWithLogicalName>
+	</ItemDefinitionGroup>
+
+
+	<Target Name="ImplicitlyExpandDesignTimeFacades" Condition="'$(ImplicitlyExpandDesignTimeFacades)' == 'true'" DependsOnTargets="$(ImplicitlyExpandDesignTimeFacadesDependsOn)">
+
+	</Target>
+
+	<Target Name="_ComputeTargetArchitectures">
+
+	</Target>
+
+	<!-- Insert our app bundle generation step -->
+	<PropertyGroup>
+		<BuildDependsOn>
+			BuildOnlySettings;
+			PrepareForBuild;
+			_CollectBundleResources;
+			_OptimizePngImages;
+			_OptimizePropertyLists;
+			_OptimizeLocalizationFiles;
+			_PackLibraryResources;
+			_UnpackLibraryResources;
+			$(BuildDependsOn);
+			_GenerateBundleName;
+			_CleanUploaded;
+			_CreateAppBundle;
+			Codesign;
+			CreateIpa;
+			Archive;
+		</BuildDependsOn>
+
+		<CleanDependsOn>
+			$(CleanDependsOn);
+			_ComputeTargetArchitectures;
+			_CleanUploaded;
+			_CleanAppBundle;
+			_CleanDebugSymbols;
+			_CleanITunesArtwork;
+			_CleanDeviceSpecificOutput;
+			_CleanIntermediateToolOutput;
+		</CleanDependsOn>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<CompileColladaAssetsDependsOn>
+			_CollectColladaAssets;
+			_CoreCompileColladaAssets
+		</CompileColladaAssetsDependsOn>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<_IsContainerApp>false</_IsContainerApp>
+		<_IsContainerApp Condition="$(IsAppExtension) == 'false' And '$(IsWatchApp)' == 'false'">true</_IsContainerApp>
+	</PropertyGroup>
+
+	<Target Name="_CompileColladaAssets" Condition="'$(_CanOutputAppBundle)' == 'true'" DependsOnTargets="$(CompileColladaAssetsDependsOn)" />
+
+	<PropertyGroup>
+		<OptimizePngImagesDependsOn>
+			_CollectPngImages;
+			_CoreOptimizePngImages;
+			_AfterCoreOptimizePngImages
+		</OptimizePngImagesDependsOn>
+	</PropertyGroup>
+
+	<Target Name="_OptimizePngImages" DependsOnTargets="$(OptimizePngImagesDependsOn)" />
+
+	<PropertyGroup>
+		<OptimizePropertyListsDependsOn>
+			_CollectPropertyLists;
+			_CoreOptimizePropertyLists;
+			_AfterCoreOptimizePropertyLists
+		</OptimizePropertyListsDependsOn>
+	</PropertyGroup>
+
+	<Target Name="_OptimizePropertyLists" DependsOnTargets="$(OptimizePropertyListsDependsOn)" />
+
+	<PropertyGroup>
+		<OptimizeLocalizationFilesDependsOn>
+			_CollectLocalizationFiles;
+			_CoreOptimizeLocalizationFiles;
+			_AfterCoreOptimizeLocalizationFiles
+		</OptimizeLocalizationFilesDependsOn>
+	</PropertyGroup>
+
+	<Target Name="_OptimizeLocalizationFiles" DependsOnTargets="$(OptimizeLocalizationFilesDependsOn)" />
+
+	<PropertyGroup>
+		<CreateAppBundleDependsOn>
+			_DetectAppManifest;
+			_DetectSigningIdentity;
+			_CopyResourcesToBundle;
+			_CreateAssetPackManifest;
+			_SmeltMetal;
+			_ForgeMetal;
+			_TemperMetal;
+			_CompileCoreMLModels;
+			_PrepareResourceRules;
+			_CompileEntitlements;
+			_CompileAppManifest;
+			_GetNativeExecutableName;
+			_ParseExtraMtouchArgs;
+			_CompileToNative;
+			_CompileITunesMetadata;
+			_CollectITunesArtwork;
+			_CopyITunesArtwork;
+			_CreateDebugSettings;
+			_CreateDebugConfiguration;
+			_CreatePkgInfo;
+			_CopyAppExtensionsToBundle;
+			_CopyWatchOS1AppsToBundle;
+			_CopyWatchOS2AppsToBundle;
+			_ReadAppExtensionDebugSymbolProperties;
+			_GenerateAppExtensionDebugSymbols;
+			_PrepareDebugSymbolGeneration;
+			_GenerateDebugSymbols;
+			_ValidateAppBundle;
+		</CreateAppBundleDependsOn>
+	</PropertyGroup>
+
+	<Target Name="_CreateAppBundle" Condition="'$(_CanOutputAppBundle)' == 'true'" DependsOnTargets="$(CreateAppBundleDependsOn)" />
+
+	<PropertyGroup>
+		<_CodesignAppBundleDependsOn>
+			_EmbedMobileProvision;
+			_CodesignNativeLibraries;
+			_CollectFrameworks;
+			_CodesignFrameworks;
+			_ReadAppExtensionCodesignProperties;
+			_CodesignAppExtensions;
+			_PrepareCodesignAppExtension;
+			_CalculateCodesignAppBundleInputs;
+		</_CodesignAppBundleDependsOn>
+
+		<_CoreCodesignDependsOn>
+			$(_CodesignAppBundleDependsOn);
+			_CodesignAppBundle;
+			_CodesignVerify;
+		</_CoreCodesignDependsOn>
+
+		<CodesignDependsOn>
+			BeforeCodeSign;
+			CoreCodeSign;
+			AfterCodeSign;
+		</CodesignDependsOn>
+	</PropertyGroup>
+
+	<Target Name="BeforeCodesign" />
+	<Target Name="CoreCodesign" DependsOnTargets="$(_CoreCodesignDependsOn)" />
+	<Target Name="AfterCodesign" />
+
+	<Target Name="Codesign" Condition="'$(_CanOutputAppBundle)' == 'true'" DependsOnTargets="_CreateAppBundle;$(CodesignDependsOn)" />
+
+	<PropertyGroup>
+		<CreateIpaDependsOn>
+			_CoreCreateIpa;
+			_PackageOnDemandResources;
+			_ZipIpa
+		</CreateIpaDependsOn>
+
+		<ArchiveDependsOn>
+			_CoreArchive
+		</ArchiveDependsOn>
+	</PropertyGroup>
+
+	<Target Name="Archive" Condition="'$(_CanArchive)' == 'true'" DependsOnTargets="$(ArchiveDependsOn)" />
+
+	<Target Name="CreateIpa" Condition="'$(_CanArchive)' == 'true'" DependsOnTargets="$(CreateIpaDependsOn)" />
+
+	<Target Name="_CleanAppBundle" Condition="'$(_CanOutputAppBundle)' == 'true'" DependsOnTargets="_GenerateBundleName">
+	</Target>
+
+	<Target Name="_CleanUploaded" Condition="'$(_CanOutputAppBundle)' == 'true'" DependsOnTargets="_ComputeTargetArchitectures">
+	</Target>
+
+	<Target Name="_CleanDebugSymbols" Condition="'$(_CanOutputAppBundle)' == 'true'" DependsOnTargets="_GenerateBundleName">
+	</Target>
+
+	<Target Name="_CleanITunesArtwork" Condition="'$(_CanArchive)' == 'true'" DependsOnTargets="_ComputeTargetArchitectures">
+	</Target>
+
+	<Target Name="_CleanDeviceSpecificOutput" Condition="'$(_CanOutputAppBundle)' == 'true'">
+	</Target>
+
+	<Target Name="_CleanIntermediateToolOutput" DependsOnTargets="_ComputeTargetArchitectures">
+</Target>
+
+	<!-- TODO: check for duplicate items -->
+	<Target Name="_ComputeBundleResourceOutputPaths" DependsOnTargets="_CollectBundleResources;_GenerateBundleName;_DetectSigningIdentity">
+
+	</Target>
+
+	<Target Name="_CopyResourcesToBundle" DependsOnTargets="_ComputeBundleResourceOutputPaths">
+
+	</Target>
+
+	<Target Name="_CreateAssetPackManifest" DependsOnTargets="_CopyResourcesToBundle">
+
+	</Target>
+
+	<Target Name="_CollectBundleResources" DependsOnTargets="$(_CollectBundleResourcesDependsOn)">
+
+	</Target>
+
+	<Target Name="_DetectAppManifest">
+	
+	</Target>
+
+	<Target Name="_SmeltMetal" Condition="'$(_CanOutputAppBundle)' == 'true' And '@(Metal)' != ''" DependsOnTargets="_DetectSdkLocations">
+		<Error Condition="'$(ComputedPlatform)' == 'iPhoneSimulator'" Text="The iOS Simulator does not support metal. Build for a device instead."/>
+
+	</Target>
+
+	<Target Name="_ForgeMetal" Condition="'$(_CanOutputAppBundle)' == 'true' And '@(_SmeltedMetal)' != ''" DependsOnTargets="_SmeltMetal"
+		Inputs="@(_SmeltedMetal)" Outputs="$(DeviceSpeficicIntermediateOutputPath)metal\default.metal-ar">
+
+	</Target>
+
+	<Target Name="_TemperMetal" Condition="'$(_CanOutputAppBundle)' == 'true' And '@(_ForgedMetal)' != ''" DependsOnTargets="_ForgeMetal"
+		Inputs="@(_ForgedMetal)" Outputs="$(_AppBundlePath)default.metallib">
+
+	</Target>
+
+	<Target Name="_PackLibraryResources" Condition="'$(_CanOutputAppBundle)' == 'false'" DependsOnTargets="_CollectBundleResources">
+
+	</Target>
+
+	<Target Name="_UnpackLibraryResources" Condition="'$(_CanOutputAppBundle)' == 'true'" DependsOnTargets="ResolveReferences;_CollectBundleResources">
+
+	</Target>
+
+	<Target Name="_DetectSdkLocations" DependsOnTargets="_ComputeTargetArchitectures">
+
+	</Target>
+
+	<Target Name="_DetectSigningIdentity" Condition="'$(_CanOutputAppBundle)' == 'true'" DependsOnTargets="_DetectAppManifest;_DetectSdkLocations">
+
+	</Target>
+	
+	<Target Name="_GenerateBundleName" Condition="'$(_CanOutputAppBundle)' == 'true'" DependsOnTargets="_ComputeTargetArchitectures">
+
+	</Target>
+
+	<Target Name="GetAppBundleDir" DependsOnTargets="_GenerateBundleName" Returns="$(AppBundleDir)"/>
+
+	<Target Name="_CompileAppManifest"
+		DependsOnTargets="_DetectSdkLocations;_DetectAppManifest;_GenerateBundleName;_DetectSigningIdentity;_PrepareResourceRules;_ResolveWatchAppReferences;_DetectDebugNetworkConfiguration"
+		Inputs="$(_AppManifest);@(_PartialAppManifest)"
+		Outputs="$(_AppBundlePath)Info.plist" >
+
+	</Target>
+
+	<Target Name="_CompileITunesMetadata" Condition="'$(ComputedPlatform)' == 'iPhone' And '$(IsAppExtension)' == 'false' And '$(IsWatchApp)' == 'false'"
+		DependsOnTargets="_DetectSdkLocations;_DetectAppManifest;_GenerateBundleName;_CompileAppManifest"
+		Inputs="$(_AppManifest);@(ITunesMetadata)"
+		Outputs="$(DeviceSPecificOutputPath)iTunesMetadata.plist" >
+
+	</Target>
+
+	<Target Name="_CollectITunesArtwork" Condition="'$(ComputedPlatform)' == 'iPhone' And '$(IsAppExtension)' == 'false' And '$(IsWatchApp)' == 'false'">
+
+	</Target>
+
+	<Target Name="_CopyITunesArtwork" Condition="'$(ComputedPlatform)' == 'iPhone' And '$(IsAppExtension)' == 'false' And '$(IsWatchApp)' == 'false'"
+		DependsOnTargets="_CollectITunesArtwork"
+		Inputs="@(_ITunesArtworkWithLogicalName)" Outputs="$(DeviceSpecificOutputPath)%(_ITunesArtworkWithLogicalName.LogicalName)">
+
+	</Target>
+
+	<Target Name="_GetNativeExecutableName" DependsOnTargets="_DetectAppManifest;_GenerateBundleName;_CompileAppManifest">
+
+	</Target>
+
+	<PropertyGroup>
+        <_CompileToNativeInput>false</_CompileToNativeInput>
+        <TargetDir>false</TargetDir>
+        <TargetFileName>false</TargetFileName>
+	</PropertyGroup>
+
+	<Target Name="_GetCompileToNativeInputs">
+
+	</Target>
+
+	<Target Name="_CompileToNative" DependsOnTargets="$(_CompileToNativeDependsOn)"
+		Inputs="@(_CompileToNativeInput)"
+		Outputs="$(_NativeExecutable);$(DeviceSpecificOutputPath)mtouch.stamp">
+	</Target>
+
+
+	<Target Name="_ParseExtraMtouchArgs">
+
+	</Target>
+
+	<Target Name="_ReadAppExtensionDebugSymbolProperties">
+
+	</Target>
+
+	<Target Name="_GenerateAppExtensionDebugSymbols" Condition="'$(ComputedPlatform)' == 'iPhone' And '$(IsAppExtension)' == 'false'"
+		DependsOnTargets="_ParseExtraMtouchArgs;_CompileToNative;_ReadAppExtensionDebugSymbolProperties"
+		Inputs="$(_AppBundlePath)PlugIns\%(_AppExtensionDebugSymbolProperties.Identity)\%(_AppExtensionDebugSymbolProperties.NativeExecutable)"
+		Outputs="$(AppBundleDir)\..\%(_AppExtensionDebugSymbolProperties.Identity).dSYM\Contents\Info.plist">
+
+
+
+	</Target>
+
+	<Target Name="_GenerateFrameworkDebugSymbols" Condition="'$(ComputedPlatform)' == 'iPhone' And '$(IsWatchApp)' == 'false'" DependsOnTargets="_CompileToNative;_ParseExtraMtouchArgs;_CollectFrameworks"
+		Inputs="%(_Frameworks.Identity)"
+		Outputs="$(AppBundleDir)\..\%(_Frameworks.Filename).framework.dSYM\Contents\Info.plist"
+		>
+
+		</Target>
+
+
+	<Target Name="_PrepareDebugSymbolGeneration" Condition="'$(ComputedPlatform)' == 'iPhone' And '$(IsAppExtension)' == 'true' And '$(IsWatchApp)' == 'false'" DependsOnTargets="_CompileToNative;_ParseExtraMtouchArgs"
+			Inputs="$(_NativeExecutable)" Outputs="$(DeviceSpecificOutputPath)dsym.items">
+
+	</Target>
+
+	<Target Name="_GenerateDebugSymbols" Condition="'$(ComputedPlatform)' == 'iPhone' And '$(IsWatchApp)' == 'false'" DependsOnTargets="_CompileToNative;_ParseExtraMtouchArgs;_GenerateFrameworkDebugSymbols;_GenerateAppExtensionDebugSymbols;_PrepareDebugSymbolGeneration"
+		Inputs="$(_NativeExecutable)" Outputs="$(AppBundleDir).dSYM\Contents\Info.plist">
+
+	</Target>
+
+	<Target Name="_CreateDebugSettings" Condition="'$(MtouchDebug)' == 'true' And '$(IsWatchApp)' == 'false'"
+		DependsOnTargets="_CopyResourcesToBundle"
+		Outputs="$(_AppBundlePath)Settings.bundle\Root.plist" >
+	
+	</Target>
+
+	<Target Name="_CreateDebugConfiguration" Condition="'$(MtouchDebug)' == 'true' And '$(IsWatchApp)' == 'false'"
+		DependsOnTargets="_CopyResourcesToBundle;_DetectDebugNetworkConfiguration"
+		Outputs="$(_AppBundlePath)MonoTouchDebugConfiguration.txt" >
+
+	</Target>
+
+	<Target Name="_CollectPngImages" DependsOnTargets="_CollectBundleResources">
+	
+	</Target>
+
+	<Target Name="_CoreOptimizePngImages"
+		DependsOnTargets="_CollectPngImages;_DetectSdkLocations"
+		Inputs="@(_PngImage)"
+		Outputs="@(_PngImage -> '$(DeviceSpecificIntermediateOutputPath)optimized\%(LogicalName)')">
+
+	
+	</Target>
+
+	<Target Name="_AfterCoreOptimizePngImages" Condition="'@(_PngImage)' != ''">
+
+	</Target>
+
+	<Target Name="_CollectPropertyLists" DependsOnTargets="_CollectBundleResources">
+
+	</Target>
+
+	<Target Name="_CoreOptimizePropertyLists"
+		DependsOnTargets="_CollectPropertyLists;_DetectSdkLocations"
+		Inputs="@(_PropertyList)"
+		Outputs="$(DeviceSpecificIntermediateOutputPath)optimized\%(_PropertyList.LogicalName)"
+		>
+
+	</Target>
+
+	<Target Name="_AfterCoreOptimizePropertyLists" Condition="'@(_PropertyList)' != ''">
+
+	</Target>
+
+	<Target Name="_CollectLocalizationFiles" DependsOnTargets="_CollectBundleResources">    
+
+	</Target>
+
+	<Target Name="_CoreOptimizeLocalizationFiles"
+		DependsOnTargets="_CollectLocalizationFiles;_DetectSdkLocations"
+		Inputs="@(_LocalizationFile)"
+		Outputs="$(DeviceSpecificIntermediateOutputPath)optimized\%(_LocalizationFile.LogicalName)"
+		>
+
+	</Target>
+
+	<Target Name="_AfterCoreOptimizeLocalizationFiles" Condition="'@(_LocalizationFile)' != ''">
+
+	</Target>
+
+	<Target Name="_CollectColladaAssets">
+
+	</Target>
+
+    <ItemGroup>
+        <_ColladaAssetWithLogicalName Include="none" LogicalName="none"></_ColladaAssetWithLogicalName>
+    </ItemGroup>
+
+    <PropertyGroup>
+        <DeviceSpecificIntermediateOutputPath>N</DeviceSpecificIntermediateOutputPath>
+    </PropertyGroup>
+    
+	<Target Name="_CoreCompileColladaAssets"
+		DependsOnTargets="_CollectColladaAssets;_DetectSdkLocations"
+		Inputs="@(_ColladaAssetWithLogicalName)"
+		Outputs="$(DeviceSpecificIntermediateOutputPath)%(_ColladaAssetWithLogicalName.LogicalName)"
+		>
+        <PropertyGroup>
+            <DeviceSpecificIntermediateOutputPath>Y</DeviceSpecificIntermediateOutputPath>
+        </PropertyGroup>
+
+	</Target>
+
+	<Target Name="_CompileImageAssets" DependsOnTargets="_DetectAppManifest;_DetectSdkLocations;_ComputeTargetArchitectures;_BeforeCoreCompileImageAssets;_ReadCompileImageAssets;_CoreCompileImageAssets" />
+
+    <ItemGroup>
+    <ImageAsset Include="none"></ImageAsset>
+    </ItemGroup>
+
+    <PropertyGroup>
+        <_AppManifest>N</_AppManifest>
+        <_ACTool_PartialAppManifestCache>N</_ACTool_PartialAppManifestCache> 
+        <_ACTool_BundleResourceCache>N</_ACTool_BundleResourceCache>
+    </PropertyGroup>
+    
+	<Target Name="_BeforeCoreCompileImageAssets"
+		Inputs="@(ImageAsset);$(_AppManifest)"
+		Outputs="$(_ACTool_PartialAppManifestCache);$(_ACTool_BundleResourceCache)">
+		<PropertyGroup>
+            <_ACTool_PartialAppManifestCache>Y</_ACTool_PartialAppManifestCache> 
+            <_ACTool_BundleResourceCache>Y</_ACTool_BundleResourceCache>
+        </PropertyGroup>	
+	</Target>
+
+	<Target Name="_ReadCompileImageAssets"					
+		DependsOnTargets="_BeforeCoreCompileImageAssets">
+
+	
+	</Target>
+
+	<Target Name="_CoreCompileImageAssets" 
+		Inputs="@(ImageAsset);$(_AppManifest)"
+		Outputs="$(_ACTool_PartialAppManifestCache);$(_ACTool_BundleResourceCache)"
+		DependsOnTargets="_DetectAppManifest;_DetectSdkLocations;_BeforeCoreCompileImageAssets">
+
+	
+	</Target>
+
+	<Target Name="_CompileSceneKitAssets" DependsOnTargets="_DetectAppManifest;_DetectSdkLocations;_ComputeTargetArchitectures;_BeforeCoreCompileSceneKitAssets;_ReadCoreCompileSceneKitAssets;_CoreCompileSceneKitAssets" />
+
+	<Target Name="_BeforeCoreCompileSceneKitAssets"
+		Inputs="@(SceneKitAsset)"
+		Outputs="$(_SceneKitCache)">
+
+	</Target>
+
+	<Target Name="_ReadCoreCompileSceneKitAssets"
+		DependsOnTargets="_BeforeCoreCompileSceneKitAssets">
+
+
+	</Target>
+
+	<Target Name="_CoreCompileSceneKitAssets"
+		Inputs="@(SceneKitAsset)"
+		Outputs="$(_SceneKitCache)"
+		DependsOnTargets="_BeforeCoreCompileSceneKitAssets">
+
+
+	</Target>
+	
+	<Target Name="_CompileInterfaceDefinitions" DependsOnTargets="_DetectAppManifest;_DetectSdkLocations;_ComputeTargetArchitectures;_BeforeCoreCompileInterfaceDefinitions;_ReadCoreCompileInterfaceDefinitions;_CoreCompileInterfaceDefinitions" />
+	
+	<PropertyGroup>
+		<AtlasTexture>fals</AtlasTexture>
+		<CoreMLModel>false</CoreMLModel>
+          <_IBToolCache>N</_IBToolCache>
+		<_AppManifest>false</_AppManifest>
+	</PropertyGroup>
+
+    <ItemGroup>
+        <InterfaceDefinition Include="nothing"/>
+    </ItemGroup>
+    
+	<Target Name="_BeforeCoreCompileInterfaceDefinitions"
+		Inputs="@(InterfaceDefinition)"
+		Outputs="$(_IBToolCache)">
+
+            <PropertyGroup>
+          <_IBToolCache>Y</_IBToolCache>
+        </PropertyGroup>
+     <!--   <Error Text="IBTOOL CACHE "/>-->
+  <!--             <CallTarget Targets="Sub">
+            <Output TaskParameter="TargetOutputs" PropertyName="_IBToolCache"/>
+        </CallTarget>-->
+
+
+	</Target>
+
+<!--        <Target Name="_BeforeCoreCompileInterfaceDefinition" AfterTargets="_BeforeCoreCompileInterfaceDefinitions"
+        Inputs="@(InterfaceDefinition)">
+
+            <PropertyGroup>
+          <_IBToolCache>Y</_IBToolCache>
+        </PropertyGroup>-->
+       <!-- <Error Text="IBTOOL CACHE $(_IBToolCache)"/>-->
+  <!--             <CallTarget Targets="Sub">
+            <Output TaskParameter="TargetOutputs" PropertyName="_IBToolCache"/>
+        </CallTarget>-->
+
+
+<!--    </Target>-->
+
+<!--       <Target Name="Sub" AfterTargets="_BeforeCoreCompileInterfaceDefinitions">
+
+        <Error Text="IBTOOL CACHE "/>
+    </Target>-->
+
+    
+	<Target Name="_ReadCoreCompileInterfaceDefinitions"	DependsOnTargets="_BeforeCoreCompileInterfaceDefinitions">
+
+	</Target>
+
+	<Target Name="_CoreCompileInterfaceDefinitions"
+		Inputs="@(InterfaceDefinition)"
+		Outputs="$(_IBToolCache)"
+		DependsOnTargets="_BeforeCoreCompileInterfaceDefinitions">
+
+
+	</Target>
+
+	<Target Name="_CompileTextureAtlases" DependsOnTargets="_DetectAppManifest;_DetectSdkLocations;_BeforeCompileTextureAtlases;_ReadCoreCompileTextureAtlases;_CoreCompileTextureAtlases" />
+
+	<Target Name="_BeforeCompileTextureAtlases"
+		Inputs="@(AtlasTexture)"
+		Outputs="$(_TextureAtlasCache)">
+
+	</Target>
+
+	<Target Name="_ReadCoreCompileTextureAtlases"
+					DependsOnTargets="_BeforeCompileTextureAtlases">
+	</Target>
+
+	<Target Name="_CoreCompileTextureAtlases"
+		Inputs="@(AtlasTexture)"
+		Outputs="$(_TextureAtlasCache)"
+		DependsOnTargets="_BeforeCompileTextureAtlases">
+
+	</Target>
+
+	<Target Name="_CompileCoreMLModels" DependsOnTargets="_DetectAppManifest;_DetectSdkLocations;_ComputeTargetArchitectures;_BeforeCompileCoreMLModels;_ReadCompileCoreMLModels;_CoreCompileCoreMLModels" />
+
+	<Target Name="_BeforeCompileCoreMLModels"
+		Inputs="@(CoreMLModel);$(_AppManifest)"
+		Outputs="$(_CoreMLModel_PartialAppManifestCache);$(_CoreMLModel_BundleResourceCache)">
+
+	</Target>
+
+	<Target Name="_ReadCompileCoreMLModels"	DependsOnTargets="_BeforeCompileCoreMLModels">
+
+	</Target>
+
+	<Target Name="_CoreCompileCoreMLModels" 
+		Inputs="@(CoreMLModel);$(_AppManifest)"
+		Outputs="$(_CoreMLModel_PartialAppManifestCache);$(_CoreMLModel_BundleResourceCache)"
+		DependsOnTargets="_DetectAppManifest;_DetectSdkLocations;_BeforeCompileCoreMLModels">
+	</Target>
+
+	<Target Name="_CreatePkgInfo" Condition="'$(IsAppExtension)' == 'false'" DependsOnTargets="_GenerateBundleName" Outputs="$(_AppBundlePath)PkgInfo">
+
+	</Target>
+
+	<Target Name="_EmbedMobileProvision" Condition="'$(_RequireCodeSigning)' == 'true'" DependsOnTargets="_GenerateBundleName;_DetectSigningIdentity"
+		Outputs="$(_AppBundlePath)embedded.mobileprovision">
+
+	</Target>
+
+	<Target Name="_CompileEntitlements" Condition="'$(_RequireCodeSigning)' == 'true' Or '$(CodesignEntitlements)' != ''" DependsOnTargets="_DetectSdkLocations;_GenerateBundleName;_DetectSigningIdentity"
+		Outputs="$(DeviceSpecificIntermediateOutputPath)Entitlements.xcent">
+
+	</Target>
+
+	<Target Name="_PrepareResourceRules" DependsOnTargets="_DetectSdkLocations;_GenerateBundleName">
+
+	</Target>
+
+	<Target Name="_SeparateAppExtensionReferences" BeforeTargets="AssignProjectConfiguration">
+
+	</Target>
+
+	<Target Name="_AssignAppExtensionConfiguration" Condition="'@(_AppExtensionReference)' != ''">
+
+	</Target>
+
+	<Target Name="_SplitAppExtensionReferencesByExistent" DependsOnTargets="_AssignAppExtensionConfiguration">
+
+	</Target>
+
+	<Target Name="_ResolveAppExtensionReferences" DependsOnTargets="_SplitAppExtensionReferencesByExistent">
+
+	</Target>
+
+	<Target Name="_DetectDebugNetworkConfiguration">
+
+	</Target>
+
+	<Target Name="_CopyAppExtensionsToBundle" DependsOnTargets="_ResolveAppExtensionReferences">
+
+	</Target>
+
+	<Target Name="_ValidateAppBundle" Condition="'$(IsAppExtension)' == 'false' And '$(IsWatchApp)' == 'false'" DependsOnTargets="_DetectSdkLocations">
+	
+	</Target>
+
+	<Target Name="_SeparateWatchAppReferences" BeforeTargets="AssignProjectConfiguration" Condition="'$(IsAppExtension)' == 'true' Or '$(OutputType)' == 'Exe'">
+
+	</Target>
+
+	<Target Name="_AssignWatchAppConfiguration" Condition="'@(_WatchAppReference)' != ''">
+
+	</Target>
+
+	<!-- Split iOS Watch App projects into 2 lists
+		_WatchAppReferenceWithConfigurationExistent: Projects existent on disk
+		_WatchAppReferenceWithConfigurationNonExistent: Projects non-existent on disk -->
+	<Target Name="_SplitWatchAppReferencesByExistent" DependsOnTargets="_AssignWatchAppConfiguration">
+
+	</Target>
+
+	<Target Name="_ResolveWatchAppReferences" DependsOnTargets="_SplitWatchAppReferencesByExistent">
+
+	</Target>
+
+	<Target Name="_CopyWatchOS1AppsToBundle" Condition="'$(IsAppExtension)' == 'true'" DependsOnTargets="_ResolveWatchAppReferences">
+
+	</Target>
+
+	<Target Name="_CopyWatchOS2AppsToBundle" Condition="'$(OutputType)' == 'Exe'" DependsOnTargets="_ResolveWatchAppReferences">
+
+	</Target>
+
+	<Target Name="_CollectFrameworks" Condition="'$(_CanOutputAppBundle)' == 'true'" DependsOnTargets="_CompileToNative">
+
+	</Target>
+
+	<!-- Note: Always codesign *.dylibs even for Simulator builds. We use $(_CanOutputAppBundle) because dylibs can exist in app extensions as well. -->
+	<Target Name="_CodesignNativeLibraries" Condition="'$(_CanOutputAppBundle)' == 'true' And '$(_CodeSigningKey)' != ''" DependsOnTargets="_DetectSigningIdentity;_CompileToNative">
+
+	</Target>
+
+	<Target Name="_CodesignFrameworks" Condition="'$(_CanOutputAppBundle)' == 'true' And '$(_CodeSigningKey)' != '' And '@(_Frameworks)' != ''" DependsOnTargets="_DetectSigningIdentity;_CollectFrameworks"
+		Inputs="%(_Frameworks.Identity)" Outputs="$(DeviceSpecificIntermediateOutputPath)codesign\%(_Frameworks.Filename)%(_Frameworks.Extension)">
+
+
+	</Target>
+
+	<Target Name="_ReadAppExtensionCodesignProperties">
+
+	</Target>
+
+	<Target Name="_CodesignAppExtensions" Condition="('$(_CanOutputAppBundle)' == 'true' And '$(_CodeSigningKey)' != '') And '@(_AppExtensionCodesignProperties)' != ''"
+		DependsOnTargets="_DetectSigningIdentity;_ReadAppExtensionCodesignProperties"
+		Inputs="$(_AppBundlePath)PlugIns\%(_AppExtensionCodesignProperties.Identity)\%(_AppExtensionCodesignProperties.NativeExecutable);%(_AppExtensionCodesignProperties.CodesignAppExtensionInputs)"
+		Outputs="$(_AppBundlePath)PlugIns\%(_AppExtensionCodesignProperties.Identity)\_CodeSignature\CodeResources">
+
+	
+	</Target>
+
+	<Target Name="_PrepareCodesignAppExtension" Condition="('$(_CanOutputAppBundle)' == 'true' And '$(_CodeSigningKey)' != '') And '$(IsAppExtension)' == 'true' And '@(_ResolvedAppBundleExtensions)' == ''">
+
+
+
+	</Target>
+
+	<Target Name="_CalculateCodesignAppBundleInputs" Condition="('$(_CanOutputAppBundle)' == 'true' And '$(_CodeSigningKey)' != '') And ('$(IsAppExtension)' == 'false' Or '@(_ResolvedAppExtensionReferences)' != '')">
+
+	</Target>
+
+<!-- variables not done -->
+	<Target Name="_CodesignAppBundle" Condition="('$(_CanOutputAppBundle)' == 'true' And '$(_CodeSigningKey)' != '') And ('$(IsAppExtension)' == 'false' Or '@(_ResolvedAppExtensionReferences)' != '')" DependsOnTargets="$(_CodesignAppBundleDependsOn)"
+		Inputs="@(_CodesignAppBundleInputs)" Outputs="$(_AppBundlePath)_CodeSignature\CodeResources">
+
+	</Target>
+
+	<Target Name="_CodesignVerify" Condition="'$(_RequireCodeSigning)' == 'true' And ('$(IsAppExtension)' == 'false' Or '@(_ResolvedAppExtensionReferences)' != '')" DependsOnTargets="_CodesignAppBundle">
+	
+	</Target>
+
+	<Target Name="_CoreCreateIpa" Condition="'$(BuildIpa)' == 'true'" DependsOnTargets="$(Codesign)">
+
+	</Target>
+	
+	<Target Name="_PackageOnDemandResources" Condition="'$(BuildIpa)' == 'true' And '$(EnableOnDemandResources)' == 'true' And ('$(_DistributionType)' == 'AppStore' Or '$(_DistributionType)' == 'AdHoc')" >
+
+	</Target>
+
+	<Target Name="_ZipIpa" Condition="'$(BuildIpa)' == 'true'">
+
+	</Target>
+
+	<Target Name="_CoreArchive" Condition="'$(ArchiveOnBuild)' == 'true'" DependsOnTargets="$(Codesign)">
+
+	</Target>
+<!-- 
+	<Import Project="$(MSBuildThisFileDirectory)$(MSBuildThisFileName).After.targets"
+			Condition="Exists('$(MSBuildThisFileDirectory)$(MSBuildThisFileName).After.targets')"/> -->
+
+</Project>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Project>
+<Target Name="CoreCompile" 
+    Inputs="$(MSBuildAllProjects);
+            @(Compile);                               
+            @(_CoreCompileResourceInputs);
+            $(ApplicationIcon);
+            $(AssemblyOriginatorKeyFile);
+            @(ReferencePath);
+            @(CompiledLicenseFile);
+            @(EmbeddedDocumentation); 
+            $(Win32Resource);
+            $(Win32Manifest);
+            @(CustomAdditionalCompileInputs)"
+    Outputs="@(DocFileItem);
+             @(IntermediateAssembly);
+             @(_DebugSymbolsIntermediatePath);                 
+             $(NonExistentFile);
+             @(CustomAdditionalCompileOutputs)">
+    <!--Do pre-compilation processing here-->
+</Target>
+</Project>

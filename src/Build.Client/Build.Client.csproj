@@ -13,8 +13,9 @@
     <PackageId>Build.Client</PackageId>
     <PackageVersion>0.0.1</PackageVersion>
     <Authors>Dean Marcussen</Authors>
-    <Description>Build.Client</Description>
+    <Description>theappspajames</Description>
     <IsTool>true</IsTool>
+    <PackageProjectUrl>https://theappspajamas.com</PackageProjectUrl>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -47,10 +48,6 @@
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
         </PackageReference>
     <!-- Marks all packages as 'local only' so they don't end up in the nuspec. -->
-    <PackageReference Include="NuGet.Build.Packaging">
-      <Version>0.2.2</Version>
-    </PackageReference>
-        
     <PackageReference Update="@(PackageReference)" PrivateAssets="All" />
   </ItemGroup>
   <ItemGroup>
@@ -83,12 +80,10 @@
     <Compile Include="BuildTasks\CleanAssetCatalogues.cs" />
     <Compile Include="BuildTasks\SetIosPlist.cs" />
     <Compile Include="Shared\Types\AppIconFieldType.cs" />
-    <Compile Include="Shared\Types\BuildConfigRecordSetType.cs" />
     <Compile Include="Shared\Types\Enumeration.cs" />
     <Compile Include="Shared\Types\FieldHolderType.cs" />
     <Compile Include="Shared\Types\FieldType.cs" />
     <Compile Include="Shared\Types\FieldTypeHelpers.cs" />
-    <Compile Include="Shared\Types\MasterMediaFieldType.cs" />
     <Compile Include="Shared\Types\MediaFieldType.cs" />
     <Compile Include="Shared\Types\PackagingFieldType.cs" />
     <Compile Include="Shared\Types\ProjectType.cs" />
@@ -97,6 +92,10 @@
     <Compile Include="Shared\Types\StringFieldType.cs" />
     <Compile Include="Models\LoginResponseDto.cs" />
     <Compile Include="Extensions\AuthenticationExtensions.cs" />
+    <Compile Include="Shared\Types\BuildConfigRecordSetFieldType.cs" />
+    <Compile Include="Shared\Types\MediaOrientationType.cs" />
+    <Compile Include="BuildTasks\SetIosAppIconsV2.cs" />
+    <Compile Include="BuildTasks\SetIosLaunchImages.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
@@ -105,6 +104,7 @@
     <Folder Include="Constants\" />
     <Folder Include="Helpers\" />
     <Folder Include="Shared\" />
+    <Folder Include="Ios\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -112,9 +112,16 @@
   <ItemGroup>
 
  <!--   <Content Include="build\*" PackagePath="build\" />-->
-    <Content Include="build\Build.Client.props" PackagePath="build\Build.Client.props" />
-    <Content Include="build\Build.Client.targets" PackagePath="build\Build.Client.targets" />
-  </ItemGroup>
+    <Content Include="NugetContent\build\Build.Client.props" PackagePath="build\Build.Client.props" />
+    <Content Include="NugetContent\build\Build.Client.targets" PackagePath="build\Build.Client.targets" />
+
+    <Content Include="NugetContent\build\Xamarin.iOS.Common.targets" PackagePath="build\Xamarin.iOS.Common.targets" />
+
+    <Content Include="NugetContent\build\Xamarin.iOS.WatchApp.Common.targets" PackagePath="build\Xamarin.iOS.WatchApp.Common.targets" />
+    <Content Include="NugetContent\build\Microsoft.Common.targets" PackagePath="build\Microsoft.Common.targets" />
+
+    <!--<Content Include="NugetContent\Ios\theappspajamas.xcassets\**" PackagePath="content\Xamarin.iOS10\theappspajamas.xcassets\**" />
+-->  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\NuGet.Build.Packaging.0.2.0\build\NuGet.Build.Packaging.targets" Condition="Exists('..\packages\NuGet.Build.Packaging.0.2.0\build\NuGet.Build.Packaging.targets')" />
 </Project>

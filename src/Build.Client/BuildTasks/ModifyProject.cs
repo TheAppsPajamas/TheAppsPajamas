@@ -15,6 +15,9 @@ namespace Build.Client.BuildTasks
         public ITaskItem[] FilesToDeleteFromProject { get; set; }
 
 
+        public ITaskItem[] FilesToAddToProject { get; set; }
+
+
         [Output]
         public string ProjectFileSave { get; set; }
 
@@ -53,8 +56,11 @@ namespace Build.Client.BuildTasks
                 var slItemGroup = project.Xml.CreateItemGroupElement();
                 project.Xml.InsertAfterChild(slItemGroup, project.Xml.LastChild);
 
-                slItemGroup.AddItem("ImageAsset", "theappspajamas.xcassets\\Contents.json");
-                slItemGroup.AddItem("ImageAsset", "theappspajamas.xcassets\\Image.imageset\\Contents.json");
+                foreach(var fileToAdd in FilesToAddToProject){
+
+                    LogDebug("Added file {1} to {0}", fileToAdd.ItemSpec, fileToAdd.GetMetadata("IncludePath"));
+                    slItemGroup.AddItem(fileToAdd.ItemSpec, fileToAdd.GetMetadata("IncludePath"));
+                }
 
 
                 var withoutExt = Path.Combine(System.IO.Path.GetDirectoryName(ProjectFileLoad), Path.GetFileNameWithoutExtension(ProjectFileLoad));

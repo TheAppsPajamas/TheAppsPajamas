@@ -22,18 +22,25 @@ namespace Build.Client.BuildTasks
         public ITaskItem AppIconCatalogueName { get; set; }
 
         //we clone into packages/project dir because of weirdness with xamarin actool task
-        public string BaseOutputDir { get; set; }
+        //public string BaseOutputDir { get; set; }
+
+        //[Output]
+        //public ITaskItem[] OutputImageAssets { get; set; }
+
+        //[Output]
+        //public ITaskItem[] OutputITunesArtwork { get; set; }
 
         [Output]
-        public ITaskItem[] OutputImageAssets { get; set; }
-
-        [Output]
-        public ITaskItem[] OutputITunesArtwork { get; set; }
-
+        public ITaskItem[] FilesToAddToProject { get; set; }
 
         public override bool Execute()
         {
             Log.LogMessage("Set Ios App Icons started");
+
+            var filesToAddToProject = new List<ITaskItem>();
+
+
+            var filesToExcludeFromProject = new List<ITaskItem>();
 
             try
             {
@@ -54,22 +61,28 @@ namespace Build.Client.BuildTasks
                 LogDebug("AppIconSet name {0}", AppIconCatalogueName.ItemSpec);
 
                 //create asset catalogue folder, and contents.json
-                var assetCatalogueDir = Path.Combine(BaseOutputDir, AssetCatalogueName.ItemSpec);
+                var outputAssetCatalogueDir = Path.Combine(ProjectDir, AssetCatalogueName.ItemSpec);
 
-                if (!Directory.Exists(assetCatalogueDir)){
-                    Directory.CreateDirectory(assetCatalogueDir);
-                    LogDebug("Created {0} folder at {1}", AssetCatalogueName, assetCatalogueDir);
-                } else {
-                    Directory.Delete(assetCatalogueDir, true);
-                    Directory.CreateDirectory(assetCatalogueDir);
-                    LogDebug("Cleaned and Created {0} folder at {1}", AssetCatalogueName, assetCatalogueDir);
-                }
+
+                if (!Directory.Exists(outputAssetCatalogueDir)){
+                    Directory.CreateDirectory(outputAssetCatalogueDir);
+                    filesToAddToProject.Add(new TaskItem("ImageAsset", new Dictionary<string, string>{ {"IncludePath", outputAssetCatalogueDir}}));
+                    LogDebug("Created {0} folder at {1}", AssetCatalogueName, outputAssetCatalogueDir);
+                } 
+                //stop deleting folder that's just confusing
+                //else {
+                //    Directory.Delete(outputAssetCatalogueDir, true);
+                //    Directory.CreateDirectory(outputAssetCatalogueDir);
+                //    LogDebug("Cleaned and Created {0} folder at {1}", AssetCatalogueName, outputAssetCatalogueDir);
+                //}
                                              
-                var assetCatalogueContentsPath = Path.Combine(BaseOutputDir, AssetCatalogueName.ItemSpec, "Contents.json");
+                var assetCatalogueContentsPath = Path.Combine(ProjectDir, AssetCatalogueName.ItemSpec, "Contents.json");
 
                 if (!File.Exists(assetCatalogueContentsPath)){
                     LogDebug("Creating Asset catalogue Contents.json at {0}", assetCatalogueContentsPath);
                     File.WriteAllText(assetCatalogueContentsPath, Consts.AssetCatalogueContents);
+                    filesToAddToProject.Add(new TaskItem("ImageAsset", new Dictionary<string, string>{ {"IncludePath", assetCatalogueContentsPath}}));
+
                 }
 
                 var assetCatalogueItem = new TaskItem(assetCatalogueContentsPath);
@@ -78,15 +91,17 @@ namespace Build.Client.BuildTasks
                 Log.LogMessage("Saving {1} Contents.json to path {0}", assetCatalogueItem.ItemSpec, AssetCatalogueName.ItemSpec);
 
                 //create appiconset folder, and contents.json
-                var appIconSetDir = Path.Combine(BaseOutputDir, AssetCatalogueName.ItemSpec, AppIconCatalogueName.ItemSpec);
+                var appIconSetDir = Path.Combine(ProjectDir, AssetCatalogueName.ItemSpec, AppIconCatalogueName.ItemSpec);
 
                 if (!Directory.Exists(appIconSetDir))
                 {
                     Directory.CreateDirectory(appIconSetDir);
+                    filesToAddToProject.Add(new TaskItem("ImageAsset", new Dictionary<string, string> { { "IncludePath", appIconSetDir } }));
+
                     LogDebug("Created app-icon-set folder at {0}", appIconSetDir);
                 }                          
 
-                var appIconSetContentsPath = Path.Combine(BaseOutputDir, AssetCatalogueName.ItemSpec, AppIconCatalogueName.ItemSpec, "Contents.json");
+                var appIconSetContentsPath = Path.Combine(ProjectDir, AssetCatalogueName.ItemSpec, AppIconCatalogueName.ItemSpec, "Contents.json");
                 var appIconSetItem = new TaskItem(appIconSetContentsPath);
                 outputImageAssets.Add(appIconSetItem);
 
@@ -94,6 +109,7 @@ namespace Build.Client.BuildTasks
 
                 LogDebug("Added {0} Contents.json at path {0}", appIconSetItem.ItemSpec, AppIconCatalogueName.ItemSpec);
 
+                //TODO if this doesn't exist, need to add it etc
                 foreach (var field in AppIconFields)
                 {
                     //do itunes artwork first
@@ -102,6 +118,13 @@ namespace Build.Client.BuildTasks
                         var existingFilePath = Path.Combine(mediaResourcesBuildConfigDir, String.Concat(field.GetMetadata("MediaName"), ".png"));
 
                         var filePath = Path.Combine(base.ProjectDir, field.GetMetadata("LogicalName"));
+
+                        if (!File.Exists(filePath))
+                        {
+                            filesToAddToProject.Add(new TaskItem("ITunesArtwork", new Dictionary<string, string> { { "IncludePath", filePath } }));
+
+                        }
+
                         File.Copy(existingFilePath, filePath, true);
                         var artworkTaskItem = new TaskItem(field.GetMetadata("LogicalName"));
                         outputITunesArtwork.Add(artworkTaskItem);
@@ -136,17 +159,22 @@ namespace Build.Client.BuildTasks
                         var existingFilePath = Path.Combine(mediaResourcesBuildConfigDir, field.GetMetadata("Path"), String.Concat(field.GetMetadata("MediaName"), ".png"));
 
 
-                        var filePath = Path.Combine(BaseOutputDir, field.GetMetadata("Path"), field.GetMetadata("CatalogueName"));
+                        var filePath = Path.Combine(ProjectDir, field.GetMetadata("Path"), field.GetMetadata("CatalogueName"));
+
+                        if (!File.Exists(filePath)){
+                            filesToAddToProject.Add(new TaskItem("ImageAsset", new Dictionary<string, string> { { "IncludePath", filePath } }));
+                          
+                        }
 
                         LogDebug("Copying file {0} to {1}", existingFilePath, filePath);
-                        File.Copy(existingFilePath, filePath);
+                        File.Copy(existingFilePath, filePath, true);
 
-                        var logicalFilePath = Path.Combine(BaseOutputDir, field.GetMetadata("Path"), field.GetMetadata("CatalogueName"));
+                        var logicalFilePath = Path.Combine(ProjectDir, field.GetMetadata("Path"), field.GetMetadata("CatalogueName"));
 
                         Log.LogMessage("Adding file {0} at path {1}", filePath, logicalFilePath);
 
                         var taskItem = new TaskItem(logicalFilePath);
-                        outputImageAssets.Add(taskItem);
+                        //outputImageAssets.Add(taskItem);
                     }
                 }
 
@@ -156,12 +184,21 @@ namespace Build.Client.BuildTasks
                     , new JsonSerializerSettings {
                         NullValueHandling = NullValueHandling.Ignore
                     });
-                var appCatalogueOutputPath = Path.Combine(BaseOutputDir, AssetCatalogueName.ItemSpec, AppIconCatalogueName.ItemSpec, "Contents.json");
+
+ 
+                var appCatalogueOutputPath = Path.Combine(ProjectDir, AssetCatalogueName.ItemSpec, AppIconCatalogueName.ItemSpec, "Contents.json");
+                if (!File.Exists(appCatalogueOutputPath))
+                {                     
+                    filesToAddToProject.Add(new TaskItem("ImageAsset", new Dictionary<string, string> { { "IncludePath", appCatalogueOutputPath } }));
+                          
+                }
                 Log.LogMessage("Saving {1} Contents.json to {0}", appCatalogueOutputPath, AppIconCatalogueName.ItemSpec);
                 File.WriteAllText(appCatalogueOutputPath, appCatalogueOutput);
 
-                OutputImageAssets = outputImageAssets.ToArray();
-                OutputITunesArtwork = outputITunesArtwork.ToArray();
+                //OutputImageAssets = outputImageAssets.ToArray();
+                //OutputITunesArtwork = outputITunesArtwork.ToArray();
+
+                FilesToAddToProject = filesToAddToProject.ToArray();
                 return true;
             } catch (Exception ex){
                 Log.LogErrorFromException(ex);

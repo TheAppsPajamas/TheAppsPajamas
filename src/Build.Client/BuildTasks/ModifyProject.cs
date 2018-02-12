@@ -22,7 +22,8 @@ namespace Build.Client.BuildTasks
         public string ProjectFileSave { get; set; }
 
         [Output]
-        public string ProjectNeedsSave { get; set; } = bool.FalseString;
+        public string ProjectShouldModifyOriginal { get; set; } = bool.FalseString;
+
 
         public override bool Execute()
         {
@@ -61,9 +62,14 @@ namespace Build.Client.BuildTasks
 
                 var buildResourceItems = allItems.Where(x => x.Include.Contains(Consts.TheAppsPajamasResourcesDir));
 
+                int filesDeleted = 0;
                 foreach(var item in buildResourceItems){
                     item.Parent.RemoveChild(item);
+                    filesDeleted++;
                 }
+
+
+                LogDebug("Delete {0} from {1} folder", filesDeleted, Consts.MediaResourcesDir);
 
                 //add files (again asset catalogue stuff)
                 var addItemGroup = project.Xml.CreateItemGroupElement();
@@ -85,7 +91,7 @@ namespace Build.Client.BuildTasks
                 if ((FilesToAddToProject != null && FilesToAddToProject.Length != 0)
                     || (FilesToDeleteFromProject != null && FilesToDeleteFromProject.Length != 0))
                 {
-                    ProjectNeedsSave = bool.TrueString;
+                    ProjectShouldModifyOriginal = bool.TrueString;
                 }
 
                 //always save (because of the removing allpajama resources)

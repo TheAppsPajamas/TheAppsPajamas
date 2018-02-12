@@ -99,6 +99,7 @@
     <Compile Include="Shared\Types\MediaOrientationType.cs" />
     <Compile Include="BuildTasks\ModifyProject.cs" />
     <Compile Include="BuildTasks\SaveModifiedProjectBackToProject.cs" />
+    <Compile Include="BuildTasks\AddResourceBackIntoModifedProject.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />

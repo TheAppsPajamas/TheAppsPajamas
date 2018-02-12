@@ -165,6 +165,8 @@ namespace Build.Client.Extensions
                         path = String.Empty;
                         mediaName = string.Concat(fieldType.GetMetadata("filename").RemovePngExt(), "_", field.Value);
                         logicalName = fieldType.GetMetadata("filename").RemovePngExt();
+
+                        itemMetadata.Add("ResourceType", "ImageAsset");
                     }
                     else //do asset catalogue
                     {

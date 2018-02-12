@@ -84,9 +84,6 @@ namespace Build.Client.BuildTasks
                         LogDebug("FilesToAddToProject is null");
                     }
 
-
-
-
                     if ((FilesToAddToProject != null && FilesToAddToProject.Length != 0)
                         || (FilesToDeleteFromProject != null && FilesToDeleteFromProject.Length != 0))
                     {

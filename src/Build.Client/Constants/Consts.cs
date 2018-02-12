@@ -7,6 +7,7 @@ namespace Build.Client.Constants
         public const string MediaResourcesDir = "media-resources";
         public const string AssetCatalogueOutputDir = "asset-catalogue-output";
 
+        public const string ModifiedProjectNameExtra = ".theappspajamas";
 
         public const string ProjectConfig = "project.config";
 

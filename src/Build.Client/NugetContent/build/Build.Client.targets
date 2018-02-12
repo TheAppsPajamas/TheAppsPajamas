@@ -17,6 +17,22 @@
         <BuildDebug>true</BuildDebug>
     </PropertyGroup>
 
+    <Target Name="ModifyProject" 
+        BeforeTargets="_GetReferenceAssemblyPaths;_BeforeCoreCompileInterfaceDefinitions" 
+           Condition=" '$(IsTheAppPajamaClientProject)' != 'true' ">
+           <ModifyProject Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" 
+            ProjectFileLoad="$(MSBuildProjectFullPath)">
+            <Output TaskParameter="ProjectFileSave" PropertyName="ModifiedProjectFullPath"/>
+
+        </ModifyProject>
+
+            <Warning Text="Modified project path $(ModifiedProjectFullPath)"/>
+    </Target>
+
+    <Target Name="BuildExternal" BeforeTargets="_BeforeCoreCompileInterfaceDefinitions">
+        <MSBuild Projects="$(ModifiedProjectFullPath)" Targets="Rebuild" StopOnFirstFailure="True" Properties="IsTheAppPajamaClientProject=true" />
+
+    </Target>    
 
     <Target Name="CleanProjectsConfig" 
         AfterTargets="Clean" 

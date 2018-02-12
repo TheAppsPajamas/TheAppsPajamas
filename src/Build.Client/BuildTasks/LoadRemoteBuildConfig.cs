@@ -50,7 +50,8 @@ namespace Build.Client.BuildTasks
                 return false;
             }
 
-            var url = String.Concat(Consts.UrlBase, Consts.ClientEndpoint, "?", "appId=", buildResourcesConfig.AppId, "&projectName=", ProjectName, "&buildConfiguration=", BuildConfiguration );
+            var unmodifedProjectName = ProjectName.Replace(Consts.ModifiedProjectNameExtra, String.Empty);
+            var url = String.Concat(Consts.UrlBase, Consts.ClientEndpoint, "?", "appId=", buildResourcesConfig.AppId, "&projectName=", unmodifedProjectName, "&buildConfiguration=", BuildConfiguration );
 
             Log.LogMessage("Loading remote build config from '{0}'", url);
 

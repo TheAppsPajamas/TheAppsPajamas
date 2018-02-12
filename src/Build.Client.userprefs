@@ -1,10 +1,11 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/NugetContent/build/Xamarin.iOS.WatchApp.Common.targets">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/BuildTasks/LoadRemoteBuildConfig.cs">
     <Files>
-      <File FileName="Build.Client/NugetContent/build/Build.Client.targets" Line="8" Column="13" />
-      <File FileName="Build.Client/Build.Client.csproj" Line="120" Column="119" />
-      <File FileName="Build.Client/NugetContent/build/Xamarin.iOS.Common.targets" Line="381" Column="5" />
-      <File FileName="Build.Client/NugetContent/build/Xamarin.iOS.WatchApp.Common.targets" Line="19" Column="1" />
+      <File FileName="Build.Client/NugetContent/build/Build.Client.targets" Line="33" Column="9" />
+      <File FileName="Build.Client/NugetContent/build/Xamarin.iOS.Common.targets" Line="381" Column="1" />
+      <File FileName="Build.Client/NugetContent/build/Xamarin.iOS.WatchApp.Common.targets" Line="50" Column="33" />
+      <File FileName="Build.Client/BuildTasks/ModifyProject.cs" Line="42" Column="81" />
+      <File FileName="Build.Client/BuildTasks/LoadRemoteBuildConfig.cs" Line="56" Column="75" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

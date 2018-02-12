@@ -21,7 +21,8 @@ namespace Build.Client.BuildTasks
         [Output]
         public string ProjectFileSave { get; set; }
 
-
+        [Output]
+        public string ProjectNeedsSave { get; set; } = bool.FalseString;
 
         public override bool Execute()
         {
@@ -95,6 +96,7 @@ namespace Build.Client.BuildTasks
 
                         ProjectFileSave = String.Concat(withoutExt, Consts.ModifiedProjectNameExtra, ".csproj");
                         LogDebug("Saving project to {0}", ProjectFileSave);
+                        ProjectNeedsSave = bool.TrueString;
                         project.Save(ProjectFileSave);
                     }
 

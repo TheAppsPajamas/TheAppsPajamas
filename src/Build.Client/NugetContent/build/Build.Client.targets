@@ -170,6 +170,8 @@
             FilesToAddToProject="@(FilesToAddToProject)">
             <Output TaskParameter="ProjectFileSave" PropertyName="ModifiedProjectFullPath"/>
 
+            <Output TaskParameter="ProjectNeedsSave" PropertyName="ProjectNeedsSave"/>
+
         </ModifyProject>
 
             <Warning Text="Modified project path $(ModifiedProjectFullPath)"/>
@@ -184,7 +186,7 @@
 
     <Target Name="SaveModifiedProjectBackToProject" 
         AfterTargets="BuildModifiedProject"
-        Condition=" '$(IsTheAppPajamaClientProject)' != 'true' ">
+        Condition=" '$(IsTheAppPajamaClientProject)' != 'true' And $(ProjectNeedsSave) == 'True' ">
         <SaveModifiedProjectBackToProject Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" 
             ProjectFileOriginalName="$(MSBuildProjectFullPath)"
             ProjectFileModifiedName="$(ModifiedProjectFullPath)">

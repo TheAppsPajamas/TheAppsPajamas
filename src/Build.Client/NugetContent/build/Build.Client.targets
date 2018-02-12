@@ -29,10 +29,24 @@
             <Warning Text="Modified project path $(ModifiedProjectFullPath)"/>
     </Target>
 
-    <Target Name="BuildExternal" BeforeTargets="_BeforeCoreCompileInterfaceDefinitions">
+    <Target Name="BuildModifiedProject" 
+        AfterTargets="ModifyProject"
+        Condition=" '$(IsTheAppPajamaClientProject)' != 'true' ">
         <MSBuild Projects="$(ModifiedProjectFullPath)" Targets="Rebuild" StopOnFirstFailure="True" Properties="IsTheAppPajamaClientProject=true" />
 
     </Target>    
+
+    <Target Name="SaveModifiedProjectBackToProject" 
+        AfterTargets="BuildModifiedProject"
+        Condition=" '$(IsTheAppPajamaClientProject)' != 'true' ">
+        <SaveModifiedProjectBackToProject Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" 
+            ProjectFileOriginalName="$(MSBuildProjectFullPath)"
+            ProjectFileModifiedName="$(ModifiedProjectFullPath)">
+
+        </SaveModifiedProjectBackToProject>
+    </Target>    
+
+    
 
     <Target Name="CleanProjectsConfig" 
         AfterTargets="Clean" 

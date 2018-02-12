@@ -20,15 +20,15 @@ namespace Build.Client.Extensions
 
             try
             {
-                var buildResourceDir = Path.Combine(baseTask.ProjectDir, Consts.BuildResourcesDir);
+                var buildResourceDir = Path.Combine(baseTask.ProjectDir, Consts.TheAppsPajamasResourcesDir);
                 if (!Directory.Exists(buildResourceDir))
                 {
-                    baseTask.LogDebug("Created Build-Resources folder at '{0}'", buildResourceDir);
+                    baseTask.LogDebug("Created theappspajamas-resources folder at '{0}'", buildResourceDir);
                     Directory.CreateDirectory(buildResourceDir);
                 }
                 else
                 {
-                    baseTask.LogDebug("Build-Resources folder location '{0}'", buildResourceDir);
+                    baseTask.LogDebug("theappspajamas-resources folder location '{0}'", buildResourceDir);
                 }
                 var directoryInfo = new DirectoryInfo(buildResourceDir);
                 return directoryInfo.FullName;

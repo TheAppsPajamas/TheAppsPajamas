@@ -143,31 +143,36 @@ namespace Build.Client.Extensions
                     logicalName = Path.Combine(fieldType.GetMetadata("folder"), packagingIcon.Value.ApplyPngExt());
                     path = Path.Combine(Consts.DroidResources, fieldType.GetMetadata("folder"));
                     mediaName = String.Concat(packagingIcon.Value, "_", field.Value);
+
+                    itemMetadata.Add("ResourceType", "AndroidResource");
                 } else if (fieldType.ProjectType == ProjectType.Ios){
                     //do iTunesArtWork
                     if (String.IsNullOrEmpty(fieldType.GetMetadata("idiom")))
                     {
                         path = String.Empty;
-                        mediaName = string.Concat(fieldType.GetMetadata("osFileName").RemovePngExt(), "_", field.Value);
-                        logicalName = fieldType.GetMetadata("osFileName").RemovePngExt();
+                        mediaName = string.Concat(fieldType.GetMetadata("FileName").RemovePngExt(), "_", field.Value);
+                        logicalName = fieldType.GetMetadata("FileName").RemovePngExt();
                     }
                     else //do asset catalogue
                     {
                         path = Path.Combine(assetCatalogueName.ItemSpec, appIconCatalogueName.ItemSpec);
-                        logicalName = Path.Combine(path, fieldType.GetMetadata("osFileName"));
-                        mediaName = string.Concat(fieldType.GetMetadata("osFileName").RemovePngExt(), "_", field.Value);
+                        logicalName = Path.Combine(path, fieldType.GetMetadata("FileName"));
+                        mediaName = string.Concat(fieldType.GetMetadata("FileName").RemovePngExt(), "_", field.Value);
 
+                        itemMetadata.Add("ResourceType", "ImageAsset");
                         itemMetadata.Add("size", fieldType.GetMetadata("size"));
                         itemMetadata.Add("idiom", fieldType.GetMetadata("idiom"));
                         itemMetadata.Add("idiom2", fieldType.GetMetadata("idiom2"));
                         itemMetadata.Add("scale", fieldType.GetMetadata("scale"));
-                        itemMetadata.Add("CatalogueName", fieldType.GetMetadata("osFileName"));
+                        itemMetadata.Add("CatalogueName", fieldType.GetMetadata("FileName"));
                     }
                 }
                 itemMetadata.Add("Path", path);
                 itemMetadata.Add("LogicalName", logicalName);
 
                 itemMetadata.Add("MediaName", mediaName);
+                itemMetadata.Add("FieldDescription", fieldType.DisplayName);
+                itemMetadata.Add("Disabled", field.Disabled.ToString());
                 output.Add(new TaskItem(field.FieldId.ToString(), itemMetadata));
             }
 
@@ -199,6 +204,8 @@ namespace Build.Client.Extensions
                 itemMetadata.Add("Path", path);
                 itemMetadata.Add("LogicalName", logicalName);
                 itemMetadata.Add("MediaName", mediaName);
+                itemMetadata.Add("FieldDescription", fieldType.DisplayName);
+                itemMetadata.Add("Disabled", field.Disabled.ToString());
                 output.Add(new TaskItem(field.FieldId.ToString(), itemMetadata));
             }
 

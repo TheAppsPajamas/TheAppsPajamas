@@ -46,13 +46,21 @@ namespace Build.Client.BuildTasks
             {
                 foreach(var field in allMediaFields){
                     var exists = existingFiles.Any(x => x.FileNoExt == field.GetMetadata("MediaName"));
-                    if (!exists){
+                    if (!exists)
+                    {
+                        if (field.GetMetadata("Disabled") == bool.TrueString)
+                        {
+                            Log.LogMessage("Media field {0} is disabled, not downloading", field.GetMetadata("FieldDescription"));
+                            continue;
+                        }
+
                         using (WebClient client = new WebClient())
                         {
                             client.SetWebClientHeaders(Token);
                             var url = String.Concat(Consts.UrlBase, Consts.MediaEndpoint, "/", BuildAppId.ItemSpec, "/", field.GetMetadata("MediaFileId"));
                             var directory = Path.Combine(mediaResourceDir, field.GetMetadata("Path"));
-                            if (!Directory.Exists(directory)){
+                            if (!Directory.Exists(directory))
+                            {
                                 LogDebug("Created folder {0}", directory);
                                 Directory.CreateDirectory(directory);
                             }
@@ -60,6 +68,13 @@ namespace Build.Client.BuildTasks
                             Log.LogMessage("Downloading media file {0}, from url {1}", field.GetMetadata("LogicalName"), url);
                             client.DownloadFile(url, fileName);
                         }
+                    }
+                    else if (field.GetMetadata("Disabled") == bool.TrueString)
+                    {
+                        //Think this takes care of deleting. not sure about old files tho?
+                        Log.LogMessage("Media file {0} exists, but is now disabled, deleting", field.GetMetadata("FieldDescription"));
+                        var fileInfo = existingFiles.FirstOrDefault(x => x.FileNoExt == field.GetMetadata("MediaName"));
+                        fileInfo.FileInfo.Delete();
                     } else {
                         Log.LogMessage("Media file {0} exists, skipping", field.GetMetadata("LogicalName"));
                     }

@@ -3,7 +3,7 @@ namespace Build.Client.Constants
 {
     public static class Consts
     {
-        public const string BuildResourcesDir = "build-resources";
+        public const string TheAppsPajamasResourcesDir = "theappspajamas-resources";
         public const string MediaResourcesDir = "media-resources";
         public const string AssetCatalogueOutputDir = "asset-catalogue-output";
 

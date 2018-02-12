@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Build.Client.Extensions;
 using Microsoft.Build.Framework;
+using Microsoft.Build.Utilities;
 
 namespace Build.Client.BuildTasks
 {
@@ -13,6 +15,9 @@ namespace Build.Client.BuildTasks
         public ITaskItem[] SplashFields { get; set; }
         public string BuildConfiguration { get; set; }
 
+        [Output]
+        public ITaskItem[] FilesToDeleteFromProject { get; set; }
+
         public override bool Execute()
         {
             Log.LogMessage("Deleting unused media files");
@@ -20,6 +25,8 @@ namespace Build.Client.BuildTasks
 
             //get directory or create
             var existingFiles = this.GetExistingMediaFiles(BuildConfiguration);
+
+            var filesToDeleteFromProject = new List<ITaskItem>();
 
             Log.LogMessage("Found {0} existing media files", existingFiles.Count());
             try
@@ -33,12 +40,19 @@ namespace Build.Client.BuildTasks
                     if (field == null)
                     {
                         Log.LogMessage("File {0} no longer required, deleting", fileInfo.Name);
+                        var fileToDelete = new TaskItem(field.GetMetadata("ResourceType"), new Dictionary<string, string>{
+                            { "DeletePath", file }
+                        });
+                        filesToDeleteFromProject.Add(fileToDelete);    
+
                         fileInfo.Delete();
                     } else {
 
                         Log.LogMessage("File {0} still required, skipping", fileInfo.Name);
                     }
                 }
+
+                FilesToDeleteFromProject = filesToDeleteFromProject.ToArray();
             }
             catch (Exception ex)
             {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Build.Client.Constants;
 using Microsoft.Build.Evaluation;
 using Microsoft.Build.Framework;
@@ -10,6 +11,9 @@ namespace Build.Client.BuildTasks
     public class ModifyProject : BaseTask
     {
         public string ProjectFileLoad { get; set; }
+
+        public ITaskItem[] FilesToDeleteFromProject { get; set; }
+
 
         [Output]
         public string ProjectFileSave { get; set; }
@@ -30,11 +34,27 @@ namespace Build.Client.BuildTasks
                 LogDebug("Loading project {0}", ProjectFileLoad);
                 var project = collection.LoadProject(ProjectFileLoad);
 
+                //project.Xml.I
+
+                var existingItems = project.Xml.ItemGroups.SelectMany(x => x.Items);
+
+                //think this should work, won't be able to test until we have are further along
+                foreach(var deleteItem in FilesToDeleteFromProject){
+                    var existingItem = existingItems.FirstOrDefault(x => x.ItemType == deleteItem.ItemSpec
+                                                                    && x.Include == deleteItem.GetMetadata("DeletePath"));
+                    
+                    existingItem.Parent.RemoveChild(existingItem);
+
+                    LogDebug("Removed {0} from project", deleteItem.GetMetadata("DeletePath"));
+
+                }
+
+
                 var slItemGroup = project.Xml.CreateItemGroupElement();
                 project.Xml.InsertAfterChild(slItemGroup, project.Xml.LastChild);
 
-                slItemGroup.AddItem("ImageAsset", "TheAppsPajamas.xcassets\\Contents.json");
-                slItemGroup.AddItem("ImageAsset", "TheAppsPajamas.xcassets\\Image.imageset\\Contents.json");
+                slItemGroup.AddItem("ImageAsset", "theappspajamas.xcassets\\Contents.json");
+                slItemGroup.AddItem("ImageAsset", "theappspajamas.xcassets\\Image.imageset\\Contents.json");
 
 
                 var withoutExt = Path.Combine(System.IO.Path.GetDirectoryName(ProjectFileLoad), Path.GetFileNameWithoutExtension(ProjectFileLoad));

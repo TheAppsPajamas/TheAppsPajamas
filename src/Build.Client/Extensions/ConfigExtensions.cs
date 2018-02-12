@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Build.Client.BuildTasks;
 using Build.Client.Constants;
 using Build.Client.Models;
@@ -14,7 +15,8 @@ namespace Build.Client.Extensions
 {
     public static class ConfigExtensions
     {
-        public static BuildResourcesConfig GetResourceConfig(this BaseLoadTask baseTask){
+        public static BuildResourcesConfig GetResourceConfig(this BaseLoadTask baseTask)
+        {
             baseTask.LogDebug("Loading build-resources.config file");
 
             try
@@ -42,11 +44,13 @@ namespace Build.Client.Extensions
                     }
                     else
                     {
-                        baseTask.LogDebug("Build resources config file read from {1}\nAppId '{0}'\n'", buildResourcesConfig.AppId,  buildResourcesConfigPath);
+                        baseTask.LogDebug("Build resources config file read from {1}\nAppId '{0}'\n'", buildResourcesConfig.AppId, buildResourcesConfigPath);
                         return buildResourcesConfig;
                     }
                 }
-            } catch (Exception ex){
+            }
+            catch (Exception ex)
+            {
                 baseTask.Log.LogErrorFromException(ex);
             }
             return null;
@@ -93,31 +97,37 @@ namespace Build.Client.Extensions
             return null;
         }
 
-        public static ClientConfigDto GetClientConfig(this BaseLoadTask baseTask, string json){
-            try{
+        public static ClientConfigDto GetClientConfig(this BaseLoadTask baseTask, string json)
+        {
+            try
+            {
                 baseTask.LogDebug("Deserializing ClientConfigDto, length '{0}'", json.Length);
                 var clientConfigDto = JsonConvert.DeserializeObject<ClientConfigDto>(json);
                 baseTask.LogDebug("Deserialized ClientConfigDto, packagingFields: '{0}', appIconFields: '{1}', splashFields: '{2}'"
                                   , clientConfigDto.PackagingFields.Count, clientConfigDto.AppIconFields.Count, clientConfigDto.SplashFields.Count);
                 return clientConfigDto;
-            } catch (Exception ex){
+            }
+            catch (Exception ex)
+            {
                 baseTask.Log.LogErrorFromException(ex);
             }
             return null;
         }
 
-        public static ITaskItem[] GetPackagingOutput(this BaseLoadTask baseTask, ClientConfigDto clientConfigDto){
+        public static ITaskItem[] GetPackagingOutput(this BaseLoadTask baseTask, ClientConfigDto clientConfigDto)
+        {
             baseTask.LogDebug("Generating Packaging TaskItems");
 
             var output = new List<ITaskItem>();
-            foreach(var field in clientConfigDto.PackagingFields){
+            foreach (var field in clientConfigDto.PackagingFields)
+            {
                 var itemMetadata = new Dictionary<string, string>();
                 itemMetadata.Add("Value", field.Value);
                 output.Add(new TaskItem(field.FieldId.ToString(), itemMetadata));
             }
 
-            baseTask.Log.LogMessage("Generated {0} Packaging TaskItems",output.Count);
-            return output.ToArray();  
+            baseTask.Log.LogMessage("Generated {0} Packaging TaskItems", output.Count);
+            return output.ToArray();
         }
 
         public static ITaskItem[] GetAppIconOutput(this BaseLoadTask baseTask, ClientConfigDto clientConfigDto, ITaskItem assetCatalogueName, ITaskItem appIconCatalogueName)
@@ -134,7 +144,8 @@ namespace Build.Client.Extensions
                 string logicalName = String.Empty;
                 string path = String.Empty;
                 string mediaName = String.Empty;
-                if (fieldType.ProjectType == ProjectType.Droid){
+                if (fieldType.ProjectType == ProjectType.Droid)
+                {
                     var packagingIcon = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingDroidAppIconName.Value);
                     if (packagingIcon == null || String.IsNullOrEmpty(packagingIcon.Value))
                     {
@@ -145,7 +156,9 @@ namespace Build.Client.Extensions
                     mediaName = String.Concat(packagingIcon.Value, "_", field.Value);
 
                     itemMetadata.Add("ResourceType", "AndroidResource");
-                } else if (fieldType.ProjectType == ProjectType.Ios){
+                }
+                else if (fieldType.ProjectType == ProjectType.Ios)
+                {
                     //do iTunesArtWork
                     if (String.IsNullOrEmpty(fieldType.GetMetadata("idiom")))
                     {
@@ -185,27 +198,16 @@ namespace Build.Client.Extensions
 
         public static string GetDebugStringFromTaskItem(ITaskItem taskItem, Dictionary<string, string> itemMetadata)
         {
-            string output = String.Format("Adding task item with itemspec {0}", taskItem.ItemSpec) ;
-            String.Concat(output, String.Format("\n Metadata ResourceType {0}", taskItem.GetMetadata("ResourceType")));
-  
-
-            String.Concat(output, String.Format("\n Metadata FileName {0}", taskItem.GetMetadata("filename")));
+            var sb = new StringBuilder();
+            sb.AppendFormat("Adding task item with itemspec {0}", taskItem.ItemSpec);
 
 
-
-            //var enumer = t.GetEnumerator();
-            //while (enumer.MoveNext()){
-            //    var meta = enumer.Current;
-            //    string metaString = String.Format("\n Metadata key {0} : value {1}", "s", "t");//taskItem.GetMetadata(meta.ToString()));
-            //    String.Concat(output, metaString);
-            //}
-
-            foreach(var meta in itemMetadata){
-                string metaString = String.Format("\n Metadata key {0} : value {1}", meta.Key, meta.Value);
-                String.Concat(output, metaString);
+            foreach (var meta in itemMetadata)
+            {
+                sb.AppendFormat(", Metadata key {0} : value {1}", meta.Key, meta.Value);
             }
 
-            return output;
+            return sb.ToString();
 
         }
 
@@ -219,7 +221,7 @@ namespace Build.Client.Extensions
                 var itemMetadata = new Dictionary<string, string>();
                 itemMetadata.Add("MediaFileId", field.Value);
                 var fieldType = FieldType.Splash().FirstOrDefault(x => x.Value == field.FieldId);
-                string logicalName = String.Empty; 
+                string logicalName = String.Empty;
                 string path = String.Empty;
                 string mediaName = String.Empty;
                 if (fieldType.ProjectType == ProjectType.Droid)
@@ -229,7 +231,7 @@ namespace Build.Client.Extensions
                     logicalName = Path.Combine(fieldType.GetMetadata("folder"), string.Concat(packagingIcon.Value, ".png"));
                     mediaName = String.Concat(packagingIcon.Value, "_", field.Value);
                     path = Path.Combine(Consts.DroidResources, fieldType.GetMetadata("folder"));
-                } 
+                }
                 itemMetadata.Add("Path", path);
                 itemMetadata.Add("LogicalName", logicalName);
                 itemMetadata.Add("MediaName", mediaName);

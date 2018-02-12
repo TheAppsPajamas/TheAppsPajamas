@@ -66,7 +66,8 @@ namespace Build.Client.BuildTasks
 
                 if (!Directory.Exists(outputAssetCatalogueDir)){
                     Directory.CreateDirectory(outputAssetCatalogueDir);
-                    filesToAddToProject.Add(new TaskItem("ImageAsset", new Dictionary<string, string>{ {"IncludePath", outputAssetCatalogueDir}}));
+                    //Don't need to add this either, it's just contents.json that gets added
+                    //filesToAddToProject.Add(new TaskItem("ImageAsset", new Dictionary<string, string>{ {"IncludePath", outputAssetCatalogueDir}}));
                     LogDebug("Created {0} folder at {1}", AssetCatalogueName, outputAssetCatalogueDir);
                 } 
                 //stop deleting folder that's just confusing

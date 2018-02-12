@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using Build.Client.Constants;
 using Build.Client.Extensions;
 using Microsoft.Build.Framework;
+using Microsoft.Build.Utilities;
 
 namespace Build.Client.BuildTasks
 {
@@ -16,6 +18,9 @@ namespace Build.Client.BuildTasks
         public string BuildConfiguration { get; set; }
         public ITaskItem Token { get; set; }
         public ITaskItem BuildAppId { get; set; }
+
+        [Output]
+        public ITaskItem[] FilesToDeleteFromProject { get; set; }
 
         public override bool Execute()
         {
@@ -40,6 +45,13 @@ namespace Build.Client.BuildTasks
                 }
             }
 
+
+            var filesToDeleteFromProject = new List<ITaskItem>();
+
+            if (FilesToDeleteFromProject != null)
+            {
+                filesToDeleteFromProject.AddRange(FilesToDeleteFromProject);
+            }
 
             var mediaResourceDir = this.GetMediaResourceDir(BuildConfiguration);
             try
@@ -75,10 +87,17 @@ namespace Build.Client.BuildTasks
                         Log.LogMessage("Media file {0} exists, but is now disabled, deleting", field.GetMetadata("FieldDescription"));
                         var fileInfo = existingFiles.FirstOrDefault(x => x.FileNoExt == field.GetMetadata("MediaName"));
                         fileInfo.FileInfo.Delete();
+
+                        var fileToDelete = new TaskItem(field.GetMetadata("ResourceType"), new Dictionary<string, string>{
+                            { "DeletePath", fileInfo.FileInfo.FullName }
+                        });
+                        filesToDeleteFromProject.Add(fileToDelete);    
+
                     } else {
                         Log.LogMessage("Media file {0} exists, skipping", field.GetMetadata("LogicalName"));
                     }
                 }
+                FilesToDeleteFromProject = filesToDeleteFromProject.ToArray();
             }
             catch (Exception ex)
             {

@@ -97,8 +97,6 @@
     <Compile Include="Extensions\AuthenticationExtensions.cs" />
     <Compile Include="Shared\Types\BuildConfigRecordSetFieldType.cs" />
     <Compile Include="Shared\Types\MediaOrientationType.cs" />
-    <Compile Include="BuildTasks\SetIosAppIconsV2.cs" />
-    <Compile Include="BuildTasks\SetIosLaunchImages.cs" />
     <Compile Include="BuildTasks\ModifyProject.cs" />
     <Compile Include="BuildTasks\SaveModifiedProjectBackToProject.cs" />
   </ItemGroup>

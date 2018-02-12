@@ -100,24 +100,44 @@
             <Output TaskParameter="SplashOutput" ItemName="SplashFields" />
         </LoadRemoteBuildConfig>
     </Target>
+    
     <Target Name="DeleteUnusedMediaFiles" 
         AfterTargets="LoadRemoteBuildConfig"
         Condition=" '$(IsTheAppPajamaClientProject)' == 'true' ">
-        <DeleteUnusedMediaFiles Debug="$(BuildDebug)" ProjectDir="$(MSBuildProjectDirectory)" PackagesDir="$(PackagesDir)" AppIconFields="@(AppIconFields)" SplashFields="@(SplashFields)" BuildConfiguration="$(Configuration)">
+        <DeleteUnusedMediaFiles Debug="$(BuildDebug)" 
+            ProjectDir="$(MSBuildProjectDirectory)" 
+            PackagesDir="$(PackagesDir)" 
+            AppIconFields="@(AppIconFields)" 
+            SplashFields="@(SplashFields)" 
+            BuildConfiguration="$(Configuration)">
+            <Output TaskParameter="FilesToDeleteFromProject" ItemName="FilesToDeleteFromProject" />
+            
         </DeleteUnusedMediaFiles>
     </Target>
+    
     <Target Name="DownloadMediaFiles" 
         AfterTargets="DeleteUnusedMediaFiles"
         Condition=" '$(IsTheAppPajamaClientProject)' == 'true' ">
-        <DownloadMediaFiles Debug="$(BuildDebug)" BuildAppid="$(BuildAppId)" ProjectDir="$(MSBuildProjectDirectory)" Token="$(BuildAccessToken)" PackagesDir="$(PackagesDir)" AppIconFields="@(AppIconFields)" SplashFields="@(SplashFields)" BuildConfiguration="$(Configuration)">
+        <DownloadMediaFiles 
+            Debug="$(BuildDebug)" 
+            BuildAppid="$(BuildAppId)" 
+            ProjectDir="$(MSBuildProjectDirectory)" 
+            Token="$(BuildAccessToken)" 
+            ackagesDir="$(PackagesDir)" 
+            AppIconFields="@(AppIconFields)" 
+            SplashFields="@(SplashFields)" 
+            BuildConfiguration="$(Configuration)"
+            FilesToDeleteFromProject="@(FilesToDeleteFromProject)">
         </DownloadMediaFiles>
     </Target>
+    
     <Target Name="SetDroidManifest" 
         AfterTargets="DownloadMediaFiles" 
         Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid' And '$(IsTheAppPajamaClientProject)' == 'true'">
         <SetDroidManifest Debug="$(BuildDebug)" ProjectDir="$(MSBuildProjectDirectory)" PackagingFields="@(PackagingFields)" AndroidManifest="$(AndroidManifest)">
         </SetDroidManifest>
     </Target>
+    
     <Target Name="SetDroidAppIcons" 
         AfterTargets="SetDroidManifest" 
         Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid' And '$(IsTheAppPajamaClientProject)' == 'true'">

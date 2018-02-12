@@ -127,7 +127,11 @@
     <Target Name="SetIosPlist" 
         AfterTargets="DownloadMediaFiles" 
         Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' And '$(IsTheAppPajamaClientProject)' != 'true'">
-        <SetIosPlist Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" PackagingFields="@(PackagingFields)" IosPlist="$(_AppManifest)">
+        <SetIosPlist Debug="$(BuildDebug)" 
+            PackagesDir="$(PackagesDir)" 
+            ProjectDir="$(MSBuildProjectDirectory)" 
+            PackagingFields="@(PackagingFields)" 
+            IosPlist="$(_AppManifest)">
             </SetIosPlist>
 
     </Target>
@@ -140,8 +144,7 @@
             ProjectDir="$(MSBuildProjectDirectory)" 
             AppIconFields="@(AppIconFields)" 
             AssetCatalogueName="$(AssetCatalogueName)" 
-            AppIconCatalogueName="$(AppIconCatalogueName)" 
-            BaseOutputDir="$(MSBuildThisFileDirectory)">
+            AppIconCatalogueName="$(AppIconCatalogueName)">
   <!--          <Output TaskParameter="OutputImageAssets" ItemName="IosAppIcons" />            
             <Output TaskParameter="OutputITunesArtwork" ItemName="IosITunesArtwork" />-->
 
@@ -158,7 +161,7 @@
     </Target>
 
     <Target Name="ModifyProject" 
-        BeforeTargets="_GetReferenceAssemblyPaths;_BeforeCoreCompileInterfaceDefinitions" 
+        AfterTargets="SetIosAppIcons" 
            Condition=" '$(IsTheAppPajamaClientProject)' != 'true' ">
            <ModifyProject Debug="$(BuildDebug)" 
             PackagesDir="$(PackagesDir)" 

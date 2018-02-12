@@ -96,7 +96,8 @@ namespace Build.Client.BuildTasks
                 if (!Directory.Exists(appIconSetDir))
                 {
                     Directory.CreateDirectory(appIconSetDir);
-                    filesToAddToProject.Add(new TaskItem("ImageAsset", new Dictionary<string, string> { { "IncludePath", appIconSetDir } }));
+                    //don't need to add this folder
+                    //filesToAddToProject.Add(new TaskItem("ImageAsset", new Dictionary<string, string> { { "IncludePath", appIconSetDir } }));
 
                     LogDebug("Created app-icon-set folder at {0}", appIconSetDir);
                 }                          
@@ -197,6 +198,8 @@ namespace Build.Client.BuildTasks
 
                 //OutputImageAssets = outputImageAssets.ToArray();
                 //OutputITunesArtwork = outputITunesArtwork.ToArray();
+
+                Log.LogMessage("AppIcons wants to add {0} files to the project", filesToAddToProject.Count());
 
                 FilesToAddToProject = filesToAddToProject.ToArray();
                 return true;

@@ -39,44 +39,80 @@ namespace Build.Client.BuildTasks
 
                 //project.Xml.I
 
-                var existingItems = project.Xml.ItemGroups.SelectMany(x => x.Items);
 
-                //think this should work, won't be able to test until we have are further along
-                foreach(var deleteItem in FilesToDeleteFromProject){
-                    var existingItem = existingItems.FirstOrDefault(x => x.ItemType == deleteItem.ItemSpec
-                                                                    && x.Include == deleteItem.GetMetadata("DeletePath"));
-                    
-                    existingItem.Parent.RemoveChild(existingItem);
+                if (FilesToDeleteFromProject != null)
+                {
+                    var existingItems = project.Xml.ItemGroups.SelectMany(x => x.Items);
+                    //think this should work, won't be able to test until we have are further along
+                    foreach (var deleteItem in FilesToDeleteFromProject)
+                    {
+                        var existingItem = existingItems.FirstOrDefault(x => x.ItemType == deleteItem.ItemSpec
+                                                                        && x.Include == deleteItem.GetMetadata("DeletePath"));
 
-                    LogDebug("Removed {0} from project", deleteItem.GetMetadata("DeletePath"));
+                        existingItem.Parent.RemoveChild(existingItem);
 
+                        LogDebug("Removed {0} from project", deleteItem.GetMetadata("DeletePath"));
+
+                    }
                 }
 
 
-                var slItemGroup = project.Xml.CreateItemGroupElement();
-                project.Xml.InsertAfterChild(slItemGroup, project.Xml.LastChild);
+                try
+                {
+                    var slItemGroup = project.Xml.CreateItemGroupElement();
+                    project.Xml.InsertAfterChild(slItemGroup, project.Xml.LastChild);
+                    if (FilesToAddToProject != null)
+                    {
+                        foreach (var fileToAdd in FilesToAddToProject)
+                        {
+                            try
+                            {
 
-                foreach(var fileToAdd in FilesToAddToProject){
+                                LogDebug("Added file {1} to {0}", fileToAdd.ItemSpec, fileToAdd.GetMetadata("IncludePath"));
+                                slItemGroup.AddItem(fileToAdd.ItemSpec, fileToAdd.GetMetadata("IncludePath"));
+                            }
+                            catch (Exception e)
+                            {
+                                Log.LogError("Error adding item to group {0}", fileToAdd.ItemSpec);
+                                throw e;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        LogDebug("FilesToAddToProject is null");
+                    }
 
-                    LogDebug("Added file {1} to {0}", fileToAdd.ItemSpec, fileToAdd.GetMetadata("IncludePath"));
-                    slItemGroup.AddItem(fileToAdd.ItemSpec, fileToAdd.GetMetadata("IncludePath"));
+
+
+
+                    if ((FilesToAddToProject != null && FilesToAddToProject.Length != 0)
+                        || (FilesToDeleteFromProject != null && FilesToDeleteFromProject.Length != 0))
+                    {
+
+
+                        var withoutExt = Path.Combine(System.IO.Path.GetDirectoryName(ProjectFileLoad), Path.GetFileNameWithoutExtension(ProjectFileLoad));
+
+                        ProjectFileSave = String.Concat(withoutExt, Consts.ModifiedProjectNameExtra, ".csproj");
+                        LogDebug("Saving project to {0}", ProjectFileSave);
+                        project.Save(ProjectFileSave);
+                    }
+
                 }
-
-
-                var withoutExt = Path.Combine(System.IO.Path.GetDirectoryName(ProjectFileLoad), Path.GetFileNameWithoutExtension(ProjectFileLoad));
-
-                ProjectFileSave = String.Concat(withoutExt, Consts.ModifiedProjectNameExtra, ".csproj");
-
-                LogDebug("Saving project to {0}", ProjectFileSave);
-
-                project.Save(ProjectFileSave);
+                catch (Exception ex)
+                {
+                    Log.LogError("Error inserting children into item group");
+                    Log.LogErrorFromException(ex);
+                }
                 //project.Build();
 
                 //collection.UnregisterAllLoggers();
 
                 //collection.un
 
-            } catch (Exception ex){
+            }
+            catch (Exception ex)
+            {
                 Log.LogErrorFromException(ex);
 
             }

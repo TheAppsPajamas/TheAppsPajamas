@@ -150,21 +150,21 @@ namespace Build.Client.Extensions
                     if (String.IsNullOrEmpty(fieldType.GetMetadata("idiom")))
                     {
                         path = String.Empty;
-                        mediaName = string.Concat(fieldType.GetMetadata("FileName").RemovePngExt(), "_", field.Value);
-                        logicalName = fieldType.GetMetadata("FileName").RemovePngExt();
+                        mediaName = string.Concat(fieldType.GetMetadata("filename").RemovePngExt(), "_", field.Value);
+                        logicalName = fieldType.GetMetadata("filename").RemovePngExt();
                     }
                     else //do asset catalogue
                     {
                         path = Path.Combine(assetCatalogueName.ItemSpec, appIconCatalogueName.ItemSpec);
-                        logicalName = Path.Combine(path, fieldType.GetMetadata("FileName"));
-                        mediaName = string.Concat(fieldType.GetMetadata("FileName").RemovePngExt(), "_", field.Value);
+                        logicalName = Path.Combine(path, fieldType.GetMetadata("filename"));
+                        mediaName = string.Concat(fieldType.GetMetadata("filename").RemovePngExt(), "_", field.Value);
 
                         itemMetadata.Add("ResourceType", "ImageAsset");
                         itemMetadata.Add("size", fieldType.GetMetadata("size"));
                         itemMetadata.Add("idiom", fieldType.GetMetadata("idiom"));
                         itemMetadata.Add("idiom2", fieldType.GetMetadata("idiom2"));
                         itemMetadata.Add("scale", fieldType.GetMetadata("scale"));
-                        itemMetadata.Add("CatalogueName", fieldType.GetMetadata("FileName"));
+                        itemMetadata.Add("CatalogueName", fieldType.GetMetadata("filename"));
                     }
                 }
                 itemMetadata.Add("Path", path);
@@ -173,11 +173,40 @@ namespace Build.Client.Extensions
                 itemMetadata.Add("MediaName", mediaName);
                 itemMetadata.Add("FieldDescription", fieldType.DisplayName);
                 itemMetadata.Add("Disabled", field.Disabled.ToString());
-                output.Add(new TaskItem(field.FieldId.ToString(), itemMetadata));
+
+                var taskItem = new TaskItem(field.FieldId.ToString(), itemMetadata);
+                baseTask.LogDebug(GetDebugStringFromTaskItem(taskItem, itemMetadata));
+                output.Add(taskItem);
             }
 
             baseTask.Log.LogMessage("Generated {0} AppIcon TaskItems", output.Count);
             return output.ToArray();
+        }
+
+        public static string GetDebugStringFromTaskItem(ITaskItem taskItem, Dictionary<string, string> itemMetadata)
+        {
+            string output = String.Format("Adding task item with itemspec {0}", taskItem.ItemSpec) ;
+            String.Concat(output, String.Format("\n Metadata ResourceType {0}", taskItem.GetMetadata("ResourceType")));
+  
+
+            String.Concat(output, String.Format("\n Metadata FileName {0}", taskItem.GetMetadata("filename")));
+
+
+
+            //var enumer = t.GetEnumerator();
+            //while (enumer.MoveNext()){
+            //    var meta = enumer.Current;
+            //    string metaString = String.Format("\n Metadata key {0} : value {1}", "s", "t");//taskItem.GetMetadata(meta.ToString()));
+            //    String.Concat(output, metaString);
+            //}
+
+            foreach(var meta in itemMetadata){
+                string metaString = String.Format("\n Metadata key {0} : value {1}", meta.Key, meta.Value);
+                String.Concat(output, metaString);
+            }
+
+            return output;
+
         }
 
         public static ITaskItem[] GetSplashOutput(this BaseLoadTask baseTask, ClientConfigDto clientConfigDto)

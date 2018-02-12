@@ -1,17 +1,15 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/BuildTasks/SetIosAppIcons.cs">
     <Files>
-      <File FileName="Build.Client/NugetContent/build/Build.Client.targets" Line="190" Column="98" />
+      <File FileName="Build.Client/NugetContent/build/Build.Client.targets" Line="151" Column="90" />
       <File FileName="Build.Client/NugetContent/build/Xamarin.iOS.Common.targets" Line="499" Column="5" />
       <File FileName="Build.Client/NugetContent/build/Xamarin.iOS.WatchApp.Common.targets" Line="50" Column="33" />
-      <File FileName="Build.Client/BuildTasks/ModifyProject.cs" Line="99" Column="43" />
+      <File FileName="Build.Client/BuildTasks/ModifyProject.cs" Line="67" Column="1" />
       <File FileName="Build.Client/BuildTasks/LoadRemoteBuildConfig.cs" Line="96" Column="47" />
       <File FileName="Build.Client/NugetContent/build/Build.Client.props" Line="25" Column="11" />
       <File FileName="Build.Client/Models/StringFieldClientDto.cs" Line="4" Column="54" />
-      <File FileName="Build.Client/BuildTasks/SetIosAppIcons.cs" Line="131" Column="99" />
+      <File FileName="Build.Client/BuildTasks/SetIosAppIcons.cs" Line="128" Column="29" />
       <File FileName="Build.Client/BuildTasks/DeleteUnusedMediaFiles.cs" Line="44" Column="42" />
-      <File FileName="Build.Client/Extensions/ConfigExtensions.cs" Line="169" Column="72" />
-      <File FileName="Build.Client/BuildTasks/DownloadMediaFiles.cs" Line="48" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

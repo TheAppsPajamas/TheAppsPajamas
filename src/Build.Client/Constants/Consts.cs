@@ -6,6 +6,7 @@ namespace Build.Client.Constants
         public const string TheAppsPajamasResourcesDir = "theappspajamas-resources";
         public const string MediaResourcesDir = "media-resources";
         public const string AssetCatalogueOutputDir = "asset-catalogue-output";
+        public const string iTunesArtworkDir = "iTunesArtwork";
 
         public const string ModifiedProjectNameExtra = ".theappspajamas";
 

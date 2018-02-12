@@ -38,9 +38,7 @@ namespace Build.Client.BuildTasks
                 LogDebug("Loading project {0}", ProjectFileLoad);
                 var project = collection.LoadProject(ProjectFileLoad);
 
-                //project.Xml.I
-
-
+                //delete files (only from actual project asset catalogue
                 if (FilesToDeleteFromProject != null)
                 {
                     var existingItems = project.Xml.ItemGroups.SelectMany(x => x.Items);
@@ -57,52 +55,47 @@ namespace Build.Client.BuildTasks
                     }
                 }
 
+                //delete all resources in theappspajamas folder
 
-                try
-                {
-                    var slItemGroup = project.Xml.CreateItemGroupElement();
-                    project.Xml.InsertAfterChild(slItemGroup, project.Xml.LastChild);
-                    if (FilesToAddToProject != null)
-                    {
-                        foreach (var fileToAdd in FilesToAddToProject)
-                        {
-                            try
-                            {
+                var allItems = project.Xml.ItemGroups.SelectMany(x => x.Items);
 
-                                LogDebug("Added file {1} to {0}", fileToAdd.ItemSpec, fileToAdd.GetMetadata("IncludePath"));
-                                slItemGroup.AddItem(fileToAdd.ItemSpec, fileToAdd.GetMetadata("IncludePath"));
-                            }
-                            catch (Exception e)
-                            {
-                                Log.LogError("Error adding item to group {0}", fileToAdd.ItemSpec);
-                                throw e;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        LogDebug("FilesToAddToProject is null");
-                    }
+                var buildResourceItems = allItems.Where(x => x.Include.Contains(Consts.TheAppsPajamasResourcesDir));
 
-                    if ((FilesToAddToProject != null && FilesToAddToProject.Length != 0)
-                        || (FilesToDeleteFromProject != null && FilesToDeleteFromProject.Length != 0))
-                    {
-
-
-                        var withoutExt = Path.Combine(System.IO.Path.GetDirectoryName(ProjectFileLoad), Path.GetFileNameWithoutExtension(ProjectFileLoad));
-
-                        ProjectFileSave = String.Concat(withoutExt, Consts.ModifiedProjectNameExtra, ".csproj");
-                        LogDebug("Saving project to {0}", ProjectFileSave);
-                        ProjectNeedsSave = bool.TrueString;
-                        project.Save(ProjectFileSave);
-                    }
-
+                foreach(var item in buildResourceItems){
+                    item.Parent.RemoveChild(item);
                 }
-                catch (Exception ex)
+
+                //add files (again asset catalogue stuff)
+                var addItemGroup = project.Xml.CreateItemGroupElement();
+                project.Xml.InsertAfterChild(addItemGroup, project.Xml.LastChild);
+                if (FilesToAddToProject != null)
                 {
-                    Log.LogError("Error inserting children into item group");
-                    Log.LogErrorFromException(ex);
+                    foreach (var fileToAdd in FilesToAddToProject)
+                    {
+
+                        LogDebug("Added file {1} to {0}", fileToAdd.ItemSpec, fileToAdd.GetMetadata("IncludePath"));
+                        addItemGroup.AddItem(fileToAdd.ItemSpec, fileToAdd.GetMetadata("IncludePath"));
+                    }
                 }
+                else
+                {
+                    LogDebug("No files to add to project");
+                }
+
+                if ((FilesToAddToProject != null && FilesToAddToProject.Length != 0)
+                    || (FilesToDeleteFromProject != null && FilesToDeleteFromProject.Length != 0))
+                {
+                    ProjectNeedsSave = bool.TrueString;
+                }
+
+                //always save (because of the removing allpajama resources)
+                var withoutExt = Path.Combine(System.IO.Path.GetDirectoryName(ProjectFileLoad), Path.GetFileNameWithoutExtension(ProjectFileLoad));
+
+                ProjectFileSave = String.Concat(withoutExt, Consts.ModifiedProjectNameExtra, ".csproj");
+                LogDebug("Saving project to {0}", ProjectFileSave);
+
+                project.Save(ProjectFileSave);
+
                 //project.Build();
 
                 //collection.UnregisterAllLoggers();

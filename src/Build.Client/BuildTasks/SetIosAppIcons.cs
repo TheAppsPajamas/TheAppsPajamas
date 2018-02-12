@@ -118,20 +118,20 @@ namespace Build.Client.BuildTasks
                     //do itunes artwork first
                     if (String.IsNullOrEmpty(field.GetMetadata("idiom"))){
 
-                        var existingFilePath = Path.Combine(mediaResourcesBuildConfigDir, field.GetMetadata("MediaName").ApplyPngExt());
+                        var existingFilePath = Path.Combine(mediaResourcesBuildConfigDir, Consts.iTunesArtworkDir, field.GetMetadata("MediaName").ApplyPngExt());
 
-                        var filePath = Path.Combine(base.ProjectDir, field.GetMetadata("LogicalName"));
+                        var outputFilePath = Path.Combine(base.ProjectDir, field.GetMetadata("LogicalName"));
 
-                        if (!File.Exists(filePath))
+                        if (!File.Exists(outputFilePath))
                         {
-                            filesToAddToModifiedProject.Add(new TaskItem("ITunesArtwork", new Dictionary<string, string> { { "IncludePath", filePath } }));
+                            filesToAddToModifiedProject.Add(new TaskItem("iTunesArtwork", new Dictionary<string, string> { { "IncludePath", outputFilePath } }));
 
                         }
 
-                        File.Copy(existingFilePath, filePath, true);
+                        File.Copy(existingFilePath, outputFilePath, true);
                         var artworkTaskItem = new TaskItem(field.GetMetadata("LogicalName"));
 
-                        LogDebug("Added iTunesArtwork from {0} to {1}", existingFilePath, filePath);
+                        LogDebug("Added iTunesArtwork from {0} to {1}", existingFilePath, outputFilePath);
 
                         continue;
                     }

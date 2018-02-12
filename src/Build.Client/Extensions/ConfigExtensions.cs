@@ -162,11 +162,11 @@ namespace Build.Client.Extensions
                     //do iTunesArtWork
                     if (String.IsNullOrEmpty(fieldType.GetMetadata("idiom")))
                     {
-                        path = String.Empty;
+                        path = Consts.iTunesArtworkDir;
                         mediaName = string.Concat(fieldType.GetMetadata("filename").RemovePngExt(), "_", field.Value);
                         logicalName = fieldType.GetMetadata("filename").RemovePngExt();
 
-                        itemMetadata.Add("ResourceType", "ImageAsset");
+                        itemMetadata.Add("ResourceType", "iTunesArtwork");
                     }
                     else //do asset catalogue
                     {

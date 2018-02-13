@@ -172,7 +172,7 @@ namespace Build.Client.Extensions
                     else //do asset catalogue
                     {
                         itemMetadata.Add(MetadataType.Path, Path.Combine(assetCatalogueName.ItemSpec, appIconCatalogueName.ItemSpec));
-                        itemMetadata.Add(MetadataType.LogicalName,  Path.Combine(itemMetadata[MetadataType.Path], fieldType.GetMetadata(MetadataType.FileName)));
+                        itemMetadata.Add(MetadataType.LogicalName, fieldType.GetMetadata(MetadataType.FileName));
                         itemMetadata.Add(MetadataType.MediaName, fieldType.GetMetadata(MetadataType.FileName).RemovePngExt().ApplyFieldId(field));
 
                         itemMetadata.Add(MetadataType.MSBuildItemType, MSBuildItemName.ImageAsset);

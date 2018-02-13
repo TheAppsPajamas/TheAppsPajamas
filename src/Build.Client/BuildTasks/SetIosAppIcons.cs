@@ -166,7 +166,8 @@ namespace Build.Client.BuildTasks
                                                             , field.GetMetadata(MetadataType.Path)
                                                             , field.GetMetadata(MetadataType.MediaName).ApplyPngExt());
 
-                        var outputFilePath = Path.Combine(ProjectDir, field.GetMetadata(MetadataType.Path), field.GetMetadata(MetadataType.CatalogueName));
+                        var outputFilePath = Path.Combine(ProjectDir, field.GetMetadata(MetadataType.Path)
+                                                          , field.GetMetadata(MetadataType.LogicalName));
 
                         if (!File.Exists(outputFilePath)){
                             filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.ImageAsset, new Dictionary<string, string> { { MetadataType.IncludePath, outputFilePath } }));

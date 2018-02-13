@@ -1,9 +1,11 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/NugetContent/build/Build.Client.targets">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/Extensions/StringExtensions.cs">
     <Files>
-      <File FileName="Build.Client/BuildTasks/SetDroidAppIcons.cs" Line="14" Column="52" />
-      <File FileName="Build.Client/NugetContent/build/Build.Client.targets" Line="147" Column="59" />
-      <File FileName="Build.Client/BuildTasks/SetIosAppIcons.cs" Line="27" Column="1" NotebookId="1" />
+      <File FileName="Build.Client/BuildTasks/SetDroidAppIcons.cs" Line="64" Column="73" />
+      <File FileName="Build.Client/NugetContent/build/Build.Client.targets" Line="151" Column="90" />
+      <File FileName="Build.Client/BuildTasks/DownloadMediaFiles.cs" Line="73" Column="114" />
+      <File FileName="Build.Client/Extensions/ConfigExtensions.cs" Line="157" Column="87" />
+      <File FileName="Build.Client/Extensions/StringExtensions.cs" Line="52" Column="17" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

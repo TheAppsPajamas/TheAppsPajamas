@@ -77,7 +77,7 @@ namespace Build.Client.BuildTasks
                                 Directory.CreateDirectory(directory);
                             }
                             var fileName = Path.Combine(mediaResourceDir, field.GetMetadata(MetadataType.Path), field.GetMetadata(MetadataType.MediaName).ApplyPngExt());
-                            Log.LogMessage("Downloading media file {0}, from url {1}", field.GetMetadata(MetadataType.LogicalName), url);
+                            Log.LogMessage("Downloading media file {0}, from url {1}", fileName, url);
                             client.DownloadFile(url, fileName);
                         }
                     }

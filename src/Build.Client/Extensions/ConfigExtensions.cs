@@ -152,7 +152,7 @@ namespace Build.Client.Extensions
                         baseTask.Log.LogError("Icon name undefined");
                     }
                     //these ones are required for both
-                    itemMetadata.Add(MetadataType.LogicalName, Path.Combine(fieldType.GetMetadata(MetadataType.Folder), packagingIcon.Value.ApplyPngExt()));
+                    itemMetadata.Add(MetadataType.LogicalName, packagingIcon.Value.ApplyPngExt());
                     itemMetadata.Add(MetadataType.Path, Path.Combine(Consts.DroidResources, fieldType.GetMetadata(MetadataType.Folder)));
                     itemMetadata.Add(MetadataType.MediaName, packagingIcon.Value.ApplyFieldId(field));
 

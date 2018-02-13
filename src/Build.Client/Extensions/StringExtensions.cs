@@ -1,5 +1,7 @@
 ﻿using System;
+using Build.Client.Constants;
 using Build.Client.Models;
+using Microsoft.Build.Framework;
 
 namespace Build.Client.Extensions
 {
@@ -45,10 +47,17 @@ namespace Build.Client.Extensions
 
         public static string ApplyFieldId(this string s, MediaFieldClientDto field)
         {
-            if (s.Contains("_"))
+            if (s.Contains(field.Value))
                 return s;
-            else
-                return String.Concat(s, "_", field.Value);
+            return String.Concat(s, "_", field.Value);
+
+        }
+
+        public static string ApplyFieldId(this string s, ITaskItem field)
+        {
+            if (s.Contains(field.GetMetadata(MetadataType.MediaFileId)))
+                return s;
+            return String.Concat(s, "_", field.GetMetadata(MetadataType.MediaFileId));
 
         }
 

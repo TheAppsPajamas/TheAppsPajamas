@@ -180,7 +180,7 @@ namespace Build.Client.Extensions
                         itemMetadata.Add(MetadataType.Idiom, fieldType.GetMetadata(MetadataType.Idiom));
                         itemMetadata.Add(MetadataType.Idiom2, fieldType.GetMetadata(MetadataType.Idiom2));
                         itemMetadata.Add(MetadataType.Scale, fieldType.GetMetadata(MetadataType.Scale));
-                        itemMetadata.Add(MetadataType.CatalogueName, fieldType.GetMetadata(MetadataType.CatalogueName));
+                        itemMetadata.Add(MetadataType.CatalogueName, fieldType.GetMetadata(MetadataType.FileName));
                     }
                 }
                 itemMetadata.Add(MetadataType.FieldDescription, fieldType.DisplayName);

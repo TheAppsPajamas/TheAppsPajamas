@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Build.Client.Extensions;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
@@ -24,9 +25,10 @@ namespace Build.Client.BuildTasks
                 return true;
             }
 
-            var projectConfig = this.GetProjectConfig();
+            var projectConfigs = this.GetProjectsConfig();
+            var projectConfig = projectConfigs.Projects.FirstOrDefault(x => x.BuildConfiguration == BuildConfiguration);
 
-            if (projectConfig.ClientConfig == null){
+            if (projectConfig == null || projectConfig.ClientConfig == null){
                 Log.LogMessage("{1} configuration not found for project {0} in project.config, forcing remote load", ProjectName, BuildConfiguration);
                 NeedsLoadRemote = true;
                 return true;

@@ -27,12 +27,12 @@
         <CleanProjectsConfig Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)">
         </CleanProjectsConfig>
     </Target>
-<!--    <Target Name="CleanAssetCatalogues" 
+    <Target Name="CleanAssetCatalogues" 
         AfterTargets="Clean" 
         Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' And '$(IsTheAppPajamaClientProject)' == 'true'">
         <CleanAssetCatalogues Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" TargetsDir="$(MSBuildThisFileDirectory)">
         </CleanAssetCatalogues>
-    </Target>-->
+    </Target>
 
 
     
@@ -93,7 +93,7 @@
         Condition=" '$(IsTheAppPajamaClientProject)' != 'true' ">
         <DownloadMediaFiles 
             Debug="$(BuildDebug)" 
-            BuildAppid="$(BuildAppId)" 
+            BuildAppId="$(BuildAppId)" 
             ProjectDir="$(MSBuildProjectDirectory)" 
             Token="$(BuildAccessToken)" 
             PackagesDir="$(PackagesDir)" 
@@ -187,9 +187,6 @@
 
         </ModifyProject>
 
-            <Warning Text="Modified project path $(ModifiedProjectFullPath)"/>
-
-            <Warning Text="Modified project path $(ProjectShouldModifyOriginal)"/>
     </Target>
 
 <!--    <Target Name="BuildModifiedProject" 
@@ -212,7 +209,8 @@
 
         </AddResourceBackIntoModifedProject>
     </Target>-->
-    
+
+    <!-- TODO we can roll this back into modify project -->
     <Target Name="SaveModifiedProjectBackToProject" 
         AfterTargets="ModifyProject"
         Condition=" '$(IsTheAppPajamaClientProject)' != 'true' And $(ProjectShouldModifyOriginal) == 'True' ">

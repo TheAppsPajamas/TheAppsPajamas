@@ -68,9 +68,13 @@ namespace Build.Client.BuildTasks
 
                         using (WebClient client = new WebClient())
                         {
+                            LogDebug("Media file exists, getting setup for download");
                             client.SetWebClientHeaders(Token);
+                            LogDebug("Generating url for mediaId {0}, {1}", field.GetMetadata(MetadataType.MediaFileId), BuildAppId.ItemSpec);
                             var url = String.Concat(Consts.UrlBase, Consts.MediaEndpoint, "/", BuildAppId.ItemSpec, "/", field.GetMetadata(MetadataType.MediaFileId));
+                            LogDebug("Finding directory");
                             var directory = Path.Combine(mediaResourceDir, field.GetMetadata(MetadataType.Path));
+                            LogDebug("Checking directory existance {0}", directory);
                             if (!Directory.Exists(directory))
                             {
                                 LogDebug("Created folder {0}", directory);

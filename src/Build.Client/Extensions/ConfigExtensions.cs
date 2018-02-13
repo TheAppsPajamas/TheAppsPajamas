@@ -139,7 +139,6 @@ namespace Build.Client.Extensions
             foreach (var field in clientConfigDto.AppIconFields)
             {
                 var itemMetadata = new Dictionary<string, string>();
-                itemMetadata.Add(MetadataType.MediaFileId, field.Value);
                 var fieldType = FieldType.AppIcons().FirstOrDefault(x => x.Value == field.FieldId);
                 //string logicalName = String.Empty;
                 //string path = String.Empty;
@@ -183,8 +182,9 @@ namespace Build.Client.Extensions
                         itemMetadata.Add(MetadataType.CatalogueName, fieldType.GetMetadata(MetadataType.FileName));
                     }
                 }
-                itemMetadata.Add(MetadataType.FieldDescription, fieldType.DisplayName);
+                itemMetadata.Add(MetadataType.MediaFileId, field.Value);
                 itemMetadata.Add(MetadataType.Disabled, field.Disabled.ToString());
+                itemMetadata.Add(MetadataType.FieldDescription, fieldType.DisplayName);
 
                 var taskItem = new TaskItem(field.FieldId.ToString(), itemMetadata);
                 baseTask.LogDebug(GetDebugStringFromTaskItem(taskItem, itemMetadata));

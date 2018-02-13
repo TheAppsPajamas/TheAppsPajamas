@@ -81,10 +81,18 @@ namespace Build.Client.BuildTasks
             if (clientConfigDto == null)
                 return false;
 
-            var projectConfig = this.GetProjectConfig();
+            var projectsConfig = this.GetProjectsConfig();
 
+            var projectConfig = projectsConfig.Projects.FirstOrDefault(x => x.BuildConfiguration == BuildConfiguration);
+
+            if (projectConfig == null){
+                projectConfig = new ProjectConfig();
+                projectsConfig.Projects.Add(projectConfig);
+            }
+
+            projectConfig.BuildConfiguration = BuildConfiguration;
             projectConfig.ClientConfig = clientConfigDto;
-            if (!this.SaveProject(projectConfig))
+            if (!this.SaveProjects(projectsConfig))
                 return false;
             if (TargetFrameworkIdentifier == "Xamarin.iOS")
             {

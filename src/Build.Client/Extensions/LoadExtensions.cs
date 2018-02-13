@@ -40,6 +40,37 @@ namespace Build.Client.Extensions
             return null;
         }
 
+        public static ProjectsConfig GetProjectsConfig(this BaseLoadTask baseTask)
+        {
+            baseTask.LogDebug("Loading projects.config file");
+
+            try
+            {
+                var projectsConfigPath = Path.Combine(baseTask.BuildResourceDir, Consts.ProjectConfig);
+                ProjectsConfig projectConfigs = null;
+                if (!File.Exists(projectsConfigPath))
+                {
+                    baseTask.Log.LogMessage("Project config file file not found, created at {0}", projectsConfigPath);
+                    projectConfigs = new ProjectsConfig();
+                    var json = JsonConvert.SerializeObject(projectConfigs, Formatting.Indented);
+                    File.WriteAllText(projectsConfigPath, json);
+                    return projectConfigs;
+                }
+                else
+                {
+                    var json = File.ReadAllText(projectsConfigPath);
+                    projectConfigs = JsonConvert.DeserializeObject<ProjectsConfig>(json);
+                    return projectConfigs;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                baseTask.Log.LogErrorFromException(ex);
+            }
+            return null;
+        }
+
         public static ProjectConfig GetProjectConfig(this BaseLoadTask baseTask)
         {
             baseTask.LogDebug("Loading project.config file");
@@ -71,17 +102,17 @@ namespace Build.Client.Extensions
             return null;
         }
 
-        public static bool SaveProject(this BaseLoadTask baseTask, ProjectConfig projectConfig)
+        public static bool SaveProjects(this BaseLoadTask baseTask, ProjectsConfig projectsConfig)
         {
             baseTask.LogDebug("Saving project.config file");
 
             try
             {
-                var projectConfigPath = Path.Combine(baseTask.BuildResourceDir, Consts.ProjectConfig);
+                var projectsConfigPath = Path.Combine(baseTask.BuildResourceDir, Consts.ProjectConfig);
 
-                baseTask.Log.LogMessage("Saving project config at {0}", projectConfigPath);
-                var json = JsonConvert.SerializeObject(projectConfig, Formatting.Indented);
-                File.WriteAllText(projectConfigPath, json);
+                baseTask.Log.LogMessage("Saving project config at {0}", projectsConfigPath);
+                var json = JsonConvert.SerializeObject(projectsConfig, Formatting.Indented);
+                File.WriteAllText(projectsConfigPath, json);
 
             }
             catch (Exception ex)

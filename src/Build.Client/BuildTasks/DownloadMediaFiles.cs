@@ -69,7 +69,7 @@ namespace Build.Client.BuildTasks
                         using (WebClient client = new WebClient())
                         {
                             client.SetWebClientHeaders(Token);
-                            var url = String.Concat(Consts.UrlBase, Consts.MediaEndpoint, "/", BuildAppId.ItemSpec, "/", field.GetMetadata("MediaFileId"));
+                            var url = String.Concat(Consts.UrlBase, Consts.MediaEndpoint, "/", BuildAppId.ItemSpec, "/", field.GetMetadata(MetadataType.MediaFileId));
                             var directory = Path.Combine(mediaResourceDir, field.GetMetadata("Path"));
                             if (!Directory.Exists(directory))
                             {
@@ -88,7 +88,7 @@ namespace Build.Client.BuildTasks
                         var fileInfo = existingFiles.FirstOrDefault(x => x.FileNoExt == field.GetMetadata("MediaName"));
                         fileInfo.FileInfo.Delete();
 
-                        var fileToDelete = new TaskItem(field.GetMetadata("ResourceType"), new Dictionary<string, string>{
+                        var fileToDelete = new TaskItem(field.GetMetadata(MetadataType.MSBuildItemType), new Dictionary<string, string>{
                             { "DeletePath", fileInfo.FileInfo.FullName }
                         });
                         filesToDeleteFromProject.Add(fileToDelete);    

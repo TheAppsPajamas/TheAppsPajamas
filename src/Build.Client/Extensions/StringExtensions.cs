@@ -1,4 +1,6 @@
 ﻿using System;
+using Build.Client.Models;
+
 namespace Build.Client.Extensions
 {
     public static class StringExtensions
@@ -39,6 +41,15 @@ namespace Build.Client.Extensions
                 return s.Replace(".png", String.Empty);
             else
                 return s;
+        }
+
+        public static string ApplyFieldId(this string s, MediaFieldClientDto field)
+        {
+            if (s.Contains("_"))
+                return s;
+            else
+                return String.Concat(s, "_", field.Value);
+
         }
     }
 }

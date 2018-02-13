@@ -100,6 +100,8 @@
     <Compile Include="BuildTasks\ModifyProject.cs" />
     <Compile Include="BuildTasks\SaveModifiedProjectBackToProject.cs" />
     <Compile Include="BuildTasks\AddResourceBackIntoModifedProject.cs" />
+    <Compile Include="Constants\MetadataType.cs" />
+    <Compile Include="Constants\MSBuildItemName.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />

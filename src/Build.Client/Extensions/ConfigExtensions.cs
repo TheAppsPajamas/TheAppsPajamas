@@ -139,11 +139,11 @@ namespace Build.Client.Extensions
             foreach (var field in clientConfigDto.AppIconFields)
             {
                 var itemMetadata = new Dictionary<string, string>();
-                itemMetadata.Add("MediaFileId", field.Value);
+                itemMetadata.Add(MetadataType.MediaFileId, field.Value);
                 var fieldType = FieldType.AppIcons().FirstOrDefault(x => x.Value == field.FieldId);
-                string logicalName = String.Empty;
-                string path = String.Empty;
-                string mediaName = String.Empty;
+                //string logicalName = String.Empty;
+                //string path = String.Empty;
+                //string mediaName = String.Empty;
                 if (fieldType.ProjectType == ProjectType.Droid)
                 {
                     var packagingIcon = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingDroidAppIconName.Value);
@@ -151,43 +151,40 @@ namespace Build.Client.Extensions
                     {
                         baseTask.Log.LogError("Icon name undefined");
                     }
-                    logicalName = Path.Combine(fieldType.GetMetadata("folder"), packagingIcon.Value.ApplyPngExt());
-                    path = Path.Combine(Consts.DroidResources, fieldType.GetMetadata("folder"));
-                    mediaName = String.Concat(packagingIcon.Value, "_", field.Value);
+                    //these ones are required for both
+                    itemMetadata.Add(MetadataType.LogicalName, Path.Combine(fieldType.GetMetadata(MetadataType.Folder), packagingIcon.Value.ApplyPngExt()));
+                    itemMetadata.Add(MetadataType.Path, Path.Combine(Consts.DroidResources, fieldType.GetMetadata(MetadataType.Folder)));
+                    itemMetadata.Add(MetadataType.MediaName, packagingIcon.Value.ApplyFieldId(field));
 
-                    itemMetadata.Add("ResourceType", "AndroidResource");
+                    itemMetadata.Add(MetadataType.MSBuildItemType, MSBuildItemName.AndroidResource);
                 }
                 else if (fieldType.ProjectType == ProjectType.Ios)
                 {
                     //do iTunesArtWork
-                    if (String.IsNullOrEmpty(fieldType.GetMetadata("idiom")))
+                    if (String.IsNullOrEmpty(fieldType.GetMetadata(MetadataType.Idiom)))
                     {
-                        path = Consts.iTunesArtworkDir;
-                        mediaName = string.Concat(fieldType.GetMetadata("filename").RemovePngExt(), "_", field.Value);
-                        logicalName = fieldType.GetMetadata("filename").RemovePngExt();
+                        itemMetadata.Add(MetadataType.Path, Consts.iTunesArtworkDir);
+                        itemMetadata.Add(MetadataType.MediaName, fieldType.GetMetadata(MetadataType.FileName).RemovePngExt().ApplyFieldId(field));
+                        itemMetadata.Add(MetadataType.LogicalName, fieldType.GetMetadata(MetadataType.FileName).RemovePngExt());
 
-                        itemMetadata.Add("ResourceType", "iTunesArtwork");
+                        itemMetadata.Add(MetadataType.MSBuildItemType, MSBuildItemName.iTunesArtwork);
                     }
                     else //do asset catalogue
                     {
-                        path = Path.Combine(assetCatalogueName.ItemSpec, appIconCatalogueName.ItemSpec);
-                        logicalName = Path.Combine(path, fieldType.GetMetadata("filename"));
-                        mediaName = string.Concat(fieldType.GetMetadata("filename").RemovePngExt(), "_", field.Value);
+                        itemMetadata.Add(MetadataType.Path, Path.Combine(assetCatalogueName.ItemSpec, appIconCatalogueName.ItemSpec));
+                        itemMetadata.Add(MetadataType.LogicalName,  Path.Combine(itemMetadata[MetadataType.Path], fieldType.GetMetadata(MetadataType.FileName)));
+                        itemMetadata.Add(MetadataType.MediaName, fieldType.GetMetadata(MetadataType.FileName).RemovePngExt().ApplyFieldId(field));
 
-                        itemMetadata.Add("ResourceType", "ImageAsset");
-                        itemMetadata.Add("size", fieldType.GetMetadata("size"));
-                        itemMetadata.Add("idiom", fieldType.GetMetadata("idiom"));
-                        itemMetadata.Add("idiom2", fieldType.GetMetadata("idiom2"));
-                        itemMetadata.Add("scale", fieldType.GetMetadata("scale"));
-                        itemMetadata.Add("CatalogueName", fieldType.GetMetadata("filename"));
+                        itemMetadata.Add(MetadataType.MSBuildItemType, MSBuildItemName.ImageAsset);
+                        itemMetadata.Add(MetadataType.Size, fieldType.GetMetadata(MetadataType.Size));
+                        itemMetadata.Add(MetadataType.Idiom, fieldType.GetMetadata(MetadataType.Idiom));
+                        itemMetadata.Add(MetadataType.Idiom2, fieldType.GetMetadata(MetadataType.Idiom2));
+                        itemMetadata.Add(MetadataType.Scale, fieldType.GetMetadata(MetadataType.Scale));
+                        itemMetadata.Add(MetadataType.CatalogueName, fieldType.GetMetadata(MetadataType.CatalogueName));
                     }
                 }
-                itemMetadata.Add("Path", path);
-                itemMetadata.Add("LogicalName", logicalName);
-
-                itemMetadata.Add("MediaName", mediaName);
-                itemMetadata.Add("FieldDescription", fieldType.DisplayName);
-                itemMetadata.Add("Disabled", field.Disabled.ToString());
+                itemMetadata.Add(MetadataType.FieldDescription, fieldType.DisplayName);
+                itemMetadata.Add(MetadataType.Disabled, field.Disabled.ToString());
 
                 var taskItem = new TaskItem(field.FieldId.ToString(), itemMetadata);
                 baseTask.LogDebug(GetDebugStringFromTaskItem(taskItem, itemMetadata));
@@ -221,24 +218,18 @@ namespace Build.Client.Extensions
             foreach (var field in clientConfigDto.SplashFields)
             {
                 var itemMetadata = new Dictionary<string, string>();
-                itemMetadata.Add("MediaFileId", field.Value);
+                itemMetadata.Add(MetadataType.MediaFileId, field.Value);
                 var fieldType = FieldType.Splash().FirstOrDefault(x => x.Value == field.FieldId);
-                string logicalName = String.Empty;
-                string path = String.Empty;
-                string mediaName = String.Empty;
                 if (fieldType.ProjectType == ProjectType.Droid)
                 {
                     var packagingIcon = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingDroidAppIconName.Value);
 
-                    logicalName = Path.Combine(fieldType.GetMetadata("folder"), string.Concat(packagingIcon.Value, ".png"));
-                    mediaName = String.Concat(packagingIcon.Value, "_", field.Value);
-                    path = Path.Combine(Consts.DroidResources, fieldType.GetMetadata("folder"));
+                    itemMetadata.Add(MetadataType.LogicalName, Path.Combine(fieldType.GetMetadata(MetadataType.FileName), packagingIcon.Value.ApplyPngExt()));
+                    itemMetadata.Add(MetadataType.MediaName, packagingIcon.Value.ApplyFieldId(field));
+                    itemMetadata.Add(MetadataType.Path, Path.Combine(Consts.DroidResources, fieldType.GetMetadata(MetadataType.Folder)));
                 }
-                itemMetadata.Add("Path", path);
-                itemMetadata.Add("LogicalName", logicalName);
-                itemMetadata.Add("MediaName", mediaName);
-                itemMetadata.Add("FieldDescription", fieldType.DisplayName);
-                itemMetadata.Add("Disabled", field.Disabled.ToString());
+                itemMetadata.Add(MetadataType.FieldDescription, fieldType.DisplayName);
+                itemMetadata.Add(MetadataType.Disabled, field.Disabled.ToString());
                 output.Add(new TaskItem(field.FieldId.ToString(), itemMetadata));
             }
 

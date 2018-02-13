@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Build.Client.Constants;
 using Build.Client.Extensions;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
@@ -40,7 +41,7 @@ namespace Build.Client.BuildTasks
                     if (field == null)
                     {
                         Log.LogMessage("File {0} no longer required, deleting", fileInfo.Name);
-                        var fileToDelete = new TaskItem(field.GetMetadata("ResourceType"), new Dictionary<string, string>{
+                        var fileToDelete = new TaskItem(field.GetMetadata(MetadataType.MSBuildItemType), new Dictionary<string, string>{
                             { "DeletePath", file }
                         });
                         filesToDeleteFromProject.Add(fileToDelete);    

@@ -21,6 +21,7 @@ namespace Build.Client.BuildTasks
 
         public ITaskItem AppIconCatalogueName { get; set; }
 
+        public string PackagesOutputDir { get; set; }
 
         public ITaskItem[] ExistingiTunesArtworks { get; set; }
 
@@ -29,11 +30,21 @@ namespace Build.Client.BuildTasks
         [Output]
         public ITaskItem[] FilesToAddToProject { get; set; }
 
+        [Output]
+        public ITaskItem[] OutputImageAssets { get; set; }
+
+        [Output]
+        public ITaskItem[] OutputITunesArtwork { get; set; }
+
+
         public override bool Execute()
         {
             Log.LogMessage("Set Ios App Icons started");
 
             var filesToAddToModifiedProject = new List<ITaskItem>();
+
+            var outputImageAssets = new List<ITaskItem>();
+            var outputITunesArtwork = new List<ITaskItem>();
 
             var existingAssets = new List<ITaskItem>();
 
@@ -74,15 +85,43 @@ namespace Build.Client.BuildTasks
 
                 LogDebug("AppIconSet name {0}", AppIconCatalogueName.ItemSpec);
 
-                //create asset catalogue folder, and contents.json
-                var outputAssetCatalogueDir = Path.Combine(ProjectDir, AssetCatalogueName.ItemSpec);
+
+                LogDebug("Packages Output Folder {0}", PackagesOutputDir);
+
+                #region CreateAssetCatalogueBaseFolderAndContentsJson
+                //create packages asset catalogue folder etc
+
+                var packagesAssetCatalogueDir = Path.Combine(PackagesOutputDir, AssetCatalogueName.ItemSpec);
+
+                if (!Directory.Exists(packagesAssetCatalogueDir))
+                {
+                    Directory.CreateDirectory(packagesAssetCatalogueDir);
+                    LogDebug("Created {0} folder at {1}", AssetCatalogueName, packagesAssetCatalogueDir);
+                }
+                else
+                {
+                    Directory.Delete(packagesAssetCatalogueDir, true);
+                    Directory.CreateDirectory(packagesAssetCatalogueDir);
+                    LogDebug("Cleaned and Created {0} folder at {1}", AssetCatalogueName, packagesAssetCatalogueDir);
+                }
+
+                var packagesAssetCatalogueContentsPath = Path.Combine(PackagesOutputDir, AssetCatalogueName.ItemSpec, Consts.iOSContents);
+                if (!File.Exists(packagesAssetCatalogueContentsPath))
+                {
+                    LogDebug("Creating Asset catalogue Contents.json at {0}", packagesAssetCatalogueContentsPath);
+                    File.WriteAllText(packagesAssetCatalogueContentsPath, Consts.AssetCatalogueContents);
+                }
+                outputImageAssets.Add(new TaskItem(packagesAssetCatalogueContentsPath));
 
 
-                if (!Directory.Exists(outputAssetCatalogueDir)){
-                    Directory.CreateDirectory(outputAssetCatalogueDir);
+                //create project asset catalogue folder, and contents.json
+                var projectAssetCatalogueDir = Path.Combine(ProjectDir, AssetCatalogueName.ItemSpec);
+
+                if (!Directory.Exists(projectAssetCatalogueDir)){
+                    Directory.CreateDirectory(projectAssetCatalogueDir);
                     //Don't need to add this either, it's just contents.json that gets added
                     //filesToAddToProject.Add(new TaskItem("ImageAsset", new Dictionary<string, string>{ {"IncludePath", outputAssetCatalogueDir}}));
-                    LogDebug("Created {0} folder at {1}", AssetCatalogueName, outputAssetCatalogueDir);
+                    LogDebug("Created {0} folder at {1}", AssetCatalogueName, projectAssetCatalogueDir);
                 } 
 
                 var mediaResourceAssetCatalogueContentsPath = Path.Combine(mediaResourcesBuildConfigDir, AssetCatalogueName.ItemSpec, Consts.iOSContents);
@@ -92,42 +131,54 @@ namespace Build.Client.BuildTasks
                     File.WriteAllText(mediaResourceAssetCatalogueContentsPath, Consts.AssetCatalogueContents);
                 }
 
-                var outputAssetCatalogueContentsPath = Path.Combine(ProjectDir, AssetCatalogueName.ItemSpec, Consts.iOSContents);
+                var projectAssetCatalogueContentsPath = Path.Combine(ProjectDir, AssetCatalogueName.ItemSpec, Consts.iOSContents);
 
-                if (!File.Exists(outputAssetCatalogueContentsPath)){
-                    LogDebug("Creating Asset catalogue Contents.json at {0}", outputAssetCatalogueContentsPath);
-                    File.WriteAllText(outputAssetCatalogueContentsPath, Consts.AssetCatalogueContents);
-                    Log.LogMessage("Saving {1} Contents.json to path {0}", outputAssetCatalogueContentsPath, AssetCatalogueName.ItemSpec);
+                if (!File.Exists(projectAssetCatalogueContentsPath)){
+                    LogDebug("Creating Asset catalogue Contents.json at {0}", projectAssetCatalogueContentsPath);
+                    File.WriteAllText(projectAssetCatalogueContentsPath, Consts.AssetCatalogueContents);
+                    Log.LogMessage("Saving {1} Contents.json to path {0}", projectAssetCatalogueContentsPath, AssetCatalogueName.ItemSpec);
                 }
 
-                if (existingAssets.FirstOrDefault(x => x.ItemSpec == outputAssetCatalogueContentsPath.GetPathRelativeToProject(ProjectDir)) == null)
+                if (existingAssets.FirstOrDefault(x => x.ItemSpec == projectAssetCatalogueContentsPath.GetPathRelativeToProject(ProjectDir)) == null)
                 {
-                    filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.ImageAsset, new Dictionary<string, string> { { MetadataType.IncludePath, outputAssetCatalogueContentsPath } }));
-                    LogDebug("Adding {0} to add to project list as it is not in current project", outputAssetCatalogueContentsPath);
+                    filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.ImageAsset, new Dictionary<string, string> { { MetadataType.IncludePath, projectAssetCatalogueContentsPath } }));
+                    LogDebug("Adding {0} to add to project list as it is not in current project", projectAssetCatalogueContentsPath);
                 }
+
+#endregion
 
                 //create appiconset folder, and contents.json
-                var appIconSetDir = Path.Combine(ProjectDir, AssetCatalogueName.ItemSpec, AppIconCatalogueName.ItemSpec);
+                var packagesAppIconSetDir = Path.Combine(PackagesOutputDir, AssetCatalogueName.ItemSpec, AppIconCatalogueName.ItemSpec);
 
-                if (!Directory.Exists(appIconSetDir))
+                if (!Directory.Exists(packagesAppIconSetDir))
                 {
-                    Directory.CreateDirectory(appIconSetDir);
-                    LogDebug("Created app-icon-set folder at {0}", appIconSetDir);
+                    Directory.CreateDirectory(packagesAppIconSetDir);
+                    LogDebug("Created packages app-icon-set folder at {0}", packagesAppIconSetDir);
+                }     
+
+                var projectAppIconSetDir = Path.Combine(ProjectDir, AssetCatalogueName.ItemSpec, AppIconCatalogueName.ItemSpec);
+
+                if (!Directory.Exists(projectAppIconSetDir))
+                {
+                    Directory.CreateDirectory(projectAppIconSetDir);
+                    LogDebug("Created project app-icon-set folder at {0}", projectAppIconSetDir);
                 }                          
 
-                var mediaResourceAppIconSetContentsPath = Path.Combine(mediaResourcesBuildConfigDir, AssetCatalogueName.ItemSpec, AppIconCatalogueName.ItemSpec, Consts.iOSContents);
-                var mediaResourceAppIconSetItem = new TaskItem(mediaResourceAppIconSetContentsPath);
+                var packagesAppIconSetContentsPath = Path.Combine(PackagesOutputDir, AssetCatalogueName.ItemSpec, AppIconCatalogueName.ItemSpec, Consts.iOSContents);
+                outputImageAssets.Add(new TaskItem(packagesAppIconSetContentsPath));
 
+                var mediaResourceAppIconSetContentsPath = Path.Combine(mediaResourcesBuildConfigDir, AssetCatalogueName.ItemSpec, AppIconCatalogueName.ItemSpec, Consts.iOSContents);
+              
                 var mediaResourceAppIconSetContents = JsonConvert.DeserializeObject<AppIconAssetCatalogue>(Consts.AppIconSetDefaultContents);
 
-                LogDebug("Added media-resource {0} Contents.json at path {0}", mediaResourceAppIconSetItem.ItemSpec, AppIconCatalogueName.ItemSpec);
+                LogDebug("Added media-resource {0} Contents.json at path {0}", mediaResourceAppIconSetContentsPath, AppIconCatalogueName.ItemSpec);
 
-                var outputAppIconSetContentsPath = Path.Combine(ProjectDir, AssetCatalogueName.ItemSpec, AppIconCatalogueName.ItemSpec, Consts.iOSContents);
-                var outputAppIconSetItem = new TaskItem(outputAppIconSetContentsPath);
+                var projectOutputAppIconSetContentsPath = Path.Combine(ProjectDir, AssetCatalogueName.ItemSpec, AppIconCatalogueName.ItemSpec, Consts.iOSContents);
                
+                //use this contents for packages folder and for project output folder (it only has relative paths
                 var outputAppIconSetContents = JsonConvert.DeserializeObject<AppIconAssetCatalogue>(Consts.AppIconSetDefaultContents);
 
-                LogDebug("Added project output {0} Contents.json at path {0}", outputAppIconSetItem.ItemSpec, AppIconCatalogueName.ItemSpec);
+                LogDebug("Added project output {0} Contents.json at path {0}", projectOutputAppIconSetContentsPath, AppIconCatalogueName.ItemSpec);
 
                 //TODO if this doesn't exist, need to add it etc
                 foreach (var field in AppIconFields)
@@ -136,18 +187,21 @@ namespace Build.Client.BuildTasks
                     if (String.IsNullOrEmpty(field.GetMetadata(MetadataType.Idiom))){
 
                         var existingFilePath = Path.Combine(mediaResourcesBuildConfigDir, Consts.iTunesArtworkDir, field.GetMetadata(MetadataType.MediaName).ApplyPngExt());
+                        var packagesOutputFilePath = Path.Combine(PackagesOutputDir, field.GetMetadata(MetadataType.LogicalName));
 
-                        var outputFilePath = Path.Combine(base.ProjectDir, field.GetMetadata(MetadataType.LogicalName));
+                        var projectOutputFilePath = Path.Combine(base.ProjectDir, field.GetMetadata(MetadataType.LogicalName));
 
-                        if (existingAssets.FirstOrDefault(x => x.ItemSpec == outputFilePath.GetPathRelativeToProject(ProjectDir)) == null){
-                            LogDebug("Adding {0} to add to project list as it is not in current project", outputFilePath);
-                            filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.iTunesArtwork, new Dictionary<string, string> { { MetadataType.IncludePath, outputFilePath } }));
+                        if (existingAssets.FirstOrDefault(x => x.ItemSpec == projectOutputFilePath.GetPathRelativeToProject(ProjectDir)) == null){
+                            LogDebug("Adding {0} to add to project list as it is not in current project", projectOutputFilePath);
+                            filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.iTunesArtwork, new Dictionary<string, string> { { MetadataType.IncludePath, projectOutputFilePath } }));
                         }
 
-                        File.Copy(existingFilePath, outputFilePath, true);
+                        File.Copy(existingFilePath, projectOutputFilePath, true);
+                        File.Copy(existingFilePath, packagesOutputFilePath, true);
+                        outputITunesArtwork.Add(new TaskItem(packagesOutputFilePath));
                         var artworkTaskItem = new TaskItem(field.GetMetadata(MetadataType.LogicalName));
 
-                        LogDebug("Added {2} from {0} to {1}", existingFilePath, outputFilePath, MSBuildItemName.iTunesArtwork);
+                        LogDebug("Added {2} from {0} to {1}", existingFilePath, projectOutputFilePath, MSBuildItemName.iTunesArtwork);
 
                         continue;
                     }
@@ -191,20 +245,25 @@ namespace Build.Client.BuildTasks
                                                             , field.GetMetadata(MetadataType.Path)
                                                             , field.GetMetadata(MetadataType.MediaName).ApplyPngExt());
 
-                        var outputFilePath = Path.Combine(ProjectDir, field.GetMetadata(MetadataType.Path)
+                        var packagingOutputFilePath = Path.Combine(PackagesOutputDir, field.GetMetadata(MetadataType.Path)
+                                                          , field.GetMetadata(MetadataType.LogicalName));
+                        
+                        var projectOutputFilePath = Path.Combine(ProjectDir, field.GetMetadata(MetadataType.Path)
                                                           , field.GetMetadata(MetadataType.LogicalName));
 
                         //we want a list of existing imageassets, and itunesartwork to work of, rather than a test of file existence
 
-                        if (existingAssets.FirstOrDefault(x => x.ItemSpec == outputFilePath.GetPathRelativeToProject(ProjectDir)) == null)
+                        if (existingAssets.FirstOrDefault(x => x.ItemSpec == projectOutputFilePath.GetPathRelativeToProject(ProjectDir)) == null)
                         {
-                            LogDebug("Adding {0} to add to project list as it is not in current project", outputFilePath);
-                            filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.ImageAsset, new Dictionary<string, string> { { MetadataType.IncludePath, outputFilePath } }));
+                            LogDebug("Adding {0} to add to project list as it is not in current project", projectOutputFilePath);
+                            filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.ImageAsset, new Dictionary<string, string> { { MetadataType.IncludePath, projectOutputFilePath } }));
                           
                         }
 
-                        LogDebug("Copying file {0} to {1}", existingFilePath, outputFilePath);
-                        File.Copy(existingFilePath, outputFilePath, true);
+                        LogDebug("Copying file {0} to {1}", existingFilePath, projectOutputFilePath);
+                        File.Copy(existingFilePath, projectOutputFilePath, true);
+                        File.Copy(existingFilePath, packagingOutputFilePath, true);
+                        outputImageAssets.Add(new TaskItem(packagingOutputFilePath));
 
                     }
                 }
@@ -218,12 +277,13 @@ namespace Build.Client.BuildTasks
                         NullValueHandling = NullValueHandling.Ignore
                     });
 
-                var mediaResourceAppCataloguePath = Path.Combine(mediaResourcesBuildConfigDir, AssetCatalogueName.ItemSpec, AppIconCatalogueName.ItemSpec, Consts.iOSContents);
+                //var mediaResourceAppIconSetContentsPath = Path.Combine(mediaResourcesBuildConfigDir, AssetCatalogueName.ItemSpec, AppIconCatalogueName.ItemSpec, Consts.iOSContents);
+                //var mediaResourceAppCataloguePath = Path.Combine(mediaResourcesBuildConfigDir, AssetCatalogueName.ItemSpec, AppIconCatalogueName.ItemSpec, Consts.iOSContents);
 
-                Log.LogMessage("Saving media-resources {1} Contents.json to {0}", mediaResourceAppCataloguePath, AppIconCatalogueName.ItemSpec);
-                File.WriteAllText(mediaResourceAppCataloguePath, mediaResourceAppCatalogueJson);
+                Log.LogMessage("Saving media-resources {1} Contents.json to {0}", mediaResourceAppIconSetContentsPath, AppIconCatalogueName.ItemSpec);
+                File.WriteAllText(mediaResourceAppIconSetContentsPath, mediaResourceAppCatalogueJson);
 
-
+                //packagesAppIconSetContentsPath
                 //output
                 outputAppIconSetContents.images = outputAppIconSetContents.images.Where(x => !String.IsNullOrEmpty(x.filename)).ToList();
 
@@ -233,21 +293,25 @@ namespace Build.Client.BuildTasks
                     });
 
  
-                var outputAppCataloguePath = Path.Combine(ProjectDir, AssetCatalogueName.ItemSpec, AppIconCatalogueName.ItemSpec, Consts.iOSContents);
+                //var outputAppCataloguePath = Path.Combine(ProjectDir, AssetCatalogueName.ItemSpec, AppIconCatalogueName.ItemSpec, Consts.iOSContents);
 
-                if (existingAssets.FirstOrDefault(x => x.ItemSpec == outputAppCataloguePath.GetPathRelativeToProject(ProjectDir)) == null)
+                if (existingAssets.FirstOrDefault(x => x.ItemSpec == projectOutputAppIconSetContentsPath.GetPathRelativeToProject(ProjectDir)) == null)
                 {
-                    LogDebug("Adding {0} to add to project list as it is not in current project", outputAppCataloguePath);                    
-                    filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.ImageAsset, new Dictionary<string, string> { { MetadataType.IncludePath, outputAppCataloguePath } }));
+                    LogDebug("Adding {0} to add to project list as it is not in current project", projectOutputAppIconSetContentsPath);                    
+                    filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.ImageAsset, new Dictionary<string, string> { { MetadataType.IncludePath, projectOutputAppIconSetContentsPath } }));
                           
                 }
-                Log.LogMessage("Saving project {1} Contents.json to {0}", outputAppCataloguePath, AppIconCatalogueName.ItemSpec);
-                File.WriteAllText(outputAppCataloguePath, outputAppCatalogueJson);
+                Log.LogMessage("Saving project {1} Contents.json to {0}", projectOutputAppIconSetContentsPath, AppIconCatalogueName.ItemSpec);
+                File.WriteAllText(projectOutputAppIconSetContentsPath, outputAppCatalogueJson);
+                File.WriteAllText(packagesAppIconSetContentsPath, outputAppCatalogueJson);
 
                 Log.LogMessage("AppIcons wants to add {0} files to the build project", filesToAddToModifiedProject.Count());
                 Log.LogMessage("AppIcons wants to show {0} media-resources files in the final project", filesToAddToModifiedProject.Count());
 
                 FilesToAddToProject = filesToAddToModifiedProject.ToArray();
+
+                OutputImageAssets = outputImageAssets.ToArray();
+                OutputITunesArtwork = outputITunesArtwork.ToArray();
 
                 return true;
             } catch (Exception ex){

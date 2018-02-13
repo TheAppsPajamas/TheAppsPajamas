@@ -1,16 +1,9 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/BuildTasks/LoadRemoteBuildConfig.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/NugetContent/build/Build.Client.targets">
     <Files>
-      <File FileName="Build.Client/NugetContent/build/Build.Client.targets" Line="96" Column="22" />
-      <File FileName="Build.Client/BuildTasks/DownloadMediaFiles.cs" Line="77" Column="85" />
-      <File FileName="Build.Client/Extensions/ConfigExtensions.cs" Line="185" Column="73" />
-      <File FileName="Build.Client/Extensions/StringExtensions.cs" Line="59" Column="26" />
-      <File FileName="Build.Client/BuildTasks/SetIosAppIcons.cs" Line="324" Column="18" />
-      <File FileName="Build.Client/BuildTasks/CleanAssetCatalogues.cs" Line="22" Column="37" />
-      <File FileName="Build.Client/BuildTasks/ModifyProject.cs" Line="97" Column="31" />
-      <File FileName="Build.Client/BuildTasks/AddResourceBackIntoModifedProject.cs" Line="60" Column="53" />
-      <File FileName="Build.Client/BuildTasks/LoadLocalBuildConfig.cs" Line="34" Column="29" />
-      <File FileName="Build.Client/BuildTasks/LoadRemoteBuildConfig.cs" Line="96" Column="30" />
+      <File FileName="Build.Client/BuildTasks/SetDroidAppIcons.cs" Line="87" Column="15" />
+      <File FileName="Build.Client/NugetContent/build/Build.Client.targets" Line="29" Column="14" />
+      <File FileName="Build.Client/BuildTasks/SetIosAppIcons.cs" Line="205" Column="1" NotebookId="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

@@ -120,9 +120,18 @@
             ProjectDir="$(MSBuildProjectDirectory)" 
             AppIconFields="@(AppIconFields)"
             ExistingAndroidResources="@(AndroidResource)">
-
+            <Output TaskParameter="OutputAndroidAssets" ItemName="AndroidAppIcons" />    
+            <Output TaskParameter="TheAppsPajamasResourceDir" PropertyName="TheAppsPajamasResourceDir" />
             <Output TaskParameter="FilesToAddToProject" ItemName="FilesToAddToProject" />
         </SetDroidAppIcons>
+
+        <ItemGroup>
+            <AndroidResource Remove="$(TheAppsPajamasResourceDir)/**"/>
+        </ItemGroup>
+
+       <ItemGroup>
+            <AndroidResource Include="%(AndroidAppIcons.Identity)"/>
+        </ItemGroup>
     </Target>
 
     <Target Name="SetIosPlist" 

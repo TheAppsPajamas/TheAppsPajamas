@@ -144,7 +144,9 @@
             ProjectDir="$(MSBuildProjectDirectory)" 
             AppIconFields="@(AppIconFields)" 
             AssetCatalogueName="$(AssetCatalogueName)" 
-            AppIconCatalogueName="$(AppIconCatalogueName)">
+            AppIconCatalogueName="$(AppIconCatalogueName)"
+            ExistingiTunesArtworks="@(iTunesArtwork)"
+            ExistingImageAssets="@(ImageAsset)">
   <!--          <Output TaskParameter="OutputImageAssets" ItemName="IosAppIcons" />            
             <Output TaskParameter="OutputITunesArtwork" ItemName="IosITunesArtwork" />-->
 

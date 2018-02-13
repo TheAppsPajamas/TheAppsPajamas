@@ -80,5 +80,6 @@ namespace Build.Client.Constants
         /// The type of the MSB Build item with ItemGroup, e.g. ImageAsset or AndroidResource.
         /// </summary>
         public const string MSBuildItemType = "MSBuildItemType";
+
     }
 }

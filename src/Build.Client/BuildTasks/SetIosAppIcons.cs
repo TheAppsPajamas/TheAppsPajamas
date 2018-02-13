@@ -21,6 +21,11 @@ namespace Build.Client.BuildTasks
 
         public ITaskItem AppIconCatalogueName { get; set; }
 
+
+        public ITaskItem[] ExistingiTunesArtworks { get; set; }
+
+        public ITaskItem[] ExistingImageAssets { get; set; }
+
         [Output]
         public ITaskItem[] FilesToAddToProject { get; set; }
 
@@ -30,6 +35,26 @@ namespace Build.Client.BuildTasks
 
             var filesToAddToModifiedProject = new List<ITaskItem>();
 
+            if (ExistingImageAssets != null)
+            {
+                foreach(var taskItem in ExistingImageAssets){
+                    LogDebug("Existing ImageAsset in project {0}", taskItem.ItemSpec);
+                }
+            } else if (ExistingImageAssets == null || ExistingImageAssets.Length == 0){
+                LogDebug("No existing image assets found in project");
+            }
+
+            if (ExistingiTunesArtworks != null)
+            {
+                foreach (var taskItem in ExistingiTunesArtworks)
+                {
+                    LogDebug("Existing iTunesArtwork in project {0}", taskItem.ItemSpec);
+                }
+            }
+            else if (ExistingiTunesArtworks == null || ExistingiTunesArtworks.Length == 0)
+            {
+                LogDebug("No existing iTunesArtwork found in project");
+            }
 
             try
             {
@@ -169,6 +194,7 @@ namespace Build.Client.BuildTasks
                         var outputFilePath = Path.Combine(ProjectDir, field.GetMetadata(MetadataType.Path)
                                                           , field.GetMetadata(MetadataType.LogicalName));
 
+                        //we want a list of existing imageassets, and itunesartwork to work of, rather than a test of file existence
                         if (!File.Exists(outputFilePath)){
                             filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.ImageAsset, new Dictionary<string, string> { { MetadataType.IncludePath, outputFilePath } }));
                           

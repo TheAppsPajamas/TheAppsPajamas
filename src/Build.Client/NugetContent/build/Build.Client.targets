@@ -152,17 +152,17 @@
             ExistingImageAssets="@(ImageAsset)"
             PackagesOutputDir="$(MSBuildThisFileDirectory)">
             <Output TaskParameter="OutputImageAssets" ItemName="IosAppIcons" />            
-            <Output TaskParameter="OutputITunesArtwork" ItemName="IosITunesArtwork" />
+            <Output TaskParameter="OutputITunesArtwork" ItemName="IosITunesArtwork" />    
+            <Output TaskParameter="TheAppsPajamasResourceDir" PropertyName="TheAppsPajamasResourceDir" />
 
             
             <Output TaskParameter="FilesToAddToProject" ItemName="FilesToAddToProject" />
         </SetIosAppIcons>
         
 
-        <Warning Text="iTunesArtwork before @(iTunesArtWork)"/>
         <ItemGroup>
-            <ImageAsset Remove="theappspajamas.xcassets/**"/>
-            <ImageAsset Remove="theappspajamas-resources/**"/>
+            <ImageAsset Remove="$(AssetCatalogueName)/**"/>
+            <ImageAsset Remove="$(TheAppsPajamasResourceDir)/**"/>
             <ITunesArtwork Remove="**"/>
         </ItemGroup>
 
@@ -171,7 +171,6 @@
             <ITunesArtwork Include="%(IosITunesArtwork.Identity)" />
         </ItemGroup>
 
-        <Warning Text="iTunesArtwork after @(iTunesArtWork)"/>
     </Target>
 
     <Target Name="ModifyProject" 
@@ -189,6 +188,8 @@
         </ModifyProject>
 
             <Warning Text="Modified project path $(ModifiedProjectFullPath)"/>
+
+            <Warning Text="Modified project path $(ProjectShouldModifyOriginal)"/>
     </Target>
 
 <!--    <Target Name="BuildModifiedProject" 
@@ -201,7 +202,7 @@
 
     </Target>    -->
 
-    <Target Name="AddResourceBackIntoModifedProject" 
+<!--    <Target Name="AddResourceBackIntoModifedProject" 
         AfterTargets="ModifyProject"
         Condition=" '$(IsTheAppPajamaClientProject)' != 'true' And $(ProjectShouldModifyOriginal) == 'True' ">
         <AddResourceBackIntoModifedProject Debug="$(BuildDebug)" 
@@ -210,10 +211,10 @@
             ProjectFileModifiedName="$(ModifiedProjectFullPath)">
 
         </AddResourceBackIntoModifedProject>
-    </Target>  
+    </Target>-->
     
     <Target Name="SaveModifiedProjectBackToProject" 
-        AfterTargets="AddResourceBackIntoModifedProject"
+        AfterTargets="ModifyProject"
         Condition=" '$(IsTheAppPajamaClientProject)' != 'true' And $(ProjectShouldModifyOriginal) == 'True' ">
         <SaveModifiedProjectBackToProject Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" 
             ProjectFileOriginalName="$(MSBuildProjectFullPath)"

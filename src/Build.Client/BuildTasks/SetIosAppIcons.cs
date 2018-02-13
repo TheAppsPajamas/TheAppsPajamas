@@ -42,10 +42,6 @@ namespace Build.Client.BuildTasks
                     Log.LogError("App Icon Field set malformed");
                 }
 
-                //var outputImageAssets = new List<ITaskItem>();
-                //var outputITunesArtwork = new List<ITaskItem>();
-
-
                 LogDebug("Asset catalogue name {0}", AssetCatalogueName.ItemSpec);
 
                 LogDebug("AppIconSet name {0}", AppIconCatalogueName.ItemSpec);
@@ -60,12 +56,6 @@ namespace Build.Client.BuildTasks
                     //filesToAddToProject.Add(new TaskItem("ImageAsset", new Dictionary<string, string>{ {"IncludePath", outputAssetCatalogueDir}}));
                     LogDebug("Created {0} folder at {1}", AssetCatalogueName, outputAssetCatalogueDir);
                 } 
-                //stop deleting folder that's just confusing
-                //else {
-                //    Directory.Delete(outputAssetCatalogueDir, true);
-                //    Directory.CreateDirectory(outputAssetCatalogueDir);
-                //    LogDebug("Cleaned and Created {0} folder at {1}", AssetCatalogueName, outputAssetCatalogueDir);
-                //}
 
                 var mediaResourceAssetCatalogueContentsPath = Path.Combine(mediaResourcesBuildConfigDir, AssetCatalogueName.ItemSpec, Consts.iOSContents);
                 if (!File.Exists(mediaResourceAssetCatalogueContentsPath))
@@ -176,19 +166,15 @@ namespace Build.Client.BuildTasks
                                                             , field.GetMetadata(MetadataType.Path)
                                                             , field.GetMetadata(MetadataType.MediaName).ApplyPngExt());
 
-                        var filePath = Path.Combine(ProjectDir, field.GetMetadata(MetadataType.Path), field.GetMetadata(MetadataType.CatalogueName));
+                        var outputFilePath = Path.Combine(ProjectDir, field.GetMetadata(MetadataType.Path), field.GetMetadata(MetadataType.CatalogueName));
 
-                        if (!File.Exists(filePath)){
-                            filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.ImageAsset, new Dictionary<string, string> { { MetadataType.IncludePath, filePath } }));
+                        if (!File.Exists(outputFilePath)){
+                            filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.ImageAsset, new Dictionary<string, string> { { MetadataType.IncludePath, outputFilePath } }));
                           
                         }
 
-                        LogDebug("Copying file {0} to {1}", existingFilePath, filePath);
-                        File.Copy(existingFilePath, filePath, true);
-
-                        //var logicalFilePath = Path.Combine(ProjectDir, field.GetMetadata("Path"), field.GetMetadata("CatalogueName"));
-
-                        //Log.LogMessage("Adding file {0} at path {1}", filePath, logicalFilePath);
+                        LogDebug("Copying file {0} to {1}", existingFilePath, outputFilePath);
+                        File.Copy(existingFilePath, outputFilePath, true);
 
                     }
                 }

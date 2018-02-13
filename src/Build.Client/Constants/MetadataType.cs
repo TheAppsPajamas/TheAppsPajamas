@@ -39,6 +39,11 @@ namespace Build.Client.Constants
         public const string Disabled = "Disabled";
 
         /// <summary>
+        /// The path of the file to be deleted from the project.
+        /// </summary>
+        public const string DeletePath = "DeletePath";
+
+        /// <summary>
         /// The relative path (without file name) of the appspajamas media file.
         /// </summary>
         public const string Path = "Path";

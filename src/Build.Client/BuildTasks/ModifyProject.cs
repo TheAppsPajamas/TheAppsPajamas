@@ -47,11 +47,11 @@ namespace Build.Client.BuildTasks
                     foreach (var deleteItem in FilesToDeleteFromProject)
                     {
                         var existingItem = existingItems.FirstOrDefault(x => x.ItemType == deleteItem.ItemSpec
-                                                                        && x.Include == deleteItem.GetMetadata("DeletePath"));
+                                                                        && x.Include == deleteItem.GetMetadata(MetadataType.DeletePath));
 
                         existingItem.Parent.RemoveChild(existingItem);
 
-                        LogDebug("Removed {0} from project", deleteItem.GetMetadata("DeletePath"));
+                        LogDebug("Removed {0} from project", deleteItem.GetMetadata(MetadataType.DeletePath));
 
                     }
                 }
@@ -79,8 +79,8 @@ namespace Build.Client.BuildTasks
                     foreach (var fileToAdd in FilesToAddToProject)
                     {
 
-                        LogDebug("Added file {1} to {0}", fileToAdd.ItemSpec, fileToAdd.GetMetadata("IncludePath"));
-                        addItemGroup.AddItem(fileToAdd.ItemSpec, fileToAdd.GetMetadata("IncludePath"));
+                        LogDebug("Added file {1} to {0}", fileToAdd.ItemSpec, fileToAdd.GetMetadata(MetadataType.IncludePath));
+                        addItemGroup.AddItem(fileToAdd.ItemSpec, fileToAdd.GetMetadata(MetadataType.IncludePath));
                     }
                 }
                 else

@@ -93,26 +93,26 @@ namespace Build.Client.Extensions
 
         public static ITaskItem GetAssetCatalogueName(this BaseLoadTask baseTask, ClientConfigDto clientConfigDto)
         {
-            var assetCatalogue = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingIosAssetCatalogueName.Value);
-            if (assetCatalogue == null || String.IsNullOrEmpty(assetCatalogue.Value))
+            var assetCatalogueField = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingIosAssetCatalogueName.Value);
+            if (assetCatalogueField == null || String.IsNullOrEmpty(assetCatalogueField.Value))
             {
                 baseTask.Log.LogError("Asset catalogue undefined");
             }
 
-            baseTask.Log.LogMessage("AssetCatalogue name {0}", assetCatalogue.Value.ApplyXcAssetsExt());
-            return new TaskItem(assetCatalogue.Value.ApplyXcAssetsExt());
+            baseTask.Log.LogMessage("AssetCatalogue name {0}", assetCatalogueField.Value.ApplyXcAssetsExt());
+            return new TaskItem(assetCatalogueField.Value.ApplyXcAssetsExt());
         }
 
         public static ITaskItem GetAppIconCatalogueName(this BaseLoadTask baseTask, ClientConfigDto clientConfigDto)
         {
 
-            var appIconName = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingIosAppIconXcAssetsName.Value);
-            if (appIconName == null || String.IsNullOrEmpty(appIconName.Value))
+            var appIconNameField = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingIosAppIconXcAssetsName.Value);
+            if (appIconNameField == null || String.IsNullOrEmpty(appIconNameField.Value))
             {
                 baseTask.Log.LogError("AppIconSet catalogue name undefined");
             }
-            baseTask.Log.LogMessage("AppIconCatalogue name {0}", appIconName.Value.ApplyAppiconsetExt());
-            return new TaskItem(appIconName.Value.ApplyAppiconsetExt());
+            baseTask.Log.LogMessage("AppIconCatalogue name {0}", appIconNameField.Value.ApplyAppiconsetExt());
+            return new TaskItem(appIconNameField.Value.ApplyAppiconsetExt());
         }
     }
 }

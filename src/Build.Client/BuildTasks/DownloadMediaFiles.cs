@@ -57,12 +57,12 @@ namespace Build.Client.BuildTasks
             try
             {
                 foreach(var field in allMediaFields){
-                    var exists = existingFiles.Any(x => x.FileNoExt == field.GetMetadata("MediaName"));
+                    var exists = existingFiles.Any(x => x.FileNoExt == field.GetMetadata(MetadataType.MediaName));
                     if (!exists)
                     {
-                        if (field.GetMetadata("Disabled") == bool.TrueString)
+                        if (field.GetMetadata(MetadataType.Disabled) == bool.TrueString)
                         {
-                            Log.LogMessage("Media field {0} is disabled, not downloading", field.GetMetadata("FieldDescription"));
+                            Log.LogMessage("Media field {0} is disabled, not downloading", field.GetMetadata(MetadataType.FieldDescription));
                             continue;
                         }
 
@@ -70,31 +70,31 @@ namespace Build.Client.BuildTasks
                         {
                             client.SetWebClientHeaders(Token);
                             var url = String.Concat(Consts.UrlBase, Consts.MediaEndpoint, "/", BuildAppId.ItemSpec, "/", field.GetMetadata(MetadataType.MediaFileId));
-                            var directory = Path.Combine(mediaResourceDir, field.GetMetadata("Path"));
+                            var directory = Path.Combine(mediaResourceDir, field.GetMetadata(MetadataType.Path));
                             if (!Directory.Exists(directory))
                             {
                                 LogDebug("Created folder {0}", directory);
                                 Directory.CreateDirectory(directory);
                             }
-                            var fileName = Path.Combine(mediaResourceDir, field.GetMetadata("Path"), string.Concat(field.GetMetadata("MediaName"), ".png"));
-                            Log.LogMessage("Downloading media file {0}, from url {1}", field.GetMetadata("LogicalName"), url);
+                            var fileName = Path.Combine(mediaResourceDir, field.GetMetadata(MetadataType.Path), field.GetMetadata(MetadataType.MediaName).ApplyPngExt());
+                            Log.LogMessage("Downloading media file {0}, from url {1}", field.GetMetadata(MetadataType.LogicalName), url);
                             client.DownloadFile(url, fileName);
                         }
                     }
-                    else if (field.GetMetadata("Disabled") == bool.TrueString)
+                    else if (field.GetMetadata(MetadataType.Disabled) == bool.TrueString)
                     {
                         //Think this takes care of deleting. not sure about old files tho?
-                        Log.LogMessage("Media file {0} exists, but is now disabled, deleting", field.GetMetadata("FieldDescription"));
-                        var fileInfo = existingFiles.FirstOrDefault(x => x.FileNoExt == field.GetMetadata("MediaName"));
+                        Log.LogMessage("Media file {0} exists, but is now disabled, deleting", field.GetMetadata(MetadataType.FieldDescription));
+                        var fileInfo = existingFiles.FirstOrDefault(x => x.FileNoExt == field.GetMetadata(MetadataType.MediaName));
                         fileInfo.FileInfo.Delete();
 
                         var fileToDelete = new TaskItem(field.GetMetadata(MetadataType.MSBuildItemType), new Dictionary<string, string>{
-                            { "DeletePath", fileInfo.FileInfo.FullName }
+                            { MetadataType.DeletePath, fileInfo.FileInfo.FullName }
                         });
                         filesToDeleteFromProject.Add(fileToDelete);    
 
                     } else {
-                        Log.LogMessage("Media file {0} exists, skipping", field.GetMetadata("LogicalName"));
+                        Log.LogMessage("Media file {0} exists, skipping", field.GetMetadata(MetadataType.LogicalName));
                     }
                 }
                 FilesToDeleteFromProject = filesToDeleteFromProject.ToArray();

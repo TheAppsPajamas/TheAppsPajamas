@@ -48,20 +48,20 @@ namespace Build.Client.BuildTasks
                 var appNode = xml.DocumentElement.SelectSingleNode("/manifest/application", nsmgr);
                 if (appNode != null && appNode.Attributes != null)
                 {
-                    var packageName = PackagingFields
+                    var packageNameField = PackagingFields
                         .FirstOrDefault(x => FieldType.FromValue(Int32.Parse(x.ItemSpec)) == FieldType.PackagingDroidName);
 
-                    if (packageName != null && !String.IsNullOrEmpty(packageName.GetMetadata("Value")))
+                    if (packageNameField != null && !String.IsNullOrEmpty(packageNameField.GetMetadata("Value")))
                     {
-                        LogDebug("Package name found, check against resource value {0}", packageName.GetMetadata("Value"));
+                        LogDebug("Package name found, check against resource value {0}", packageNameField.GetMetadata("Value"));
 
                         var labelAttribute = appNode.Attributes["label", AndroidNamespace];
                         if (labelAttribute != null)
                         {
-                            if (labelAttribute.Value != packageName.GetMetadata("Value"))
+                            if (labelAttribute.Value != packageNameField.GetMetadata("Value"))
                             {
                                 LogDebug("Package name changed, setting Android Manifest");
-                                labelAttribute.Value = packageName.GetMetadata("Value");
+                                labelAttribute.Value = packageNameField.GetMetadata("Value");
                                 touched = true;
                             }
                             else
@@ -79,20 +79,20 @@ namespace Build.Client.BuildTasks
                         Log.LogWarning("Package name not found in packaging fields");
                     }
                     //icon
-                    var iconName = PackagingFields
+                    var iconNameField = PackagingFields
                         .FirstOrDefault(x => FieldType.FromValue(Int32.Parse(x.ItemSpec)) == FieldType.PackagingDroidAppIconName);
 
-                    if (iconName != null && !String.IsNullOrEmpty(iconName.GetMetadata("Value")))
+                    if (iconNameField != null && !String.IsNullOrEmpty(iconNameField.GetMetadata("Value")))
                     {
-                        LogDebug("Package app icon found, check against resource value {0}", iconName.GetMetadata("Value"));
+                        LogDebug("Package app icon found, check against resource value {0}", iconNameField.GetMetadata("Value"));
 
                         var iconAttribute = appNode.Attributes["icon", AndroidNamespace];
                         if (iconAttribute != null)
                         {
-                            if (iconAttribute.Value != iconName.GetMetadata("Value"))
+                            if (iconAttribute.Value != iconNameField.GetMetadata("Value"))
                             {
                                 LogDebug("Package app icon changed, setting Android Manifest");
-                                iconAttribute.Value = String.Concat("@mipmap/", iconName.GetMetadata("Value"));
+                                iconAttribute.Value = String.Concat("@mipmap/", iconNameField.GetMetadata("Value"));
                                 touched = true;
                             }
                             else
@@ -116,16 +116,16 @@ namespace Build.Client.BuildTasks
                     Log.LogWarning("Android Manifest Application node not found");
                 }
 
-                var packageIdentifier = PackagingFields
+                var packageIdentifierField = PackagingFields
                     .FirstOrDefault(x => FieldType.FromValue(Int32.Parse(x.ItemSpec)) == FieldType.PackagingDroidIdentifier);
 
-                if (packageIdentifier != null && !String.IsNullOrEmpty(packageIdentifier.GetMetadata("Value")))
+                if (packageIdentifierField != null && !String.IsNullOrEmpty(packageIdentifierField.GetMetadata("Value")))
                 {
-                    LogDebug("Package identifier found, check against resource value {0}", packageIdentifier.GetMetadata("Value"));
-                    if (xml.DocumentElement.GetAttribute("package") != packageIdentifier.GetMetadata("Value"))
+                    LogDebug("Package identifier found, check against resource value {0}", packageIdentifierField.GetMetadata("Value"));
+                    if (xml.DocumentElement.GetAttribute("package") != packageIdentifierField.GetMetadata("Value"))
                     {
                         LogDebug("Package identified changed, setting Android Manifest");
-                        xml.DocumentElement.SetAttribute("package", packageIdentifier.GetMetadata("Value"));
+                        xml.DocumentElement.SetAttribute("package", packageIdentifierField.GetMetadata("Value"));
                         touched = true;
                     }
                     else
@@ -138,16 +138,16 @@ namespace Build.Client.BuildTasks
                     Log.LogWarning("Package identifier not found in packaging fields");
                 }
 
-                var packageVersionName = PackagingFields
+                var packageVersionNameField = PackagingFields
                     .FirstOrDefault(x => FieldType.FromValue(Int32.Parse(x.ItemSpec)) == FieldType.PackagingDroidVersionText);
 
-                if (packageVersionName != null && !String.IsNullOrEmpty(packageVersionName.GetMetadata("Value")))
+                if (packageVersionNameField != null && !String.IsNullOrEmpty(packageVersionNameField.GetMetadata("Value")))
                 {
-                    LogDebug("Package version name found, check against resource value {0}", packageVersionName.GetMetadata("Value"));
-                    if (xml.DocumentElement.GetAttribute("android:versionName") != packageVersionName.GetMetadata("Value"))
+                    LogDebug("Package version name found, check against resource value {0}", packageVersionNameField.GetMetadata("Value"));
+                    if (xml.DocumentElement.GetAttribute("android:versionName") != packageVersionNameField.GetMetadata("Value"))
                     {
                         LogDebug("Package version name changed, setting Android Manifest");
-                        xml.DocumentElement.SetAttribute("android:versionName", packageVersionName.GetMetadata("Value"));
+                        xml.DocumentElement.SetAttribute("android:versionName", packageVersionNameField.GetMetadata("Value"));
                         touched = true;
                     }
                     else
@@ -160,16 +160,16 @@ namespace Build.Client.BuildTasks
                     Log.LogWarning("Package version name not found in packaging fields");
                 }
 
-                var packageVersionCode = PackagingFields
+                var packageVersionCodeField = PackagingFields
                     .FirstOrDefault(x => FieldType.FromValue(Int32.Parse(x.ItemSpec)) == FieldType.PackagingDroidVersionNumber);
 
-                if (packageVersionCode != null && !String.IsNullOrEmpty(packageVersionCode.GetMetadata("Value")))
+                if (packageVersionCodeField != null && !String.IsNullOrEmpty(packageVersionCodeField.GetMetadata("Value")))
                 {
-                    LogDebug("Package version code found, check against resource value {0}", packageVersionCode.GetMetadata("Value"));
-                    if (xml.DocumentElement.GetAttribute("android:versionCode") != packageVersionCode.GetMetadata("Value"))
+                    LogDebug("Package version code found, check against resource value {0}", packageVersionCodeField.GetMetadata("Value"));
+                    if (xml.DocumentElement.GetAttribute("android:versionCode") != packageVersionCodeField.GetMetadata("Value"))
                     {
                         LogDebug("Package version code changed, setting Android Manifest");
-                        xml.DocumentElement.SetAttribute("android:versionCode", packageVersionCode.GetMetadata("Value"));
+                        xml.DocumentElement.SetAttribute("android:versionCode", packageVersionCodeField.GetMetadata("Value"));
                         touched = true;
                     }
                     else

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Build.Client.Constants;
+using Build.Client.Extensions;
 using Microsoft.Build.Evaluation;
 using Microsoft.Build.Framework;
 
@@ -47,7 +48,7 @@ namespace Build.Client.BuildTasks
                     foreach (var deleteItem in FilesToDeleteFromProject)
                     {
                         var existingItem = existingItems.FirstOrDefault(x => x.ItemType == deleteItem.ItemSpec
-                                                                        && x.Include == deleteItem.GetMetadata(MetadataType.DeletePath));
+                                                                        && x.Include == deleteItem.GetMetadata(MetadataType.DeletePath).GetPathRelativeToProject(ProjectDir));
 
                         existingItem.Parent.RemoveChild(existingItem);
 
@@ -79,8 +80,8 @@ namespace Build.Client.BuildTasks
                     foreach (var fileToAdd in FilesToAddToProject)
                     {
 
-                        LogDebug("Added file {1} to {0}", fileToAdd.ItemSpec, fileToAdd.GetMetadata(MetadataType.IncludePath));
-                        addItemGroup.AddItem(fileToAdd.ItemSpec, fileToAdd.GetMetadata(MetadataType.IncludePath));
+                        LogDebug("Added file {1} to {0}", fileToAdd.ItemSpec, fileToAdd.GetMetadata(MetadataType.IncludePath).GetPathRelativeToProject(ProjectDir));
+                        addItemGroup.AddItem(fileToAdd.ItemSpec, fileToAdd.GetMetadata(MetadataType.IncludePath).GetPathRelativeToProject(ProjectDir));
                     }
                 }
                 else

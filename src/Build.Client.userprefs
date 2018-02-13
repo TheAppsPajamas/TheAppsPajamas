@@ -1,10 +1,12 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/BuildTasks/SetIosAppIcons.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/BuildTasks/AddResourceBackIntoModifedProject.cs">
     <Files>
-      <File FileName="Build.Client/BuildTasks/SetIosAppIcons.cs" Line="105" Column="152" />
+      <File FileName="Build.Client/BuildTasks/SetIosAppIcons.cs" Line="193" Column="25" />
       <File FileName="Build.Client/NugetContent/build/Build.Client.targets" Line="149" Column="47" />
       <File FileName="Build.Client/Extensions/ConfigExtensions.cs" Line="193" Column="13" />
-      <File FileName="Build.Client/BuildTasks/ModifyProject.cs" Line="82" Column="118" />
+      <File FileName="Build.Client/BuildTasks/ModifyProject.cs" Line="51" Column="172" />
+      <File FileName="Build.Client/Extensions/StringExtensions.cs" Line="56" Column="10" />
+      <File FileName="Build.Client/BuildTasks/AddResourceBackIntoModifedProject.cs" Line="11" Column="51" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

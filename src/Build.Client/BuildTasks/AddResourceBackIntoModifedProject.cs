@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Build.Client.Constants;
+using Build.Client.Extensions;
 using Microsoft.Build.Evaluation;
 using Microsoft.Build.Framework;
 
@@ -53,7 +54,7 @@ namespace Build.Client.BuildTasks
                     }
 
                     LogDebug("Added file {1} to {0}", itemSpec, fileToAdd);
-                    addItemGroup.AddItem(itemSpec, fileToAdd);
+                    addItemGroup.AddItem(itemSpec, fileToAdd.GetPathRelativeToProject(ProjectDir));
                 }
 
                 LogDebug("Saving modified project");

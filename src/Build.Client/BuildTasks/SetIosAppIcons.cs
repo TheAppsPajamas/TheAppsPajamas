@@ -44,7 +44,7 @@ namespace Build.Client.BuildTasks
                 LogDebug("No existing image assets found in project");
             }
 
-            if (ExistingiTunesArtworks != null && ExistingiTunesArtworks.Length == 0)
+            if (ExistingiTunesArtworks != null && ExistingiTunesArtworks.Length != 0)
             {
                 existingAssets.AddRange(ExistingiTunesArtworks);
             
@@ -100,7 +100,7 @@ namespace Build.Client.BuildTasks
                     Log.LogMessage("Saving {1} Contents.json to path {0}", outputAssetCatalogueContentsPath, AssetCatalogueName.ItemSpec);
                 }
 
-                if (existingAssets.FirstOrDefault(x => x.ItemSpec == outputAssetCatalogueContentsPath) == null)
+                if (existingAssets.FirstOrDefault(x => x.ItemSpec == outputAssetCatalogueContentsPath.GetPathRelativeToProject(ProjectDir)) == null)
                 {
                     filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.ImageAsset, new Dictionary<string, string> { { MetadataType.IncludePath, outputAssetCatalogueContentsPath } }));
                     LogDebug("Adding {0} to add to project list as it is not in current project", outputAssetCatalogueContentsPath);
@@ -139,7 +139,7 @@ namespace Build.Client.BuildTasks
 
                         var outputFilePath = Path.Combine(base.ProjectDir, field.GetMetadata(MetadataType.LogicalName));
 
-                        if (existingAssets.FirstOrDefault(x => x.ItemSpec == outputFilePath) == null){
+                        if (existingAssets.FirstOrDefault(x => x.ItemSpec == outputFilePath.GetPathRelativeToProject(ProjectDir)) == null){
                             LogDebug("Adding {0} to add to project list as it is not in current project", outputFilePath);
                             filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.iTunesArtwork, new Dictionary<string, string> { { MetadataType.IncludePath, outputFilePath } }));
                         }
@@ -196,7 +196,7 @@ namespace Build.Client.BuildTasks
 
                         //we want a list of existing imageassets, and itunesartwork to work of, rather than a test of file existence
 
-                        if (existingAssets.FirstOrDefault(x => x.ItemSpec == outputFilePath) == null)
+                        if (existingAssets.FirstOrDefault(x => x.ItemSpec == outputFilePath.GetPathRelativeToProject(ProjectDir)) == null)
                         {
                             LogDebug("Adding {0} to add to project list as it is not in current project", outputFilePath);
                             filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.ImageAsset, new Dictionary<string, string> { { MetadataType.IncludePath, outputFilePath } }));
@@ -235,7 +235,7 @@ namespace Build.Client.BuildTasks
  
                 var outputAppCataloguePath = Path.Combine(ProjectDir, AssetCatalogueName.ItemSpec, AppIconCatalogueName.ItemSpec, Consts.iOSContents);
 
-                if (existingAssets.FirstOrDefault(x => x.ItemSpec == outputAppCataloguePath) == null)
+                if (existingAssets.FirstOrDefault(x => x.ItemSpec == outputAppCataloguePath.GetPathRelativeToProject(ProjectDir)) == null)
                 {
                     LogDebug("Adding {0} to add to project list as it is not in current project", outputAppCataloguePath);                    
                     filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.ImageAsset, new Dictionary<string, string> { { MetadataType.IncludePath, outputAppCataloguePath } }));

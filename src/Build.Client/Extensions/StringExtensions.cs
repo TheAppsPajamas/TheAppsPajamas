@@ -51,5 +51,16 @@ namespace Build.Client.Extensions
                 return String.Concat(s, "_", field.Value);
 
         }
+
+        public static string GetPathRelativeToProject(this string s, string projectDir)
+        {
+            if (String.IsNullOrEmpty(projectDir))
+                throw new Exception("Must provide projectDir to get relative path");
+
+            var o = s.Replace(projectDir, String.Empty);
+            //remove \ or /
+            o = o.Substring(1, o.Length - 1);
+            return o;
+        }
     }
 }

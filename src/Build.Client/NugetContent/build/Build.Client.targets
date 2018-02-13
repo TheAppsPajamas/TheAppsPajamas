@@ -114,14 +114,15 @@
     <Target Name="SetDroidAppIcons" 
         AfterTargets="SetDroidManifest" 
         Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid' And '$(IsTheAppPajamaClientProject)' != 'true'">
-        <SetDroidAppIcons Debug="$(BuildDebug)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" AppIconFields="@(AppIconFields)" >
-            <Output TaskParameter="OutputFiles" ItemName="DroidAppIcons" />
+        <SetDroidAppIcons Debug="$(BuildDebug)" 
+            BuildConfiguration="$(Configuration)" 
+            PackagesDir="$(PackagesDir)" 
+            ProjectDir="$(MSBuildProjectDirectory)" 
+            AppIconFields="@(AppIconFields)"
+            ExistingAndroidResources="@(AndroidResource)">
+
+            <Output TaskParameter="FilesToAddToProject" ItemName="FilesToAddToProject" />
         </SetDroidAppIcons>
-        <ItemGroup>
-            <AndroidResource Include="%(DroidAppIcons.Identity)">
-                <LogicalName>%(DroidAppIcons.LogicalName)</LogicalName>
-            </AndroidResource>
-        </ItemGroup>
     </Target>
 
     <Target Name="SetIosPlist" 
@@ -147,19 +148,8 @@
             AppIconCatalogueName="$(AppIconCatalogueName)"
             ExistingiTunesArtworks="@(iTunesArtwork)"
             ExistingImageAssets="@(ImageAsset)">
-  <!--          <Output TaskParameter="OutputImageAssets" ItemName="IosAppIcons" />            
-            <Output TaskParameter="OutputITunesArtwork" ItemName="IosITunesArtwork" />-->
-
             <Output TaskParameter="FilesToAddToProject" ItemName="FilesToAddToProject" />
         </SetIosAppIcons>
-<!--       <ItemGroup>
-            <ImageAsset Include="%(IosAppIcons.Identity)">
-            </ImageAsset>
-                <ITunesArtwork Include="%(IosITunesArtwork.Identity)" />
-        </ItemGroup>-->
-<!--                    <Warning Text="ImageAsset %(IosAppIcons.Identity)" />-->
-<!--
-                <LogicalName>%(IosAppIcons.LogicalName)</LogicalName>-->
     </Target>
 
     <Target Name="ModifyProject" 

@@ -1,8 +1,12 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/NugetContent/build/Build.Client.targets">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/Extensions/ConfigExtensions.cs">
     <Files>
       <File FileName="Build.Client/BuildTasks/SetDroidAppIcons.cs" Line="87" Column="15" />
-      <File FileName="Build.Client/NugetContent/build/Build.Client.targets" Line="29" Column="14" />
+      <File FileName="Build.Client/NugetContent/build/Build.Client.targets" Line="26" Column="55" />
+      <File FileName="Build.Client/BuildTasks/LoadLocalBuildConfig.cs" Line="41" Column="15" />
+      <File FileName="Build.Client/Extensions/ConfigExtensions.cs" Line="235" Column="85" />
+      <File FileName="Build.Client/BuildTasks/LoadRemoteBuildConfig.cs" Line="105" Column="66" />
+      <File FileName="Build.Client/BuildTasks/SetDroidSplash.cs" Line="83" Column="14" />
       <File FileName="Build.Client/BuildTasks/SetIosAppIcons.cs" Line="205" Column="1" NotebookId="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>

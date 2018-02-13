@@ -218,19 +218,23 @@ namespace Build.Client.Extensions
             foreach (var field in clientConfigDto.SplashFields)
             {
                 var itemMetadata = new Dictionary<string, string>();
-                itemMetadata.Add(MetadataType.MediaFileId, field.Value);
                 var fieldType = FieldType.Splash().FirstOrDefault(x => x.Value == field.FieldId);
                 if (fieldType.ProjectType == ProjectType.Droid)
                 {
-                    var packagingIcon = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingDroidAppIconName.Value);
+                    var splashNameField = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingDroidSplashName.Value);
 
-                    itemMetadata.Add(MetadataType.LogicalName, Path.Combine(fieldType.GetMetadata(MetadataType.FileName), packagingIcon.Value.ApplyPngExt()));
-                    itemMetadata.Add(MetadataType.MediaName, packagingIcon.Value.ApplyFieldId(field));
+                    itemMetadata.Add(MetadataType.LogicalName, splashNameField.Value.ApplyPngExt());
                     itemMetadata.Add(MetadataType.Path, Path.Combine(Consts.DroidResources, fieldType.GetMetadata(MetadataType.Folder)));
+                    itemMetadata.Add(MetadataType.MediaName, splashNameField.Value.ApplyFieldId(field));
+                } else if (fieldType.ProjectType == ProjectType.Ios){
+                    //TODO
                 }
+                itemMetadata.Add(MetadataType.MediaFileId, field.Value);
                 itemMetadata.Add(MetadataType.FieldDescription, fieldType.DisplayName);
                 itemMetadata.Add(MetadataType.Disabled, field.Disabled.ToString());
-                output.Add(new TaskItem(field.FieldId.ToString(), itemMetadata));
+                var taskItem = new TaskItem(field.FieldId.ToString(), itemMetadata);
+                baseTask.LogDebug(GetDebugStringFromTaskItem(taskItem, itemMetadata));
+                output.Add(taskItem);
             }
 
             baseTask.Log.LogMessage("Generated {0} Splash TaskItems", output.Count);

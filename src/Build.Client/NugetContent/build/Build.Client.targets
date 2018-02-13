@@ -23,13 +23,13 @@
     <!-- TODO not sure how these will affect things -->
     <Target Name="CleanProjectsConfig" 
         AfterTargets="Clean" 
-        Condition=" '$(IsTheAppPajamaClientProject)' == 'true' ">
+        Condition=" '$(IsTheAppPajamaClientProject)' != 'true' ">
         <CleanProjectsConfig Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)">
         </CleanProjectsConfig>
     </Target>
     <Target Name="CleanAssetCatalogues" 
         AfterTargets="Clean" 
-        Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' And '$(IsTheAppPajamaClientProject)' == 'true'">
+        Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' And '$(IsTheAppPajamaClientProject)' != 'true'">
         <CleanAssetCatalogues Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" TargetsDir="$(MSBuildThisFileDirectory)">
         </CleanAssetCatalogues>
     </Target>
@@ -125,14 +125,39 @@
             <Output TaskParameter="FilesToAddToProject" ItemName="FilesToAddToProject" />
         </SetDroidAppIcons>
 
-        <ItemGroup>
+        <!-- don't remove until after done splash -->
+<!--        <ItemGroup>
             <AndroidResource Remove="$(TheAppsPajamasResourceDir)/**"/>
-        </ItemGroup>
+        </ItemGroup>-->
 
        <ItemGroup>
             <AndroidResource Include="%(AndroidAppIcons.Identity)"/>
         </ItemGroup>
     </Target>
+
+    <Target Name="SetDroidSplash" 
+        AfterTargets="SetDroidManifest" 
+        Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid' And '$(IsTheAppPajamaClientProject)' != 'true'">
+        <SetDroidSplash Debug="$(BuildDebug)" 
+            BuildConfiguration="$(Configuration)" 
+            PackagesDir="$(PackagesDir)" 
+            ProjectDir="$(MSBuildProjectDirectory)" 
+            SplashFields="@(SplashFields)"
+            ExistingAndroidResources="@(AndroidResource)">
+            <Output TaskParameter="OutputAndroidAssets" ItemName="AndroidSplash" />    
+            <Output TaskParameter="TheAppsPajamasResourceDir" PropertyName="TheAppsPajamasResourceDir" />
+            <Output TaskParameter="FilesToAddToProject" ItemName="FilesToAddToProject" />
+        </SetDroidSplash>
+
+        <!-- do this last of the androidresource tasks, so we've got the list of existing for them before ditching these ones -->
+        <ItemGroup>
+            <AndroidResource Remove="$(TheAppsPajamasResourceDir)/**"/>
+        </ItemGroup>
+
+       <ItemGroup>
+            <AndroidResource Include="%(AndroidSplash.Identity)"/>
+        </ItemGroup>
+    </Target>    
 
     <Target Name="SetIosPlist" 
         AfterTargets="DownloadMediaFiles" 
@@ -183,7 +208,7 @@
     </Target>
 
     <Target Name="ModifyProject" 
-        AfterTargets="SetIosAppIcons" 
+        AfterTargets="SetDroidSplash;SetIosAppIcons" 
            Condition=" '$(IsTheAppPajamaClientProject)' != 'true' ">
            <ModifyProject Debug="$(BuildDebug)" 
             PackagesDir="$(PackagesDir)" 

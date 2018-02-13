@@ -38,10 +38,10 @@ namespace Build.Client.BuildTasks
                 AssetCatalogueName = this.GetAssetCatalogueName(projectConfig.ClientConfig);
                 AppIconCatalogueName = this.GetAppIconCatalogueName(projectConfig.ClientConfig);
 
-            }
+            } 
             PackagingOutput = this.GetPackagingOutput(projectConfig.ClientConfig);
             AppIconOutput = this.GetAppIconOutput(projectConfig.ClientConfig, AssetCatalogueName, AppIconCatalogueName);
-            //SplashOutput = this.GetSplashOutput(projectConfig.ClientConfig);
+            SplashOutput = this.GetSplashOutput(projectConfig.ClientConfig);
 
 
 

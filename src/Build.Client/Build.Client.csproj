@@ -102,6 +102,7 @@
     <Compile Include="BuildTasks\AddResourceBackIntoModifedProject.cs" />
     <Compile Include="Constants\MetadataType.cs" />
     <Compile Include="Constants\MSBuildItemName.cs" />
+    <Compile Include="BuildTasks\SetDroidSplash.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />

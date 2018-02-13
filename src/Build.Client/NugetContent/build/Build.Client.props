@@ -18,6 +18,7 @@
   <UsingTask TaskName="Build.Client.BuildTasks.DeleteUnusedMediaFiles" AssemblyFile="$(BuildClientToolAssembly)" />
   <UsingTask TaskName="Build.Client.BuildTasks.DownloadMediaFiles" AssemblyFile="$(BuildClientToolAssembly)" />
   <UsingTask TaskName="Build.Client.BuildTasks.SetDroidAppIcons" AssemblyFile="$(BuildClientToolAssembly)" />
+  <UsingTask TaskName="Build.Client.BuildTasks.SetDroidSplash" AssemblyFile="$(BuildClientToolAssembly)" />
   <UsingTask TaskName="Build.Client.BuildTasks.SetIosAppIcons" AssemblyFile="$(BuildClientToolAssembly)" />
   <UsingTask TaskName="Build.Client.BuildTasks.SetIosPlist" AssemblyFile="$(BuildClientToolAssembly)" />
   <UsingTask TaskName="Build.Client.BuildTasks.ModifyProject" AssemblyFile="$(BuildClientToolAssembly)" />

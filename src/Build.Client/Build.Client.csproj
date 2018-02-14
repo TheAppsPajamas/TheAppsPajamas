@@ -79,7 +79,7 @@
     <Compile Include="Helpers\Plist.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="BuildTasks\SetIosAppIcons.cs" />
-    <Compile Include="Models\AppIconAssetCatalogue.cs" />
+    <Compile Include="Models\MediaAssetCatalogue.cs" />
     <Compile Include="BuildTasks\CleanAssetCatalogues.cs" />
     <Compile Include="BuildTasks\SetIosPlist.cs" />
     <Compile Include="Shared\Types\AppIconFieldType.cs" />
@@ -102,7 +102,8 @@
     <Compile Include="BuildTasks\AddResourceBackIntoModifedProject.cs" />
     <Compile Include="Constants\MetadataType.cs" />
     <Compile Include="Constants\MSBuildItemName.cs" />
-    <Compile Include="BuildTasks\SetDroidSplash.cs" />
+    <Compile Include="BuildTasks\SetIosAssetCatalogue.cs" />
+    <Compile Include="BuildTasks\SetIosAssetCatalogueSets.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />

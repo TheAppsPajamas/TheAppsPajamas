@@ -46,6 +46,7 @@
             <Output TaskParameter="SplashOutput" ItemName="SplashFields" />
             <Output TaskParameter="NeedsLoadRemote" PropertyName="NeedsLoadRemote" />
 
+            <Output TaskParameter="TheAppsPajamasResourceDir" PropertyName="TheAppsPajamasResourceDir" />
         </LoadLocalBuildConfig>
 
     </Target>
@@ -71,6 +72,7 @@
             <Output TaskParameter="BuildAppId" PropertyName="BuildAppId" />
             <Output TaskParameter="SplashOutput" ItemName="SplashFields" />
 
+            <Output TaskParameter="TheAppsPajamasResourceDir" PropertyName="TheAppsPajamasResourceDir" />
 
         </LoadRemoteBuildConfig>
     </Target>
@@ -121,7 +123,6 @@
             SplashFields="@(SplashFields)"
             ExistingAndroidResources="@(AndroidResource)">
             <Output TaskParameter="OutputAndroidAssets" ItemName="AndroidAppIcons" />    
-            <Output TaskParameter="TheAppsPajamasResourceDir" PropertyName="TheAppsPajamasResourceDir" />
             <Output TaskParameter="FilesToAddToProject" ItemName="FilesToAddToProject" />
         </SetDroidMedia>
 
@@ -149,44 +150,67 @@
     </Target>
 
 
-    <Target Name="SetIosAppIcons" 
+    <Target Name="SetIosAssetCatalogue" 
         AfterTargets="SetIosPlist" 
-        Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' And '$(IsTheAppPajamaClientProject)' != 'true'">
-        <SetIosAppIcons Debug="$(BuildDebug)" 
+        Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' ">
+        <SetIosAssetCatalogue Debug="$(BuildDebug)" 
             BuildConfiguration="$(Configuration)" 
             PackagesDir="$(PackagesDir)" 
             ProjectDir="$(MSBuildProjectDirectory)" 
             AppIconFields="@(AppIconFields)" 
             AssetCatalogueName="$(AssetCatalogueName)" 
-            AppIconCatalogueName="$(AppIconCatalogueName)"
-            ExistingiTunesArtworks="@(iTunesArtwork)"
             ExistingImageAssets="@(ImageAsset)"
             PackagesOutputDir="$(MSBuildThisFileDirectory)">
-            <Output TaskParameter="OutputImageAssets" ItemName="IosAppIcons" />            
-            <Output TaskParameter="OutputITunesArtwork" ItemName="IosITunesArtwork" />    
-            <Output TaskParameter="TheAppsPajamasResourceDir" PropertyName="TheAppsPajamasResourceDir" />
+            <Output TaskParameter="OutputImageAssets" ItemName="IosImageAssets" />           
+
+            <Output TaskParameter="FilesToAddToProject" ItemName="FilesToAddToProject" />
+        </SetIosAssetCatalogue>
+
+        <!-- TODO pass IosImageAssets into next target -->
+<!--       <ItemGroup>
+            <ImageAsset Include="%(IosAppIcons.Identity)"/>
+        </ItemGroup>-->
+
+    </Target>
+
+    
+
+    <Target Name="SetIosAssetCatalogueSets" 
+        AfterTargets="SetIosAssetCatalogue" 
+        Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' ">
+        <SetIosAssetCatalogueSets Debug="$(BuildDebug)" 
+            BuildConfiguration="$(Configuration)" 
+            PackagesDir="$(PackagesDir)" 
+            ProjectDir="$(MSBuildProjectDirectory)" 
+            AppIconFields="@(AppIconFields)" 
+            SplashFields="@(SplashFields)" 
+            AssetCatalogueName="$(AssetCatalogueName)" 
+            ExistingImageAssets="@(ImageAsset)"
+            ExistingFilesToAddToProject="@(FilesToAddToProject)"
+            ExistingOutputImageAssets="@(IosImageAssets)"
+            PackagesOutputDir="$(MSBuildThisFileDirectory)">
+            <Output TaskParameter="OutputImageAssets" ItemName="IosImageAssets" />            
 
             
             <Output TaskParameter="FilesToAddToProject" ItemName="FilesToAddToProject" />
-        </SetIosAppIcons>
+        </SetIosAssetCatalogueSets>
         
 
         <ItemGroup>
             <ImageAsset Remove="$(AssetCatalogueName)/**"/>
             <ImageAsset Remove="$(TheAppsPajamasResourceDir)/**"/>
-            <ITunesArtwork Remove="**"/>
+<!--            <ITunesArtwork Remove="**"/>-->
         </ItemGroup>
 
        <ItemGroup>
-            <ImageAsset Include="%(IosAppIcons.Identity)"/>
-            <ITunesArtwork Include="%(IosITunesArtwork.Identity)" />
+            <ImageAsset Include="%(IosImageAssets.Identity)"/>
+         <!--   <ITunesArtwork Include="%(IosITunesArtwork.Identity)" />-->
         </ItemGroup>
 
     </Target>
 
     <Target Name="ModifyProject" 
-        AfterTargets="SetDroidSplash;SetIosAppIcons" 
-           Condition=" '$(IsTheAppPajamaClientProject)' != 'true' ">
+        AfterTargets="SetDroidSplash;SetIosAssetCatalogueSets">
            <ModifyProject Debug="$(BuildDebug)" 
             PackagesDir="$(PackagesDir)" 
             ProjectDir="$(MSBuildProjectDirectory)" 
@@ -224,7 +248,7 @@
     <!-- TODO we can roll this back into modify project -->
     <Target Name="SaveModifiedProjectBackToProject" 
         AfterTargets="ModifyProject"
-        Condition=" '$(IsTheAppPajamaClientProject)' != 'true' And $(ProjectShouldModifyOriginal) == 'True' ">
+        Condition=" $(ProjectShouldModifyOriginal) == 'True' ">
         <SaveModifiedProjectBackToProject Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" 
             ProjectFileOriginalName="$(MSBuildProjectFullPath)"
             ProjectFileModifiedName="$(ModifiedProjectFullPath)">

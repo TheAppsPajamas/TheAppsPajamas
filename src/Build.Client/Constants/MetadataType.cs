@@ -90,5 +90,10 @@ namespace Build.Client.Constants
         /// The asset catalogue set name, i.e. AppIcon.appicon, Launch, Image etc
         /// </summary>
         public const string CatalogueSetName = "CatalogueSetName";
+
+        /// <summary>
+        /// The catalogue packaging (for landscape / portrait image sets, id)
+        /// </summary>
+        public const string CataloguePackagingFieldId = "CataloguePackagingFieldId";
     }
 }

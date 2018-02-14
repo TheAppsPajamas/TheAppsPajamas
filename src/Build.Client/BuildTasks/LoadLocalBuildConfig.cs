@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Build.Client.Constants;
 using Build.Client.Extensions;
 using Build.Client.Models;
 using Build.Shared.Types;
@@ -58,12 +59,13 @@ namespace Build.Client.BuildTasks
 
 
 
-            AppIconOutput = this.GetMediaOutput(projectConfig.ClientConfig.AppIconFields, AssetCatalogueName, AppIconCatalogueName, packagingAppIconField);
+            AppIconOutput = this.GetMediaOutput(projectConfig.ClientConfig.AppIconFields, AssetCatalogueName, projectConfig.ClientConfig);
 
-            SplashOutput = this.GetMediaOutput(projectConfig.ClientConfig.SplashFields, AssetCatalogueName, packagingCatalogueSetName, packagingSplashField);
+            SplashOutput = this.GetMediaOutput(projectConfig.ClientConfig.SplashFields, AssetCatalogueName, projectConfig.ClientConfig);
 
             PackagingOutput = this.GetFieldTypeOutput(projectConfig.ClientConfig.PackagingFields);
 
+            TheAppsPajamasResourceDir = new TaskItem(Consts.TheAppsPajamasResourcesDir);
             return true;
         }
     }

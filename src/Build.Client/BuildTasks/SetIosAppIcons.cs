@@ -36,15 +36,12 @@ namespace Build.Client.BuildTasks
         [Output]
         public ITaskItem[] OutputITunesArtwork { get; set; }
 
-        [Output]
-        public ITaskItem TheAppsPajamasResourceDir { get; set; }
 
 
         public override bool Execute()
         {
             Log.LogMessage("Set Ios App Icons started");
 
-            TheAppsPajamasResourceDir = new TaskItem(Consts.TheAppsPajamasResourcesDir);
 
             var filesToAddToModifiedProject = new List<ITaskItem>();
 
@@ -180,14 +177,14 @@ namespace Build.Client.BuildTasks
 
                 var mediaResourceAppIconSetContentsPath = Path.Combine(mediaResourcesBuildConfigDir, AssetCatalogueName.ItemSpec, AppIconCatalogueName.ItemSpec, Consts.iOSContents);
               
-                var mediaResourceAppIconSetContents = JsonConvert.DeserializeObject<AppIconAssetCatalogue>(Consts.AppIconSetDefaultContents);
+                var mediaResourceAppIconSetContents = JsonConvert.DeserializeObject<MediaAssetCatalogue>(Consts.AppIconCatalogueSetDefaultContents);
 
                 LogDebug("Added media-resource {0} Contents.json at path {0}", mediaResourceAppIconSetContentsPath, AppIconCatalogueName.ItemSpec);
 
                 var projectOutputAppIconSetContentsPath = Path.Combine(ProjectDir, AssetCatalogueName.ItemSpec, AppIconCatalogueName.ItemSpec, Consts.iOSContents);
                
                 //use this contents for packages folder and for project output folder (it only has relative paths
-                var outputAppIconSetContents = JsonConvert.DeserializeObject<AppIconAssetCatalogue>(Consts.AppIconSetDefaultContents);
+                var outputAppIconSetContents = JsonConvert.DeserializeObject<MediaAssetCatalogue>(Consts.AppIconCatalogueSetDefaultContents);
 
                 LogDebug("Added project output {0} Contents.json at path {0}", projectOutputAppIconSetContentsPath, AppIconCatalogueName.ItemSpec);
 

@@ -37,6 +37,14 @@ namespace Build.Client.Extensions
                 return string.Concat(s, ".launchimage");
         }
 
+        public static string ApplyImageSetExt(this string s)
+        {
+            if (s.Contains(".imageset"))
+                return s;
+            else
+                return string.Concat(s, ".imageset");
+        }
+
         public static string RemovePngExt(this string s)
         {
             if (s.Contains(".png"))

@@ -31,10 +31,7 @@ namespace Build.Client.BuildTasks
         public ITaskItem[] SplashOutput { get; set; }
 
         [Output]
-        public ITaskItem[] AppIconFieldOutput { get; set; }
-
-        [Output]
-        public ITaskItem[] SplashFieldOutput { get; set; }
+        public ITaskItem TheAppsPajamasResourceDir { get; set; }
 
     }
 }

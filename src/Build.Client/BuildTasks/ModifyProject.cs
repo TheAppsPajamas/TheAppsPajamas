@@ -81,7 +81,7 @@ namespace Build.Client.BuildTasks
                     foreach (var fileToAdd in FilesToAddToProject)
                     {
 
-                        LogDebug("Added file {1} to {0}", fileToAdd.ItemSpec, fileToAdd.GetMetadata(MetadataType.IncludePath).GetPathRelativeToProject(ProjectDir));
+                        LogDebug("Added file {1} to {0}", fileToAdd.ItemSpec, fileToAdd.GetMetadata(MetadataType.IncludePath));
                         addItemGroup.AddItem(fileToAdd.ItemSpec, fileToAdd.GetMetadata(MetadataType.IncludePath).GetPathRelativeToProject(ProjectDir));
                     }
                 }
@@ -115,6 +115,7 @@ namespace Build.Client.BuildTasks
             catch (Exception ex)
             {
                 Log.LogErrorFromException(ex);
+                return false;
 
             }
             return true;

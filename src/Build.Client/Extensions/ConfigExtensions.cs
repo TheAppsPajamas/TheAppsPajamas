@@ -151,8 +151,7 @@ namespace Build.Client.Extensions
         public static ITaskItem[] GetMediaOutput<TFieldClientDto>(this BaseLoadTask baseTask
                                                                   , IList<TFieldClientDto> fieldsDto
                                                                   , ITaskItem assetCatalogueName
-                                                                  , ITaskItem catalogueSetName
-                                                                  , StringFieldClientDto droidNameField)
+                                                                  , ClientConfigDto clientConfigDto)
             where TFieldClientDto : BaseFieldClientDto
         {
             baseTask.LogDebug("Generating Media Field TaskItems");
@@ -166,9 +165,17 @@ namespace Build.Client.Extensions
 
                 if (fieldType.ProjectType == ProjectType.Droid)
                 {
+                    StringFieldClientDto droidNameField = null;
+                    if (fieldType is AppIconFieldType){
+                        droidNameField = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingDroidAppIconName.Value);
+
+                    } else if (fieldType is SplashFieldType){
+                        droidNameField = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingDroidSplashName.Value);
+        
+                    }
                     if (droidNameField == null || String.IsNullOrEmpty(droidNameField.Value))
                     {
-                        baseTask.Log.LogError("Icon name undefined");
+                        baseTask.Log.LogError("Droid field name undefined");
                     }
                     //these ones are required for both
                     itemMetadata.Add(MetadataType.LogicalName, droidNameField.Value.ApplyPngExt());
@@ -190,7 +197,31 @@ namespace Build.Client.Extensions
                     }
                     else //do asset catalogue
                     {
-                        itemMetadata.Add(MetadataType.Path, Path.Combine(assetCatalogueName.ItemSpec, catalogueSetName.ItemSpec));
+                        //need to seperate out image catalogues here, for launchsets and 
+                        string catalogueSetName = null;
+                        if (fieldType is AppIconFieldType)
+                        {
+                            var catalogueSetField = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingIosAppIconXcAssetsName.Value);
+                            catalogueSetName = catalogueSetField.Value.ApplyAppiconsetExt();
+            
+                        }
+                        else if (fieldType is SplashFieldType)
+                        {
+                            var catalogueSetField = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingIosLaunchImageXcAssetsName.Value);
+                            catalogueSetName = catalogueSetField.Value.ApplyLaunchimageExt();
+                        }
+
+                        if (fieldType.GetMetadata(MetadataType.CataloguePackagingFieldId).Length != 0){
+                            var catalogueSetField = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == Int32.Parse(fieldType.GetMetadata(MetadataType.CataloguePackagingFieldId)));
+                            catalogueSetName = catalogueSetField.Value.ApplyImageSetExt();
+                        } 
+
+                        if (String.IsNullOrEmpty(catalogueSetName))
+                        {
+                            baseTask.Log.LogError("Catalogue set name undefined");
+                        }
+
+                        itemMetadata.Add(MetadataType.Path, Path.Combine(assetCatalogueName.ItemSpec, catalogueSetName));
                         itemMetadata.Add(MetadataType.LogicalName, fieldType.GetMetadata(MetadataType.FileName));
                         itemMetadata.Add(MetadataType.MediaName, fieldType.GetMetadata(MetadataType.FileName).RemovePngExt().ApplyFieldId(field));
 
@@ -202,7 +233,7 @@ namespace Build.Client.Extensions
                         itemMetadata.Add(MetadataType.ContentsFileName, fieldType.GetMetadata(MetadataType.FileName));
 
                         //we can use this to build a list to operate on as such
-                        itemMetadata.Add(MetadataType.CatalogueSetName, catalogueSetName.ItemSpec);
+                        itemMetadata.Add(MetadataType.CatalogueSetName, catalogueSetName);
                     }
                 }
                 itemMetadata.Add(MetadataType.MediaFileId, field.Value);

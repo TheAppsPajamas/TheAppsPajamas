@@ -23,15 +23,11 @@ namespace Build.Client.BuildTasks
         [Output]
         public ITaskItem[] OutputAndroidAssets { get; set; }
 
-        [Output]
-        public ITaskItem TheAppsPajamasResourceDir { get; set; }
-
         public string BuildConfiguration { get; set; }
         public override bool Execute()
         {
             Log.LogMessage("Set Droid Media started");
 
-            TheAppsPajamasResourceDir = new TaskItem(Consts.TheAppsPajamasResourcesDir);
             var filesToAddToModifiedProject = new List<ITaskItem>();
             var outputAndroidAssets = new List<ITaskItem>();
 

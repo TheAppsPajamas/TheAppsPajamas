@@ -45,7 +45,7 @@ namespace Build.Client.Extensions
                 return s;
         }
 
-        public static string ApplyFieldId(this string s, MediaFieldClientDto field)
+        public static string ApplyFieldId(this string s, BaseFieldClientDto field)
         {
             if (s.Contains(field.Value))
                 return s;

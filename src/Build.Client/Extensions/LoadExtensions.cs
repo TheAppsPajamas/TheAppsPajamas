@@ -134,7 +134,7 @@ namespace Build.Client.Extensions
             return new TaskItem(assetCatalogueField.Value.ApplyXcAssetsExt());
         }
 
-        public static ITaskItem GetAppIconCatalogueName(this BaseLoadTask baseTask, ClientConfigDto clientConfigDto)
+        public static ITaskItem GetAppIconCatalogueSetName(this BaseLoadTask baseTask, ClientConfigDto clientConfigDto)
         {
 
             var appIconNameField = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingIosAppIconXcAssetsName.Value);
@@ -144,6 +144,18 @@ namespace Build.Client.Extensions
             }
             baseTask.Log.LogMessage("AppIconCatalogue name {0}", appIconNameField.Value.ApplyAppiconsetExt());
             return new TaskItem(appIconNameField.Value.ApplyAppiconsetExt());
+        }
+
+        public static ITaskItem GetSplashCatalogueSetName(this BaseLoadTask baseTask, ClientConfigDto clientConfigDto)
+        {
+
+            var launchImageCatalogueSetName = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingIosLaunchImageXcAssetsName.Value);
+            if (launchImageCatalogueSetName == null || String.IsNullOrEmpty(launchImageCatalogueSetName.Value))
+            {
+                baseTask.Log.LogError("LaunchImageCatalogueSet catalogue name undefined");
+            }
+            baseTask.Log.LogMessage("LaunchImageCatalogueSet name {0}", launchImageCatalogueSetName.Value.ApplyLaunchimageExt());
+            return new TaskItem(launchImageCatalogueSetName.Value.ApplyLaunchimageExt());
         }
     }
 }

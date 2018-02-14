@@ -241,7 +241,7 @@ namespace Build.Client.BuildTasks
                     }
                     else
                     {
-                        outputImageCatalogue.filename = field.GetMetadata(MetadataType.CatalogueName);
+                        outputImageCatalogue.filename = field.GetMetadata(MetadataType.ContentsFileName);
                         mediaResourceImageCatalogue.filename = field.GetMetadata(MetadataType.MediaName).ApplyPngExt();
                         LogDebug("Set asset catalogue filename to {0}", outputImageCatalogue.filename);
 
@@ -250,7 +250,7 @@ namespace Build.Client.BuildTasks
                                                                                                    && x.idiom == field.GetMetadata(MetadataType.Idiom2)
                                                                                                    && x.scale == field.GetMetadata(MetadataType.Scale));
                         if (outputImageCatalogue2 != null){
-                            outputImageCatalogue2.filename = field.GetMetadata(MetadataType.CatalogueName);
+                            outputImageCatalogue2.filename = field.GetMetadata(MetadataType.ContentsFileName);
                             var mediaResourceImageCatalogue2 = mediaResourceAppIconSetContents.images.FirstOrDefault(x => x.size == field.GetMetadata(MetadataType.Size)
                                                                                                    && x.idiom == field.GetMetadata(MetadataType.Idiom2)
                                                                                                    && x.scale == field.GetMetadata(MetadataType.Scale));

@@ -130,6 +130,95 @@ namespace Build.Client.Extensions
             return output.ToArray();
         }
 
+        public static ITaskItem[] GetFieldTypeOutput<TFieldClientDto>(this BaseLoadTask baseTask, IList<TFieldClientDto> fieldsDto)
+            where TFieldClientDto : BaseFieldClientDto
+        {
+            baseTask.LogDebug("Generating Field Output TaskItems");
+
+            var output = new List<ITaskItem>();
+            foreach (var field in fieldsDto)
+            {
+                var itemMetadata = new Dictionary<string, string>();
+                itemMetadata.Add(MetadataType.Value, field.Value);
+                output.Add(new TaskItem(field.FieldId.ToString(), itemMetadata));
+            }
+
+            baseTask.Log.LogMessage("Generated {0} Field Output TaskItems", output.Count);
+            return output.ToArray();
+        }
+
+
+        public static ITaskItem[] GetMediaOutput<TFieldClientDto>(this BaseLoadTask baseTask
+                                                                  , IList<TFieldClientDto> fieldsDto
+                                                                  , ITaskItem assetCatalogueName
+                                                                  , ITaskItem catalogueSetName
+                                                                  , StringFieldClientDto droidNameField)
+            where TFieldClientDto : BaseFieldClientDto
+        {
+            baseTask.LogDebug("Generating Media Field TaskItems");
+
+            var output = new List<ITaskItem>();
+
+            foreach (var field in fieldsDto)
+            {
+                var itemMetadata = new Dictionary<string, string>();
+                var fieldType = FieldType.GetAll().FirstOrDefault(x => x.Value == field.FieldId);
+
+                if (fieldType.ProjectType == ProjectType.Droid)
+                {
+                    if (droidNameField == null || String.IsNullOrEmpty(droidNameField.Value))
+                    {
+                        baseTask.Log.LogError("Icon name undefined");
+                    }
+                    //these ones are required for both
+                    itemMetadata.Add(MetadataType.LogicalName, droidNameField.Value.ApplyPngExt());
+                    itemMetadata.Add(MetadataType.Path, Path.Combine(Consts.DroidResources, fieldType.GetMetadata(MetadataType.Folder)));
+                    itemMetadata.Add(MetadataType.MediaName, droidNameField.Value.ApplyFieldId(field));
+
+                    itemMetadata.Add(MetadataType.MSBuildItemType, MSBuildItemName.AndroidResource);
+                }
+                else if (fieldType.ProjectType == ProjectType.Ios)
+                {
+                    //do iTunesArtWork
+                    if (String.IsNullOrEmpty(fieldType.GetMetadata(MetadataType.Idiom)))
+                    {
+                        itemMetadata.Add(MetadataType.Path, Consts.iTunesArtworkDir);
+                        itemMetadata.Add(MetadataType.MediaName, fieldType.GetMetadata(MetadataType.FileName).RemovePngExt().ApplyFieldId(field));
+                        itemMetadata.Add(MetadataType.LogicalName, fieldType.GetMetadata(MetadataType.FileName).RemovePngExt());
+
+                        itemMetadata.Add(MetadataType.MSBuildItemType, MSBuildItemName.iTunesArtwork);
+                    }
+                    else //do asset catalogue
+                    {
+                        itemMetadata.Add(MetadataType.Path, Path.Combine(assetCatalogueName.ItemSpec, catalogueSetName.ItemSpec));
+                        itemMetadata.Add(MetadataType.LogicalName, fieldType.GetMetadata(MetadataType.FileName));
+                        itemMetadata.Add(MetadataType.MediaName, fieldType.GetMetadata(MetadataType.FileName).RemovePngExt().ApplyFieldId(field));
+
+                        itemMetadata.Add(MetadataType.MSBuildItemType, MSBuildItemName.ImageAsset);
+                        itemMetadata.Add(MetadataType.Size, fieldType.GetMetadata(MetadataType.Size));
+                        itemMetadata.Add(MetadataType.Idiom, fieldType.GetMetadata(MetadataType.Idiom));
+                        itemMetadata.Add(MetadataType.Idiom2, fieldType.GetMetadata(MetadataType.Idiom2));
+                        itemMetadata.Add(MetadataType.Scale, fieldType.GetMetadata(MetadataType.Scale));
+                        itemMetadata.Add(MetadataType.ContentsFileName, fieldType.GetMetadata(MetadataType.FileName));
+
+                        //we can use this to build a list to operate on as such
+                        itemMetadata.Add(MetadataType.CatalogueSetName, catalogueSetName.ItemSpec);
+                    }
+                }
+                itemMetadata.Add(MetadataType.MediaFileId, field.Value);
+                itemMetadata.Add(MetadataType.Disabled, field.Disabled.ToString());
+                itemMetadata.Add(MetadataType.FieldDescription, fieldType.DisplayName);
+
+                var taskItem = new TaskItem(field.FieldId.ToString(), itemMetadata);
+                baseTask.LogDebug(GetDebugStringFromTaskItem(taskItem, itemMetadata));
+                output.Add(taskItem);
+            }
+
+            baseTask.Log.LogMessage("Generated {0} Media Field TaskItems", output.Count);
+            return output.ToArray();
+        }
+
+
         public static ITaskItem[] GetAppIconOutput(this BaseLoadTask baseTask, ClientConfigDto clientConfigDto, ITaskItem assetCatalogueName, ITaskItem appIconCatalogueName)
         {
             baseTask.LogDebug("Generating AppIcon TaskItems");
@@ -179,7 +268,7 @@ namespace Build.Client.Extensions
                         itemMetadata.Add(MetadataType.Idiom, fieldType.GetMetadata(MetadataType.Idiom));
                         itemMetadata.Add(MetadataType.Idiom2, fieldType.GetMetadata(MetadataType.Idiom2));
                         itemMetadata.Add(MetadataType.Scale, fieldType.GetMetadata(MetadataType.Scale));
-                        itemMetadata.Add(MetadataType.CatalogueName, fieldType.GetMetadata(MetadataType.FileName));
+                        itemMetadata.Add(MetadataType.ContentsFileName, fieldType.GetMetadata(MetadataType.FileName));
                     }
                 }
                 itemMetadata.Add(MetadataType.MediaFileId, field.Value);

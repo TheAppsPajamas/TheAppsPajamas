@@ -69,7 +69,7 @@ namespace Build.Client.Constants
         /// <summary>
         /// The name of the iOS asset catalogue this file goes into.
         /// </summary>
-        public const string CatalogueName = "CatalogueName";
+        public const string ContentsFileName = "ContentsFileName";
 
         /// <summary>
         /// The folder that the droid media will be stored in.
@@ -81,5 +81,14 @@ namespace Build.Client.Constants
         /// </summary>
         public const string MSBuildItemType = "MSBuildItemType";
 
+        /// <summary>
+        /// The client dto field value (calculated value)
+        /// </summary>
+        public const string Value = "Value";
+
+        /// <summary>
+        /// The asset catalogue set name, i.e. AppIcon.appicon, Launch, Image etc
+        /// </summary>
+        public const string CatalogueSetName = "CatalogueSetName";
     }
 }

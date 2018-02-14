@@ -75,7 +75,7 @@
     <Compile Include="BuildTasks\DeleteUnusedMediaFiles.cs" />
     <Compile Include="Extensions\MediaExtensions.cs" />
     <Compile Include="BuildTasks\DownloadMediaFiles.cs" />
-    <Compile Include="BuildTasks\SetDroidAppIcons.cs" />
+    <Compile Include="BuildTasks\SetDroidMedia.cs" />
     <Compile Include="Helpers\Plist.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="BuildTasks\SetIosAppIcons.cs" />

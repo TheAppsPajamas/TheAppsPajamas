@@ -9,9 +9,11 @@ using Microsoft.Build.Utilities;
 
 namespace Build.Client.BuildTasks
 {
-    public class SetDroidAppIcons : BaseTask
+    public class SetDroidMedia : BaseTask
     {
         public ITaskItem[] AppIconFields { get; set; }
+
+        public ITaskItem[] SplashFields { get; set; }
 
         public ITaskItem[] ExistingAndroidResources { get; set; }
 
@@ -27,7 +29,7 @@ namespace Build.Client.BuildTasks
         public string BuildConfiguration { get; set; }
         public override bool Execute()
         {
-            Log.LogMessage("Set Droid App Icons started");
+            Log.LogMessage("Set Droid Media started");
 
             TheAppsPajamasResourceDir = new TaskItem(Consts.TheAppsPajamasResourcesDir);
             var filesToAddToModifiedProject = new List<ITaskItem>();
@@ -49,10 +51,13 @@ namespace Build.Client.BuildTasks
                 LogDebug("Existing asset in project {0}", taskItem.ItemSpec);
             }
 
+            var allMediaFields = new List<ITaskItem>();
+            allMediaFields.AddRange(AppIconFields);
+            allMediaFields.AddRange(SplashFields);
 
             var mediaResourcesDir = this.GetMediaResourceDir(BuildConfiguration);
 
-            foreach(var field in AppIconFields){
+            foreach(var field in allMediaFields){
                 var existingFilePath = Path.Combine(mediaResourcesDir, field.GetMetadata(MetadataType.Path), field.GetMetadata(MetadataType.MediaName).ApplyPngExt());
 
                 var outputDir = Path.Combine(ProjectDir, field.GetMetadata(MetadataType.Path));

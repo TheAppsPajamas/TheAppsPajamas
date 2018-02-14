@@ -9,6 +9,7 @@ using Build.Client.Extensions;
 using System.Linq;
 using Build.Client.Constants;
 using System.Text;
+using Build.Shared.Types;
 
 namespace Build.Client.BuildTasks
 {
@@ -94,15 +95,29 @@ namespace Build.Client.BuildTasks
             projectConfig.ClientConfig = clientConfigDto;
             if (!this.SaveProjects(projectsConfig))
                 return false;
+            
+            StringFieldClientDto packagingAppIconField = null;
+            StringFieldClientDto packagingSplashField = null;
+
+            ITaskItem packagingCatalogueSetName = null;
             if (TargetFrameworkIdentifier == "Xamarin.iOS")
             {
                 AssetCatalogueName = this.GetAssetCatalogueName(projectConfig.ClientConfig);
-                AppIconCatalogueName = this.GetAppIconCatalogueName(projectConfig.ClientConfig);
+                AppIconCatalogueName = this.GetAppIconCatalogueSetName(projectConfig.ClientConfig);
+                packagingCatalogueSetName = this.GetSplashCatalogueSetName(projectConfig.ClientConfig);
 
+            } else if (TargetFrameworkIdentifier == "MonoAndroid"){
+                packagingAppIconField = projectConfig.ClientConfig.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingDroidAppIconName.Value);
+
+                packagingSplashField = projectConfig.ClientConfig.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingDroidSplashName.Value);
             }
-            PackagingOutput = this.GetPackagingOutput(clientConfigDto);
-            AppIconOutput = this.GetAppIconOutput(projectConfig.ClientConfig, AssetCatalogueName, AppIconCatalogueName);
-            SplashOutput = this.GetSplashOutput(clientConfigDto);
+
+
+            AppIconOutput = this.GetMediaOutput(projectConfig.ClientConfig.AppIconFields, AssetCatalogueName, AppIconCatalogueName, packagingAppIconField);
+
+            SplashOutput = this.GetMediaOutput(projectConfig.ClientConfig.SplashFields, AssetCatalogueName, packagingCatalogueSetName, packagingSplashField);
+
+            PackagingOutput = this.GetFieldTypeOutput(projectConfig.ClientConfig.PackagingFields);
 
             return true;
         }

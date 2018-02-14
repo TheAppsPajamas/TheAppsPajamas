@@ -30,5 +30,11 @@ namespace Build.Client.BuildTasks
         [Output]
         public ITaskItem[] SplashOutput { get; set; }
 
+        [Output]
+        public ITaskItem[] AppIconFieldOutput { get; set; }
+
+        [Output]
+        public ITaskItem[] SplashFieldOutput { get; set; }
+
     }
 }

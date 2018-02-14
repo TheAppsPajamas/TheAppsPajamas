@@ -188,13 +188,56 @@ namespace Build.Client.BuildTasks
                             continue;
                         }
 
-                        var mediaResourceImageCatalogue = mediaResourceCatalogueSetContents.images.FirstOrDefault(x => x.size == field.GetMetadata(MetadataType.Size)
+                        Image mediaResourceImageCatalogue = null;
+                        Image outputImageCatalogue = null;
+                        if (catalogue.Contains(".appiconset"))
+                        {
+                            mediaResourceImageCatalogue = mediaResourceCatalogueSetContents.images.FirstOrDefault(x => x.size == field.GetMetadata(MetadataType.Size)
                                                                                                                 && x.idiom == field.GetMetadata(MetadataType.Idiom)
                                                                                                                 && x.scale == field.GetMetadata(MetadataType.Scale));
 
-                        var outputImageCatalogue = outputCatalogueSetContents.images.FirstOrDefault(x => x.size == field.GetMetadata(MetadataType.Size)
-                                                                                                  && x.idiom == field.GetMetadata(MetadataType.Idiom)
-                                                                                                  && x.scale == field.GetMetadata(MetadataType.Scale));
+                            outputImageCatalogue = outputCatalogueSetContents.images.FirstOrDefault(x => x.size == field.GetMetadata(MetadataType.Size)
+                                                                                                      && x.idiom == field.GetMetadata(MetadataType.Idiom)
+                                                                                                      && x.scale == field.GetMetadata(MetadataType.Scale));
+
+
+                        }
+                        else if (catalogue.Contains(".launchimage"))
+                        {
+                            mediaResourceImageCatalogue = mediaResourceCatalogueSetContents.images.FirstOrDefault(x => x.size == field.GetMetadata(MetadataType.Size)
+                                                                                                                && x.idiom == field.GetMetadata(MetadataType.Idiom)
+                                                                                                                && x.scale == field.GetMetadata(MetadataType.Scale));
+
+                            outputImageCatalogue = outputCatalogueSetContents.images.FirstOrDefault(x => x.size == field.GetMetadata(MetadataType.Size)
+                                                                                                      && x.idiom == field.GetMetadata(MetadataType.Idiom)
+                                                                                                      && x.scale == field.GetMetadata(MetadataType.Scale));
+
+                        }
+                        else if (catalogue.Contains(".imageset"))
+                        {
+                            mediaResourceImageCatalogue = mediaResourceCatalogueSetContents.images.FirstOrDefault(x => x.idiom == field.GetMetadata(MetadataType.Idiom)
+                                                                                                                && x.scale == field.GetMetadata(MetadataType.Scale));
+
+                            outputImageCatalogue = outputCatalogueSetContents.images.FirstOrDefault(x => x.idiom == field.GetMetadata(MetadataType.Idiom)
+                                                                                                      && x.scale == field.GetMetadata(MetadataType.Scale));
+
+                        }
+                        else
+                        {
+                            throw new Exception("Error finding catalogue");
+                            //throw new Exception($"Cannot calculate image catalogue or field {field.GetMetadata(MetadataType.LogicalName)}, size {1}, idiom {field.GetMetadata(MetadataType.Idiom)}, scale {field.GetMetadata(MetadataType.Scale)}");
+                        }
+
+
+
+
+                        //var mediaResourceImageCatalogue = mediaResourceCatalogueSetContents.images.FirstOrDefault(x => x.size == field.GetMetadata(MetadataType.Size)
+                        //                                                                                        && x.idiom == field.GetMetadata(MetadataType.Idiom)
+                        //                                                                                        && x.scale == field.GetMetadata(MetadataType.Scale));
+
+                        //var outputImageCatalogue = outputCatalogueSetContents.images.FirstOrDefault(x => x.size == field.GetMetadata(MetadataType.Size)
+                                                                                                  //&& x.idiom == field.GetMetadata(MetadataType.Idiom)
+                                                                                                  //&& x.scale == field.GetMetadata(MetadataType.Scale));
                         if (outputImageCatalogue == null)
                         {
                             Log.LogWarning("Image catalogue not found for field {0}, size {1}, idiom {2}, scale {3}"

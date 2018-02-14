@@ -24,6 +24,26 @@ namespace Build.Client.Constants
         public const string Scale = "scale";
 
         /// <summary>
+        /// The iOS subtype for/from Contents.json
+        /// </summary>
+        public const string Subtype = "subtype";
+
+        /// <summary>
+        /// The extent for/from Contents.json.
+        /// </summary>
+        public const string Extent = "extent";
+            
+        /// <summary>
+        /// The orientation for/from Contents.json.
+        /// </summary>
+        public const string Orientation = "orientation";
+
+        /// <summary>
+        /// The MinimumSystemVersion for/from Contents.json.
+        /// </summary>
+        public const string MinimumSystemVersion = "minimum-system-version";
+
+        /// <summary>
         /// The filename for/from the Contents.json file
         /// </summary>
         public const string FileName = "filename";

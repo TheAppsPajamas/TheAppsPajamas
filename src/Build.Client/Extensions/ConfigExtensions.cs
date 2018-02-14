@@ -230,6 +230,11 @@ namespace Build.Client.Extensions
                         itemMetadata.Add(MetadataType.Idiom, fieldType.GetMetadata(MetadataType.Idiom));
                         itemMetadata.Add(MetadataType.Idiom2, fieldType.GetMetadata(MetadataType.Idiom2));
                         itemMetadata.Add(MetadataType.Scale, fieldType.GetMetadata(MetadataType.Scale));
+
+                        itemMetadata.Add(MetadataType.Subtype, fieldType.GetMetadata(MetadataType.Subtype));
+                        itemMetadata.Add(MetadataType.Extent, fieldType.GetMetadata(MetadataType.Extent));
+                        itemMetadata.Add(MetadataType.MinimumSystemVersion, fieldType.GetMetadata(MetadataType.MinimumSystemVersion));
+                        itemMetadata.Add(MetadataType.Orientation, fieldType.GetMetadata(MetadataType.Orientation));
                         itemMetadata.Add(MetadataType.ContentsFileName, fieldType.GetMetadata(MetadataType.FileName));
 
                         //we can use this to build a list to operate on as such

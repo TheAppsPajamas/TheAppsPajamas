@@ -154,7 +154,6 @@ namespace Build.Client.BuildTasks
                     var outputCatalogueSetContents = JsonConvert.DeserializeObject<MediaAssetCatalogue>(defaultContents);
 
 
-                    //TODO if this doesn't exist, need to add it etc
                     foreach (var field in allFields.Where(x => x.GetMetadata(MetadataType.CatalogueSetName)  == catalogue))
                     {
                         //skip itunes artwork first, something else will do that
@@ -188,38 +187,25 @@ namespace Build.Client.BuildTasks
                             continue;
                         }
 
-                        Image mediaResourceImageCatalogue = null;
-                        Image outputImageCatalogue = null;
+                        Image mediaResourceImageSet = null;
+                        Image outputImageSet = null;
                         if (catalogue.Contains(".appiconset"))
                         {
-                            mediaResourceImageCatalogue = mediaResourceCatalogueSetContents.images.FirstOrDefault(x => x.size == field.GetMetadata(MetadataType.Size)
-                                                                                                                && x.idiom == field.GetMetadata(MetadataType.Idiom)
-                                                                                                                && x.scale == field.GetMetadata(MetadataType.Scale));
-
-                            outputImageCatalogue = outputCatalogueSetContents.images.FirstOrDefault(x => x.size == field.GetMetadata(MetadataType.Size)
-                                                                                                      && x.idiom == field.GetMetadata(MetadataType.Idiom)
-                                                                                                      && x.scale == field.GetMetadata(MetadataType.Scale));
+                            mediaResourceImageSet = GetAppIconCatalogueSetReference(mediaResourceCatalogueSetContents, field);
+                            outputImageSet = GetAppIconCatalogueSetReference(outputCatalogueSetContents, field);
 
 
                         }
                         else if (catalogue.Contains(".launchimage"))
                         {
-                            mediaResourceImageCatalogue = mediaResourceCatalogueSetContents.images.FirstOrDefault(x => x.size == field.GetMetadata(MetadataType.Size)
-                                                                                                                && x.idiom == field.GetMetadata(MetadataType.Idiom)
-                                                                                                                && x.scale == field.GetMetadata(MetadataType.Scale));
-
-                            outputImageCatalogue = outputCatalogueSetContents.images.FirstOrDefault(x => x.size == field.GetMetadata(MetadataType.Size)
-                                                                                                      && x.idiom == field.GetMetadata(MetadataType.Idiom)
-                                                                                                      && x.scale == field.GetMetadata(MetadataType.Scale));
+                            mediaResourceImageSet = GetLaunchImageCatalogueSetReference(mediaResourceCatalogueSetContents, field);
+                            outputImageSet = GetLaunchImageCatalogueSetReference(outputCatalogueSetContents, field);
 
                         }
                         else if (catalogue.Contains(".imageset"))
                         {
-                            mediaResourceImageCatalogue = mediaResourceCatalogueSetContents.images.FirstOrDefault(x => x.idiom == field.GetMetadata(MetadataType.Idiom)
-                                                                                                                && x.scale == field.GetMetadata(MetadataType.Scale));
-
-                            outputImageCatalogue = outputCatalogueSetContents.images.FirstOrDefault(x => x.idiom == field.GetMetadata(MetadataType.Idiom)
-                                                                                                      && x.scale == field.GetMetadata(MetadataType.Scale));
+                            mediaResourceImageSet = GetImageCatalogueSetReference(mediaResourceCatalogueSetContents, field);
+                            outputImageSet = GetImageCatalogueSetReference(outputCatalogueSetContents, field);
 
                         }
                         else
@@ -229,16 +215,7 @@ namespace Build.Client.BuildTasks
                         }
 
 
-
-
-                        //var mediaResourceImageCatalogue = mediaResourceCatalogueSetContents.images.FirstOrDefault(x => x.size == field.GetMetadata(MetadataType.Size)
-                        //                                                                                        && x.idiom == field.GetMetadata(MetadataType.Idiom)
-                        //                                                                                        && x.scale == field.GetMetadata(MetadataType.Scale));
-
-                        //var outputImageCatalogue = outputCatalogueSetContents.images.FirstOrDefault(x => x.size == field.GetMetadata(MetadataType.Size)
-                                                                                                  //&& x.idiom == field.GetMetadata(MetadataType.Idiom)
-                                                                                                  //&& x.scale == field.GetMetadata(MetadataType.Scale));
-                        if (outputImageCatalogue == null)
+                        if (outputImageSet == null)
                         {
                             Log.LogWarning("Image catalogue not found for field {0}, size {1}, idiom {2}, scale {3}"
                                            , field.GetMetadata(MetadataType.LogicalName)
@@ -249,9 +226,9 @@ namespace Build.Client.BuildTasks
                         }
                         else
                         {
-                            outputImageCatalogue.filename = field.GetMetadata(MetadataType.ContentsFileName);
-                            mediaResourceImageCatalogue.filename = field.GetMetadata(MetadataType.MediaName).ApplyPngExt();
-                            LogDebug("Set asset catalogue set filename to {0}", outputImageCatalogue.filename);
+                            outputImageSet.filename = field.GetMetadata(MetadataType.ContentsFileName);
+                            mediaResourceImageSet.filename = field.GetMetadata(MetadataType.MediaName).ApplyPngExt();
+                            LogDebug("Set asset catalogue set filename to {0}", outputImageSet.filename);
 
                             //sometimes we use the same image twice in the contents.json
                             var outputImageCatalogue2 = outputCatalogueSetContents.images.FirstOrDefault(x => x.size == field.GetMetadata(MetadataType.Size)
@@ -364,6 +341,49 @@ namespace Build.Client.BuildTasks
                 Log.LogErrorFromException(ex);
                 return false;
             }
+        }
+
+        private static Image GetLaunchImageCatalogueSetReference(MediaAssetCatalogue catalogueSetContents, ITaskItem field)
+        {
+            var set = catalogueSetContents.images.Where(x => x.size == field.GetMetadata(MetadataType.Size)
+                                                                                    && x.idiom == field.GetMetadata(MetadataType.Idiom)
+                                                                                    && x.scale == field.GetMetadata(MetadataType.Scale));
+            if (set != null && !String.IsNullOrEmpty(field.GetMetadata(MetadataType.Extent))){
+                set = set.Where(x => x.extent == field.GetMetadata(MetadataType.Extent));
+            }
+
+            if (set != null && !String.IsNullOrEmpty(field.GetMetadata(MetadataType.MinimumSystemVersion)))
+            {
+                set = set.Where(x => x.minimumsystemversion == field.GetMetadata(MetadataType.MinimumSystemVersion));
+            }
+
+            if (set != null && !String.IsNullOrEmpty(field.GetMetadata(MetadataType.Orientation)))
+            {
+                set = set.Where(x => x.orientation == field.GetMetadata(MetadataType.Orientation));
+            }
+            return set.FirstOrDefault();
+        }
+
+        private static Image GetImageCatalogueSetReference(MediaAssetCatalogue catalogueSetContents, ITaskItem field)
+        {
+            if (!String.IsNullOrEmpty(field.GetMetadata(MetadataType.Subtype))){
+                var image = new Image();
+                image.idiom = field.GetMetadata(MetadataType.Idiom);
+                image.subtype = field.GetMetadata(MetadataType.Subtype);
+                image.scale = field.GetMetadata(MetadataType.Scale);
+                catalogueSetContents.images.Add(image);
+                return image;
+            }
+
+            return catalogueSetContents.images.FirstOrDefault(x => x.idiom == field.GetMetadata(MetadataType.Idiom)
+                                                                                                && x.scale == field.GetMetadata(MetadataType.Scale));
+        }
+
+        private static Image GetAppIconCatalogueSetReference(MediaAssetCatalogue catalogueSetContents, ITaskItem field)
+        {
+            return catalogueSetContents.images.FirstOrDefault(x => x.size == field.GetMetadata(MetadataType.Size)
+                                                                                                && x.idiom == field.GetMetadata(MetadataType.Idiom)
+                                                                                                && x.scale == field.GetMetadata(MetadataType.Scale));
         }
     }
 

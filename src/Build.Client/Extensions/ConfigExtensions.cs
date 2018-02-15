@@ -162,7 +162,6 @@ namespace Build.Client.Extensions
             foreach (var field in fieldsDto)
             {
                 var itemMetadata = new Dictionary<string, string>();
-                baseTask.LogDebug($"Got here for field {field.FieldId}");
                 var fieldType = FieldType.GetAll().FirstOrDefault(x => x.Value == field.FieldId);
 
                 if (fieldType == null){

@@ -376,27 +376,27 @@ namespace Build.Client.BuildTasks
             }
             if (!String.IsNullOrEmpty(field.GetMetadata(MetadataType.Subtype)))
             {
-                image.idiom = field.GetMetadata(MetadataType.Subtype);
+                image.subtype = field.GetMetadata(MetadataType.Subtype);
             }
             if (!String.IsNullOrEmpty(field.GetMetadata(MetadataType.Scale)))
             {
-                image.idiom = field.GetMetadata(MetadataType.Scale);
+                image.scale = field.GetMetadata(MetadataType.Scale);
             }
             if (!String.IsNullOrEmpty(field.GetMetadata(MetadataType.Size)))
             {
-                image.idiom = field.GetMetadata(MetadataType.Size);
+                image.size = field.GetMetadata(MetadataType.Size);
             }
             if (!String.IsNullOrEmpty(field.GetMetadata(MetadataType.Extent)))
             {
-                image.idiom = field.GetMetadata(MetadataType.Extent);
+                image.extent = field.GetMetadata(MetadataType.Extent);
             }
             if (!String.IsNullOrEmpty(field.GetMetadata(MetadataType.MinimumSystemVersion)))
             {
-                image.idiom = field.GetMetadata(MetadataType.MinimumSystemVersion);
+                image.minimumsystemversion = field.GetMetadata(MetadataType.MinimumSystemVersion);
             }
             if (!String.IsNullOrEmpty(field.GetMetadata(MetadataType.Orientation)))
             {
-                image.idiom = field.GetMetadata(MetadataType.Orientation);
+                image.orientation = field.GetMetadata(MetadataType.Orientation);
             }
 
             //image.subtype = field.GetMetadata(MetadataType.Subtype);

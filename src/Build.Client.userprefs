@@ -1,10 +1,11 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/NugetContent/build/Build.Client.targets">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/Extensions/ConfigExtensions.cs">
     <Files>
-      <File FileName="Build.Client/BuildTasks/SetIosAssetCatalogueSets.cs" Line="107" Column="58" />
-      <File FileName="Build.Client/Constants/MetadataType.cs" Line="24" Column="32" />
-      <File FileName="Build.Client/Extensions/ConfigExtensions.cs" Line="234" Column="83" />
+      <File FileName="Build.Client/BuildTasks/SetIosAssetCatalogueSets.cs" Line="350" Column="14" />
+      <File FileName="Build.Client/Constants/MetadataType.cs" Line="44" Column="29" />
+      <File FileName="Build.Client/Extensions/ConfigExtensions.cs" Line="166" Column="20" />
       <File FileName="Build.Client/NugetContent/build/Build.Client.targets" Line="57" Column="11" />
+      <File FileName="Build.Client/BuildTasks/LoadRemoteBuildConfig.cs" Line="118" Column="42" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

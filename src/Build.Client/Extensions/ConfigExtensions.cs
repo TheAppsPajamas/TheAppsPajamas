@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -161,17 +162,24 @@ namespace Build.Client.Extensions
             foreach (var field in fieldsDto)
             {
                 var itemMetadata = new Dictionary<string, string>();
+                baseTask.LogDebug($"Got here for field {field.FieldId}");
                 var fieldType = FieldType.GetAll().FirstOrDefault(x => x.Value == field.FieldId);
 
+                if (fieldType == null){
+                    throw new Exception($"Missing field type {field.FieldId}");
+                }
                 if (fieldType.ProjectType == ProjectType.Droid)
                 {
                     StringFieldClientDto droidNameField = null;
-                    if (fieldType is AppIconFieldType){
+                    if (fieldType is AppIconFieldType)
+                    {
                         droidNameField = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingDroidAppIconName.Value);
 
-                    } else if (fieldType is SplashFieldType){
+                    }
+                    else if (fieldType is SplashFieldType)
+                    {
                         droidNameField = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingDroidSplashName.Value);
-        
+
                     }
                     if (droidNameField == null || String.IsNullOrEmpty(droidNameField.Value))
                     {
@@ -203,7 +211,7 @@ namespace Build.Client.Extensions
                         {
                             var catalogueSetField = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingIosAppIconXcAssetsName.Value);
                             catalogueSetName = catalogueSetField.Value.ApplyAppiconsetExt();
-            
+
                         }
                         else if (fieldType is SplashFieldType)
                         {
@@ -211,15 +219,17 @@ namespace Build.Client.Extensions
                             catalogueSetName = catalogueSetField.Value.ApplyLaunchimageExt();
                         }
 
-                        if (fieldType.GetMetadata(MetadataType.CataloguePackagingFieldId).Length != 0){
+                        if (!String.IsNullOrEmpty(fieldType.GetMetadata(MetadataType.CataloguePackagingFieldId)))
+                        {
                             var catalogueSetField = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == Int32.Parse(fieldType.GetMetadata(MetadataType.CataloguePackagingFieldId)));
                             catalogueSetName = catalogueSetField.Value.ApplyImageSetExt();
-                        } 
+                        }
 
                         if (String.IsNullOrEmpty(catalogueSetName))
                         {
                             baseTask.Log.LogError("Catalogue set name undefined");
                         }
+
 
                         itemMetadata.Add(MetadataType.Path, Path.Combine(assetCatalogueName.ItemSpec, catalogueSetName));
                         itemMetadata.Add(MetadataType.LogicalName, fieldType.GetMetadata(MetadataType.FileName));
@@ -351,7 +361,9 @@ namespace Build.Client.Extensions
                     itemMetadata.Add(MetadataType.LogicalName, splashNameField.Value.ApplyPngExt());
                     itemMetadata.Add(MetadataType.Path, Path.Combine(Consts.DroidResources, fieldType.GetMetadata(MetadataType.Folder)));
                     itemMetadata.Add(MetadataType.MediaName, splashNameField.Value.ApplyFieldId(field));
-                } else if (fieldType.ProjectType == ProjectType.Ios){
+                }
+                else if (fieldType.ProjectType == ProjectType.Ios)
+                {
                     //TODO
                 }
                 itemMetadata.Add(MetadataType.MediaFileId, field.Value);

@@ -133,25 +133,32 @@ namespace Build.Client.BuildTasks
                     //the right json setting, all null fields will disapear
 
                     string defaultContents = String.Empty;
+                    MediaAssetCatalogue mediaResourceCatalogueSetContents = null;
+                    MediaAssetCatalogue outputCatalogueSetContents = null;
                     if (catalogue.Contains(".appiconset"))
                     {
                         defaultContents = Consts.AppIconCatalogueSetDefaultContents;
+                        mediaResourceCatalogueSetContents = JsonConvert.DeserializeObject<MediaAssetCatalogue>(defaultContents);
+
+                        outputCatalogueSetContents = JsonConvert.DeserializeObject<MediaAssetCatalogue>(defaultContents);
                     }
                     else if (catalogue.Contains(".launchimage"))
                     {
                         defaultContents = Consts.LaunchImageCatalogueSetDefaultContents;
+                        mediaResourceCatalogueSetContents = new MediaAssetCatalogue();
+                        outputCatalogueSetContents = new MediaAssetCatalogue();
+
                     }
                     else if (catalogue.Contains(".imageset"))
                     {
                         defaultContents = Consts.ImageCatalogueSetDefaultContents;
+                        mediaResourceCatalogueSetContents = JsonConvert.DeserializeObject<MediaAssetCatalogue>(defaultContents);
+
+                        outputCatalogueSetContents = JsonConvert.DeserializeObject<MediaAssetCatalogue>(defaultContents);
                     } else {
                         throw new Exception($"Cannot figure catalogue {0} default contents out");
                     }
 
-                    var mediaResourceCatalogueSetContents = JsonConvert.DeserializeObject<MediaAssetCatalogue>(defaultContents);
-
-                    //use this contents for packages folder and for project output folder (it only has relative paths
-                    var outputCatalogueSetContents = JsonConvert.DeserializeObject<MediaAssetCatalogue>(defaultContents);
 
 
                     foreach (var field in allFields.Where(x => x.GetMetadata(MetadataType.CatalogueSetName)  == catalogue))
@@ -345,23 +352,58 @@ namespace Build.Client.BuildTasks
 
         private static Image GetLaunchImageCatalogueSetReference(MediaAssetCatalogue catalogueSetContents, ITaskItem field)
         {
-            var set = catalogueSetContents.images.Where(x => x.size == field.GetMetadata(MetadataType.Size)
-                                                                                    && x.idiom == field.GetMetadata(MetadataType.Idiom)
-                                                                                    && x.scale == field.GetMetadata(MetadataType.Scale));
-            if (set != null && !String.IsNullOrEmpty(field.GetMetadata(MetadataType.Extent))){
-                set = set.Where(x => x.extent == field.GetMetadata(MetadataType.Extent));
+            //var set = catalogueSetContents.images.Where(x => x.size == field.GetMetadata(MetadataType.Size)
+            //                                                                        && x.idiom == field.GetMetadata(MetadataType.Idiom)
+            //                                                                        && x.scale == field.GetMetadata(MetadataType.Scale));
+            //if (set != null && !String.IsNullOrEmpty(field.GetMetadata(MetadataType.Extent))){
+            //    set = set.Where(x => x.extent == field.GetMetadata(MetadataType.Extent));
+            //}
+
+            //if (set != null && !String.IsNullOrEmpty(field.GetMetadata(MetadataType.MinimumSystemVersion)))
+            //{
+            //    set = set.Where(x => x.minimumsystemversion == field.GetMetadata(MetadataType.MinimumSystemVersion));
+            //}
+
+            //if (set != null && !String.IsNullOrEmpty(field.GetMetadata(MetadataType.Orientation)))
+            //{
+            //    set = set.Where(x => x.orientation == field.GetMetadata(MetadataType.Orientation));
+            //}
+            //return set.FirstOrDefault();
+
+            var image = new Image();
+            if (!String.IsNullOrEmpty(field.GetMetadata(MetadataType.Idiom))){
+                image.idiom = field.GetMetadata(MetadataType.Idiom);    
+            }
+            if (!String.IsNullOrEmpty(field.GetMetadata(MetadataType.Subtype)))
+            {
+                image.idiom = field.GetMetadata(MetadataType.Subtype);
+            }
+            if (!String.IsNullOrEmpty(field.GetMetadata(MetadataType.Scale)))
+            {
+                image.idiom = field.GetMetadata(MetadataType.Scale);
+            }
+            if (!String.IsNullOrEmpty(field.GetMetadata(MetadataType.Size)))
+            {
+                image.idiom = field.GetMetadata(MetadataType.Size);
+            }
+            if (!String.IsNullOrEmpty(field.GetMetadata(MetadataType.Extent)))
+            {
+                image.idiom = field.GetMetadata(MetadataType.Extent);
+            }
+            if (!String.IsNullOrEmpty(field.GetMetadata(MetadataType.MinimumSystemVersion)))
+            {
+                image.idiom = field.GetMetadata(MetadataType.MinimumSystemVersion);
+            }
+            if (!String.IsNullOrEmpty(field.GetMetadata(MetadataType.Orientation)))
+            {
+                image.idiom = field.GetMetadata(MetadataType.Orientation);
             }
 
-            if (set != null && !String.IsNullOrEmpty(field.GetMetadata(MetadataType.MinimumSystemVersion)))
-            {
-                set = set.Where(x => x.minimumsystemversion == field.GetMetadata(MetadataType.MinimumSystemVersion));
-            }
+            //image.subtype = field.GetMetadata(MetadataType.Subtype);
+            //image.scale = field.GetMetadata(MetadataType.Scale);
+            catalogueSetContents.images.Add(image);
+            return image;
 
-            if (set != null && !String.IsNullOrEmpty(field.GetMetadata(MetadataType.Orientation)))
-            {
-                set = set.Where(x => x.orientation == field.GetMetadata(MetadataType.Orientation));
-            }
-            return set.FirstOrDefault();
         }
 
         private static Image GetImageCatalogueSetReference(MediaAssetCatalogue catalogueSetContents, ITaskItem field)

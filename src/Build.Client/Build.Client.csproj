@@ -104,6 +104,7 @@
     <Compile Include="Constants\MSBuildItemName.cs" />
     <Compile Include="BuildTasks\SetIosAssetCatalogue.cs" />
     <Compile Include="BuildTasks\SetIosAssetCatalogueSets.cs" />
+    <Compile Include="Models\BuildConfig.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />

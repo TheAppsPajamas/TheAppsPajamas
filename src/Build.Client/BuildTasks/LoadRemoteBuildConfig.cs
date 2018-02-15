@@ -10,6 +10,7 @@ using System.Linq;
 using Build.Client.Constants;
 using System.Text;
 using Build.Shared.Types;
+using System.Collections.Generic;
 
 namespace Build.Client.BuildTasks
 {
@@ -29,21 +30,52 @@ namespace Build.Client.BuildTasks
             LogDebug("Project name '{0}'", ProjectName);
             LogDebug("Build configuration '{0}'", BuildConfiguration);
 
+            TheAppsPajamasResourceDir = new TaskItem(Consts.TheAppsPajamasResourcesDir);
+            TapShouldContinue = bool.TrueString;
+
+            var tapResourcesConfig = this.GetResourceConfig();
+
+            var securityConfig = this.GetSecurityConfig();
+
+            if (tapResourcesConfig == null || securityConfig == null)
+            {
+                //Change to warning, and return TapShouldContinue = false
+                Log.LogError($"{Consts.TapResourcesConfig} file not set, please see solution root and complete");
+                return false;
+            }
+
+
+            if (tapResourcesConfig.BuildConfigs == null)
+            {
+                LogDebug("Added BuildConfigs list");
+                tapResourcesConfig.BuildConfigs = new List<BuildConfig>();
+            }
+
+            var thisBuildConfig = tapResourcesConfig.BuildConfigs.FirstOrDefault(x => x.BuildConfiguration == BuildConfiguration
+                                                                                   && x.ProjectName == ProjectName
+                                                                                   && x.TargetFrameworkIdentifier == TargetFrameworkIdentifier);
+
+            if (thisBuildConfig == null)
+            {
+                Log.LogMessage($"Project {ProjectName} Build configuration {BuildConfiguration} for TargetFramework {TargetFrameworkIdentifier} not found, so adding to {Consts.TapResourcesConfig}");
+                tapResourcesConfig.BuildConfigs.Add(new BuildConfig(ProjectName, BuildConfiguration, TargetFrameworkIdentifier));
+                this.SaveResourceConfig(tapResourcesConfig);
+            }
+            else if (thisBuildConfig.Disabled == true)
+            {
+                Log.LogMessage($"The Apps Pajamas is disabled in {Consts.TapResourcesConfig} for this project/configuration, exiting");
+                TapShouldContinue = bool.FalseString;
+                return true;
+            }
+
+
+
             BuildResourceDir = this.GetBuildResourceDir();
             if (String.IsNullOrEmpty(BuildResourceDir))
                 return false;
 
-            var buildResourcesConfig = this.GetResourceConfig();
 
-            var securityConfig = this.GetSecurityConfig();
-
-            if (buildResourcesConfig == null || securityConfig == null)
-            {
-                Log.LogError("Build configuration files not set, please see solution root and complete");
-                return false;
-            }
-
-            BuildAppId = new TaskItem(buildResourcesConfig.AppId.ToString());
+            BuildAppId = new TaskItem(tapResourcesConfig.TapAppId.ToString());
 
             Token = this.Login(securityConfig);
             if (Token == null){
@@ -52,7 +84,7 @@ namespace Build.Client.BuildTasks
             }
 
             var unmodifedProjectName = ProjectName.Replace(Consts.ModifiedProjectNameExtra, String.Empty);
-            var url = String.Concat(Consts.UrlBase, Consts.ClientEndpoint, "?", "appId=", buildResourcesConfig.AppId, "&projectName=", unmodifedProjectName, "&buildConfiguration=", BuildConfiguration );
+            var url = String.Concat(Consts.UrlBase, Consts.ClientEndpoint, "?", "appId=", tapResourcesConfig.TapAppId, "&projectName=", unmodifedProjectName, "&buildConfiguration=", BuildConfiguration );
 
             Log.LogMessage("Loading remote build config from '{0}'", url);
 
@@ -119,7 +151,6 @@ namespace Build.Client.BuildTasks
 
             PackagingOutput = this.GetFieldTypeOutput(projectConfig.ClientConfig.PackagingFields);
 
-            TheAppsPajamasResourceDir = new TaskItem(Consts.TheAppsPajamasResourcesDir);
 
             return true;
         }

@@ -18,19 +18,19 @@ namespace Build.Client.Extensions
     {
         public static BuildResourcesConfig GetResourceConfig(this BaseLoadTask baseTask)
         {
-            baseTask.LogDebug("Loading build-resources.config file");
+            baseTask.Log.LogMessage($"Loading {Consts.TapResourcesConfig} file");
 
             try
             {
-                var buildResourcesConfigPath = Path.Combine(baseTask.PackagesDir, "build-resources.config");
+                var buildResourcesConfigPath = Path.Combine(baseTask.PackagesDir, Consts.TapResourcesConfig);
                 BuildResourcesConfig buildResourcesConfig = null;
                 if (!File.Exists(buildResourcesConfigPath))
                 {
-                    baseTask.LogDebug("Creating blank build resources config at {0}", buildResourcesConfigPath);
+                    baseTask.LogDebug($"Creating blank {Consts.TapResourcesConfig} at {buildResourcesConfigPath}");
                     buildResourcesConfig = new BuildResourcesConfig();
                     var json = JsonConvert.SerializeObject(buildResourcesConfig, Formatting.Indented);
                     File.WriteAllText(buildResourcesConfigPath, json);
-                    baseTask.Log.LogError("Build resources config file not found, created at {0}. Please complete appId and restart build process", buildResourcesConfigPath);
+                    baseTask.Log.LogError($"{Consts.TapResourcesConfig} file not found, created at solution root. Please complete TapAppId and restart build process");
                     return null;
                 }
                 else
@@ -38,14 +38,14 @@ namespace Build.Client.Extensions
                     var json = File.ReadAllText(buildResourcesConfigPath);
                     buildResourcesConfig = JsonConvert.DeserializeObject<BuildResourcesConfig>(json);
 
-                    if (buildResourcesConfig.AppId == 0)
+                    if (buildResourcesConfig.TapAppId == 0)
                     {
-                        baseTask.Log.LogError("Build resources config appId is 0, please complete appId at {0} and restart build process", buildResourcesConfigPath);
+                        baseTask.Log.LogError($"{Consts.TapResourcesConfig} TapAppId is 0, please complete TapAppId and restart build process");
                         return null;
                     }
                     else
                     {
-                        baseTask.LogDebug("Build resources config file read from {1}\nAppId '{0}'\n'", buildResourcesConfig.AppId, buildResourcesConfigPath);
+                        baseTask.LogDebug($"{Consts.TapResourcesConfig} file read, TapAppId '{ buildResourcesConfig.TapAppId}");
                         return buildResourcesConfig;
                     }
                 }
@@ -56,6 +56,27 @@ namespace Build.Client.Extensions
             }
             return null;
         }
+
+        public static void SaveResourceConfig(this BaseLoadTask baseTask, BuildResourcesConfig buildResourcesConfig)
+        {
+            baseTask.Log.LogMessage($"Saving {Consts.TapResourcesConfig} file");
+
+            try
+            {
+                var buildResourcesConfigPath = Path.Combine(baseTask.PackagesDir, Consts.TapResourcesConfig);
+
+                var json = JsonConvert.SerializeObject(buildResourcesConfig, Formatting.Indented);
+                File.WriteAllText(buildResourcesConfigPath, json);
+                baseTask.LogDebug($"{Consts.TapResourcesConfig} file saved");
+
+            }
+            catch (Exception ex)
+            {
+                baseTask.Log.LogErrorFromException(ex);
+            }
+        }
+
+
 
         public static SecurityConfig GetSecurityConfig(this BaseTask baseTask)
         {
@@ -164,7 +185,8 @@ namespace Build.Client.Extensions
                 var itemMetadata = new Dictionary<string, string>();
                 var fieldType = FieldType.GetAll().FirstOrDefault(x => x.Value == field.FieldId);
 
-                if (fieldType == null){
+                if (fieldType == null)
+                {
                     throw new Exception($"Missing field type {field.FieldId}");
                 }
                 if (fieldType.ProjectType == ProjectType.Droid)

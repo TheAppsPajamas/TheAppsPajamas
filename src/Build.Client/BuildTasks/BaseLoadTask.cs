@@ -33,5 +33,8 @@ namespace Build.Client.BuildTasks
         [Output]
         public ITaskItem TheAppsPajamasResourceDir { get; set; }
 
+        [Output]
+        public string TapShouldContinue { get; set; }
+
     }
 }

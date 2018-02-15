@@ -1,11 +1,12 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/Shared/Types/FieldType.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/Models/BuildConfig.cs">
     <Files>
-      <File FileName="Build.Client/Extensions/ConfigExtensions.cs" Line="164" Column="69" />
-      <File FileName="Build.Client/NugetContent/build/Build.Client.targets" Line="1" Column="1" />
-      <File FileName="Build.Client/BuildTasks/LoadRemoteBuildConfig.cs" Line="1" Column="1" />
-      <File FileName="Build.Client/BuildTasks/SetIosAssetCatalogueSets.cs" Line="399" Column="34" />
-      <File FileName="Build.Client/Shared/Types/FieldType.cs" Line="1060" Column="39" />
+      <File FileName="Build.Client/Extensions/ConfigExtensions.cs" Line="44" Column="37" />
+      <File FileName="Build.Client/NugetContent/build/Build.Client.targets" Line="78" Column="90" />
+      <File FileName="Build.Client/BuildTasks/LoadRemoteBuildConfig.cs" Line="56" Column="56" />
+      <File FileName="Build.Client/Shared/Types/FieldType.cs" Line="1182" Column="54" />
+      <File FileName="Build.Client/BuildTasks/LoadLocalBuildConfig.cs" Line="1" Column="1" />
+      <File FileName="Build.Client/Models/BuildConfig.cs" Line="11" Column="74" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

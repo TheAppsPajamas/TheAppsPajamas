@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Build.Client.Constants;
 using Build.Client.Extensions;
@@ -20,6 +21,43 @@ namespace Build.Client.BuildTasks
 
             LogDebug("Project name '{0}'", ProjectName);
             LogDebug("Build configuration '{0}'", BuildConfiguration);
+
+            TheAppsPajamasResourceDir = new TaskItem(Consts.TheAppsPajamasResourcesDir);
+            TapShouldContinue = bool.TrueString;
+
+            var tapResourcesConfig = this.GetResourceConfig();
+
+            if (tapResourcesConfig == null)
+            {
+                //Change to warning, and return TapShouldContinue = false
+                Log.LogError($"{Consts.TapResourcesConfig} file not set, please see solution root and complete");
+                return false;
+            }
+
+            if (tapResourcesConfig.BuildConfigs == null)
+            {
+                LogDebug("Added BuildConfigs list");
+                tapResourcesConfig.BuildConfigs = new List<BuildConfig>();
+            }
+
+            var thisBuildConfig = tapResourcesConfig.BuildConfigs.FirstOrDefault(x => x.BuildConfiguration == BuildConfiguration
+                                                                                   && x.ProjectName == ProjectName
+                                                                                   && x.TargetFrameworkIdentifier == TargetFrameworkIdentifier);
+
+            if (thisBuildConfig == null)
+            {
+                Log.LogMessage($"Project {ProjectName} Build configuration {BuildConfiguration} for TargetFramework {TargetFrameworkIdentifier} not found, so adding to {Consts.TapResourcesConfig}");
+                tapResourcesConfig.BuildConfigs.Add(new BuildConfig(ProjectName, BuildConfiguration, TargetFrameworkIdentifier));
+                this.SaveResourceConfig(tapResourcesConfig);
+
+            }
+            else if (thisBuildConfig.Disabled == true)
+            {
+                Log.LogMessage($"The Apps Pajamas is disabled in {Consts.TapResourcesConfig} for this project/configuration, exiting");
+                TapShouldContinue = bool.FalseString;
+                return true;
+            }
+
 
             BuildResourceDir = this.GetBuildResourceDir();
             if (String.IsNullOrEmpty(BuildResourceDir)){
@@ -65,7 +103,6 @@ namespace Build.Client.BuildTasks
 
             PackagingOutput = this.GetFieldTypeOutput(projectConfig.ClientConfig.PackagingFields);
 
-            TheAppsPajamasResourceDir = new TaskItem(Consts.TheAppsPajamasResourcesDir);
             return true;
         }
     }

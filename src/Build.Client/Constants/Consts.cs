@@ -8,6 +8,8 @@ namespace Build.Client.Constants
         public const string AssetCatalogueOutputDir = "asset-catalogue-output";
         public const string iTunesArtworkDir = "iTunesArtwork";
 
+        public const string TapResourcesConfig = "TapResources.config";
+
         public const string ModifiedProjectNameExtra = ".theappspajamas";
 
         public const string ProjectConfig = "project.config";

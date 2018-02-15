@@ -33,7 +33,12 @@
         </CleanAssetCatalogues>
     </Target>
 
-
+    <Target Name="BuildPath" 
+        AfterTargets="LoadLocalBuildConfig" 
+        Condition="'$(BuildDebug)' == 'True' ">
+            <Message Text="MSBuildBinPath: $(MSBuildBinPath)" />
+            <Message Text="MSBuildExtensionsPath: $(MSBuildExtensionsPath)" />
+        </Target>
     
     <Target Name="LoadLocalBuildConfig" 
         BeforeTargets="_GetReferenceAssemblyPaths;_BeforeCoreCompileInterfaceDefinitions" >
@@ -47,20 +52,17 @@
             <Output TaskParameter="NeedsLoadRemote" PropertyName="NeedsLoadRemote" />
 
             <Output TaskParameter="TheAppsPajamasResourceDir" PropertyName="TheAppsPajamasResourceDir" />
+
+            <Output TaskParameter="TapShouldContinue" PropertyName="TapShouldContinue" />
         </LoadLocalBuildConfig>
 
     </Target>
 
-        <Target Name="BuildPath" 
-        BeforeTargets="LoadLocalBuildConfig" 
-        Condition="'$(BuildDebug)' == 'True' ">
-            <Message Text="MSBuildBinPath: $(MSBuildBinPath)" />
-            <Message Text="MSBuildExtensionsPath: $(MSBuildExtensionsPath)" />
-        </Target>
+
     
     <Target Name="LoadRemoteBuildConfig" 
         AfterTargets="LoadLocalBuildConfig" 
-        Condition="'$(NeedsLoadRemote)' == 'True' ">
+        Condition="'$(NeedsLoadRemote)' == 'True' And '$(TapShouldContinue)' == 'True' ">
         <LoadRemoteBuildConfig Debug="$(BuildDebug)" ProjectName="$(MSBuildProjectName)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" TargetFrameworkIdentifier='$(TargetFrameworkIdentifier)'>
             <Output TaskParameter="BuildResourceDir" PropertyName="BuildResourceDir" />
             <Output TaskParameter="PackagingOutput" ItemName="PackagingFields" />
@@ -73,11 +75,13 @@
 
             <Output TaskParameter="TheAppsPajamasResourceDir" PropertyName="TheAppsPajamasResourceDir" />
 
+            <Output TaskParameter="TapShouldContinue" PropertyName="TapShouldContinue" />
         </LoadRemoteBuildConfig>
     </Target>
     
     <Target Name="DeleteUnusedMediaFiles" 
-        AfterTargets="LoadRemoteBuildConfig">
+        AfterTargets="LoadRemoteBuildConfig"
+        Condition=" '$(TapShouldContinue)' == 'True' ">
         <DeleteUnusedMediaFiles Debug="$(BuildDebug)" 
             ProjectDir="$(MSBuildProjectDirectory)" 
             PackagesDir="$(PackagesDir)" 
@@ -90,7 +94,8 @@
     </Target>
     
     <Target Name="DownloadMediaFiles" 
-        AfterTargets="DeleteUnusedMediaFiles">
+        AfterTargets="DeleteUnusedMediaFiles"
+        Condition=" '$(TapShouldContinue)' == 'True' ">
         <DownloadMediaFiles 
             Debug="$(BuildDebug)" 
             BuildAppId="$(BuildAppId)" 
@@ -106,14 +111,14 @@
     
     <Target Name="SetDroidManifest" 
         AfterTargets="DownloadMediaFiles" 
-        Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid' ">
+        Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid' And '$(TapShouldContinue)' == 'True' ">
         <SetDroidManifest Debug="$(BuildDebug)" ProjectDir="$(MSBuildProjectDirectory)" PackagingFields="@(PackagingFields)" AndroidManifest="$(AndroidManifest)">
         </SetDroidManifest>
     </Target>
     
     <Target Name="SetDroidMedia" 
         AfterTargets="SetDroidManifest" 
-        Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid' ">
+        Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid' And '$(TapShouldContinue)' == 'True' ">
         <SetDroidMedia Debug="$(BuildDebug)" 
             BuildConfiguration="$(Configuration)" 
             PackagesDir="$(PackagesDir)" 
@@ -125,9 +130,7 @@
             <Output TaskParameter="FilesToAddToProject" ItemName="FilesToAddToProject" />
         </SetDroidMedia>
 
-        <ItemGroup>
-            <AndroidResource Remove="$(TheAppsPajamasResourceDir)/**"/>
-        </ItemGroup>
+
 
        <ItemGroup>
             <AndroidResource Include="%(AndroidAppIcons.Identity)"/>
@@ -138,7 +141,7 @@
 
     <Target Name="SetIosPlist" 
         AfterTargets="DownloadMediaFiles" 
-        Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' ">
+        Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' And '$(TapShouldContinue)' == 'True' ">
         <SetIosPlist Debug="$(BuildDebug)" 
             PackagesDir="$(PackagesDir)" 
             ProjectDir="$(MSBuildProjectDirectory)" 
@@ -151,7 +154,7 @@
 
     <Target Name="SetIosAssetCatalogue" 
         AfterTargets="SetIosPlist" 
-        Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' ">
+        Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' And '$(TapShouldContinue)' == 'True' ">
         <SetIosAssetCatalogue Debug="$(BuildDebug)" 
             BuildConfiguration="$(Configuration)" 
             PackagesDir="$(PackagesDir)" 
@@ -176,7 +179,7 @@
 
     <Target Name="SetIosAssetCatalogueSets" 
         AfterTargets="SetIosAssetCatalogue" 
-        Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' ">
+        Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' And '$(TapShouldContinue)' == 'True' ">
         <SetIosAssetCatalogueSets Debug="$(BuildDebug)" 
             BuildConfiguration="$(Configuration)" 
             PackagesDir="$(PackagesDir)" 
@@ -197,7 +200,7 @@
 
         <ItemGroup>
             <ImageAsset Remove="$(AssetCatalogueName)/**"/>
-            <ImageAsset Remove="$(TheAppsPajamasResourceDir)/**"/>
+       <!--     <ImageAsset Remove="$(TheAppsPajamasResourceDir)/**"/>-->
 <!--            <ITunesArtwork Remove="**"/>-->
         </ItemGroup>
 
@@ -208,8 +211,23 @@
 
     </Target>
 
+    <Target Name="RemoveTapResources"
+        AfterTargets="SetIosAssetCatalogueSets;SetDroidMedia">
+        <Message Text="Removing Tap Resources from project"/>
+        <ItemGroup>
+            <ImageAsset Remove="$(TheAppsPajamasResourceDir)/**"/>
+<!--            <ITunesArtwork Remove="**"/>-->
+        </ItemGroup>
+
+        <ItemGroup>
+            <AndroidResource Remove="$(TheAppsPajamasResourceDir)/**"/>
+        </ItemGroup>
+        <Message Text="Tap Resources removed from project"/>
+    </Target>
+    
     <Target Name="ModifyProject" 
-        AfterTargets="SetDroidSplash;SetIosAssetCatalogueSets">
+        AfterTargets="SetDroidMedia;SetIosAssetCatalogueSets"
+        Condition=" '$(TapShouldContinue)' == 'True' ">
            <ModifyProject Debug="$(BuildDebug)" 
             PackagesDir="$(PackagesDir)" 
             ProjectDir="$(MSBuildProjectDirectory)" 
@@ -247,7 +265,7 @@
     <!-- TODO we can roll this back into modify project -->
     <Target Name="SaveModifiedProjectBackToProject" 
         AfterTargets="ModifyProject"
-        Condition=" $(ProjectShouldModifyOriginal) == 'True' ">
+        Condition=" $(ProjectShouldModifyOriginal) == 'True' And '$(TapShouldContinue)' == 'True' ">
         <SaveModifiedProjectBackToProject Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" 
             ProjectFileOriginalName="$(MSBuildProjectFullPath)"
             ProjectFileModifiedName="$(ModifiedProjectFullPath)">

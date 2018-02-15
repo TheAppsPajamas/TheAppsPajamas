@@ -52,18 +52,17 @@ namespace Build.Client.BuildTasks
             }
 
             var thisBuildConfig = tapResourcesConfig.BuildConfigs.FirstOrDefault(x => x.BuildConfiguration == BuildConfiguration
-                                                                                   && x.ProjectName == ProjectName
-                                                                                   && x.TargetFrameworkIdentifier == TargetFrameworkIdentifier);
+                                                                                   && x.ProjectName == ProjectName);
 
             if (thisBuildConfig == null)
             {
-                Log.LogMessage($"Project {ProjectName} Build configuration {BuildConfiguration} for TargetFramework {TargetFrameworkIdentifier} not found, so adding to {Consts.TapResourcesConfig}");
-                tapResourcesConfig.BuildConfigs.Add(new BuildConfig(ProjectName, BuildConfiguration, TargetFrameworkIdentifier));
+                Log.LogMessage($"Project {ProjectName} Build configuration {BuildConfiguration} not found, so adding to {Consts.TapResourcesConfig}");
+                tapResourcesConfig.BuildConfigs.Add(new BuildConfig(ProjectName, BuildConfiguration));
                 this.SaveResourceConfig(tapResourcesConfig);
             }
             else if (thisBuildConfig.Disabled == true)
             {
-                Log.LogMessage($"The Apps Pajamas is disabled in {Consts.TapResourcesConfig} for this project/configuration, exiting");
+                Log.LogMessage($"The Apps Pajamas is disabled in {Consts.TapResourcesConfig} for Project {ProjectName} in configuration {BuildConfiguration}], exiting");
                 TapShouldContinue = bool.FalseString;
                 return true;
             }
@@ -102,6 +101,22 @@ namespace Build.Client.BuildTasks
                     //deserialise now (extension method)
                     //return object
                 }
+            }
+            catch (WebException ex){
+                var response = ex.Response as HttpWebResponse;
+                if (response == null)
+                {
+                    LogDebug("Webexception not ususal status code encountered, fatal, exiting");
+                    Log.LogErrorFromException(ex);
+                    return false;
+                }
+
+                if (response.StatusCode == HttpStatusCode.NotFound){
+                    Log.LogWarning($"Tap server responded with message '{response.StatusDescription}', TheAppsPajamams cannot continue, exiting gracefully, build will continue");
+                    TapShouldContinue = bool.FalseString;
+                    return true;
+                }
+
             }
             catch (Exception ex)
             {

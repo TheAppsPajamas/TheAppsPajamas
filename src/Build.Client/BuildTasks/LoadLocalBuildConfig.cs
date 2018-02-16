@@ -15,85 +15,43 @@ namespace Build.Client.BuildTasks
         [Output]
         public bool NeedsLoadRemote { get; set; }
 
+        public LoadLocalBuildConfig()
+        {
+            _taskName = "LoadLocalBuildConfig";
+        }
+
+
         public override bool Execute()
         {
-            Log.LogMessage("Running LoadLocalBuildConfig");
-
-            LogDebug("Project name '{0}'", ProjectName);
-            LogDebug("Build configuration '{0}'", BuildConfiguration);
-
-            TheAppsPajamasResourceDir = new TaskItem(Consts.TheAppsPajamasResourcesDir);
-            TapShouldContinue = bool.TrueString;
-
-            var tapResourcesConfig = this.GetResourceConfig();
-
-            if (tapResourcesConfig == null)
+            var baseResult = base.Execute();
+            if (baseResult == false)
             {
-                //Change to warning, and return TapShouldContinue = false
-                Log.LogError($"{Consts.TapResourcesConfig} file not set, please see solution root and complete");
                 return false;
             }
 
-            if (tapResourcesConfig.BuildConfigs == null)
-            {
-                LogDebug("Added BuildConfigs list");
-                tapResourcesConfig.BuildConfigs = new List<BuildConfig>();
-            }
 
-            var thisBuildConfig = tapResourcesConfig.BuildConfigs.FirstOrDefault(x => x.BuildConfiguration == BuildConfiguration
-                                                                                   && x.ProjectName == ProjectName);
-
-            if (thisBuildConfig == null)
-            {
-                Log.LogMessage($"Project {ProjectName} Build configuration {BuildConfiguration} not found, so adding to {Consts.TapResourcesConfig}");
-                tapResourcesConfig.BuildConfigs.Add(new BuildConfig(ProjectName, BuildConfiguration));
-                this.SaveResourceConfig(tapResourcesConfig);
-            }
-            else if (thisBuildConfig.Disabled == true)
-            {
-                Log.LogMessage($"The Apps Pajamas is disabled in {Consts.TapResourcesConfig} for Project {ProjectName} in configuration {BuildConfiguration}], exiting");
-                TapShouldContinue = bool.FalseString;
-                return true;
-            }
-
-
-            BuildResourceDir = this.GetBuildResourceDir();
-            if (String.IsNullOrEmpty(BuildResourceDir)){
+            TapResourceDir = this.GetTapResourcesDir();
+            if (String.IsNullOrEmpty(TapResourceDir)){
                 NeedsLoadRemote = true;
-                Log.LogMessage("Build Resource folder not found, forcing remote load");
+                Log.LogMessage($"{Consts.TapResourcesDir} folder not found, forcing remote load");
                 return true;
             }
+
+
+            //this is not quite identical in base
 
             var projectConfigs = this.GetProjectsConfig();
             var projectConfig = projectConfigs.Projects.FirstOrDefault(x => x.BuildConfiguration == BuildConfiguration);
 
             if (projectConfig == null || projectConfig.ClientConfig == null){
-                Log.LogMessage("{1} configuration not found for project {0} in project.config, forcing remote load", ProjectName, BuildConfiguration);
+                Log.LogMessage($"{BuildConfiguration} configuration not found for project {ProjectName} in {Consts.ProjectsConfig}, forcing remote load");
                 NeedsLoadRemote = true;
                 return true;
             }
 
-            StringFieldClientDto packagingAppIconField = null;
-            StringFieldClientDto packagingSplashField = null;
+            //this is identical in base
 
-            ITaskItem packagingCatalogueSetName = null;
-            if (TargetFrameworkIdentifier == "Xamarin.iOS")
-            {
-                AssetCatalogueName = this.GetAssetCatalogueName(projectConfig.ClientConfig);
-                AppIconCatalogueName = this.GetAppIconCatalogueSetName(projectConfig.ClientConfig);
-                packagingCatalogueSetName = this.GetSplashCatalogueSetName(projectConfig.ClientConfig);
-
-            }
-            else if (TargetFrameworkIdentifier == "MonoAndroid")
-            {
-                packagingAppIconField = projectConfig.ClientConfig.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingDroidAppIconName.Value);
-
-                packagingSplashField = projectConfig.ClientConfig.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingDroidSplashName.Value);
-            }
-
-
-
-
+            AssetCatalogueName = this.GetAssetCatalogueName(projectConfig.ClientConfig, TargetFrameworkIdentifier);
 
             AppIconOutput = this.GetMediaOutput(projectConfig.ClientConfig.AppIconFields, AssetCatalogueName, projectConfig.ClientConfig);
 

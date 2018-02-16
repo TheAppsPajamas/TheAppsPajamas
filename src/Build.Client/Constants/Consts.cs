@@ -3,16 +3,17 @@ namespace Build.Client.Constants
 {
     public static class Consts
     {
-        public const string TheAppsPajamasResourcesDir = "theappspajamas-resources";
+        public const string TapResourcesDir = "TapResources";
         public const string MediaResourcesDir = "media-resources";
         public const string AssetCatalogueOutputDir = "asset-catalogue-output";
         public const string iTunesArtworkDir = "iTunesArtwork";
 
         public const string TapResourcesConfig = "TapResources.config";
+        public const string TapSecurityConfig = "TapSecurity.config";
 
-        public const string ModifiedProjectNameExtra = ".theappspajamas";
+        public const string ModifiedProjectNameExtra = ".Tap";
 
-        public const string ProjectConfig = "project.config";
+        public const string ProjectsConfig = "project.config";
 
         public const string DroidResources = "Resources";
         public const string UrlBase = "http://buildapidebug.me";

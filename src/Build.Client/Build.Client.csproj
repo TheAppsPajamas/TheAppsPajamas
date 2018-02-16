@@ -78,7 +78,6 @@
     <Compile Include="BuildTasks\SetDroidMedia.cs" />
     <Compile Include="Helpers\Plist.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="BuildTasks\SetIosAppIcons.cs" />
     <Compile Include="Models\MediaAssetCatalogue.cs" />
     <Compile Include="BuildTasks\CleanAssetCatalogues.cs" />
     <Compile Include="BuildTasks\SetIosPlist.cs" />

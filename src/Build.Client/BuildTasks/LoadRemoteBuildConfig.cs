@@ -16,65 +16,41 @@ namespace Build.Client.BuildTasks
 {
     public class LoadRemoteBuildConfig : BaseLoadTask
     {
-        [Output] 
+        [Output]
         public ITaskItem Token { get; set; }
 
         [Output]
         public ITaskItem BuildAppId { get; set; }
 
+        public LoadRemoteBuildConfig()
+        {
+            _taskName = "LoadRemoteBuildConfig";
+        }
+
         public override bool Execute()
         {
+            var baseResult = base.Execute();
+            if (baseResult == false){
+                return false;
+            }
 
-            Log.LogMessage("Running LoadRemoteBuildConfig");
+            TapResourceDir = this.GetTapResourcesDir();
+            if (String.IsNullOrEmpty(TapResourceDir))
+            {
+                Log.LogError($"{Consts.TapResourcesDir} folder not found, exiting");
+                return false;
+            }
 
-            LogDebug("Project name '{0}'", ProjectName);
-            LogDebug("Build configuration '{0}'", BuildConfiguration);
-
-            TheAppsPajamasResourceDir = new TaskItem(Consts.TheAppsPajamasResourcesDir);
-            TapShouldContinue = bool.TrueString;
-
-            var tapResourcesConfig = this.GetResourceConfig();
 
             var securityConfig = this.GetSecurityConfig();
 
-            if (tapResourcesConfig == null || securityConfig == null)
+            if (securityConfig == null)
             {
-                //Change to warning, and return TapShouldContinue = false
-                Log.LogError($"{Consts.TapResourcesConfig} file not set, please see solution root and complete");
+                Log.LogError($"{Consts.TapSecurityConfig} file not set, please see solution root and complete");
                 return false;
             }
 
-
-            if (tapResourcesConfig.BuildConfigs == null)
-            {
-                LogDebug("Added BuildConfigs list");
-                tapResourcesConfig.BuildConfigs = new List<BuildConfig>();
-            }
-
-            var thisBuildConfig = tapResourcesConfig.BuildConfigs.FirstOrDefault(x => x.BuildConfiguration == BuildConfiguration
-                                                                                   && x.ProjectName == ProjectName);
-
-            if (thisBuildConfig == null)
-            {
-                Log.LogMessage($"Project {ProjectName} Build configuration {BuildConfiguration} not found, so adding to {Consts.TapResourcesConfig}");
-                tapResourcesConfig.BuildConfigs.Add(new BuildConfig(ProjectName, BuildConfiguration));
-                this.SaveResourceConfig(tapResourcesConfig);
-            }
-            else if (thisBuildConfig.Disabled == true)
-            {
-                Log.LogMessage($"The Apps Pajamas is disabled in {Consts.TapResourcesConfig} for Project {ProjectName} in configuration {BuildConfiguration}], exiting");
-                TapShouldContinue = bool.FalseString;
-                return true;
-            }
-
-
-
-            BuildResourceDir = this.GetBuildResourceDir();
-            if (String.IsNullOrEmpty(BuildResourceDir))
-                return false;
-
-
-            BuildAppId = new TaskItem(tapResourcesConfig.TapAppId.ToString());
+            BuildAppId = new TaskItem(_tapResourcesConfig.TapAppId.ToString());
 
             Token = this.Login(securityConfig);
             if (Token == null){
@@ -83,7 +59,7 @@ namespace Build.Client.BuildTasks
             }
 
             var unmodifedProjectName = ProjectName.Replace(Consts.ModifiedProjectNameExtra, String.Empty);
-            var url = String.Concat(Consts.UrlBase, Consts.ClientEndpoint, "?", "appId=", tapResourcesConfig.TapAppId, "&projectName=", unmodifedProjectName, "&buildConfiguration=", BuildConfiguration );
+            var url = String.Concat(Consts.UrlBase, Consts.ClientEndpoint, "?", "appId=", _tapResourcesConfig.TapAppId, "&projectName=", unmodifedProjectName, "&buildConfiguration=", BuildConfiguration );
 
             Log.LogMessage("Loading remote build config from '{0}'", url);
 
@@ -129,6 +105,8 @@ namespace Build.Client.BuildTasks
             if (clientConfigDto == null)
                 return false;
 
+            //this is not quite identical in base
+
             var projectsConfig = this.GetProjectsConfig();
 
             var projectConfig = projectsConfig.Projects.FirstOrDefault(x => x.BuildConfiguration == BuildConfiguration);
@@ -142,23 +120,10 @@ namespace Build.Client.BuildTasks
             projectConfig.ClientConfig = clientConfigDto;
             if (!this.SaveProjects(projectsConfig))
                 return false;
-            
-            StringFieldClientDto packagingAppIconField = null;
-            StringFieldClientDto packagingSplashField = null;
 
-            ITaskItem packagingCatalogueSetName = null;
-            if (TargetFrameworkIdentifier == "Xamarin.iOS")
-            {
-                AssetCatalogueName = this.GetAssetCatalogueName(projectConfig.ClientConfig);
-                AppIconCatalogueName = this.GetAppIconCatalogueSetName(projectConfig.ClientConfig);
-                packagingCatalogueSetName = this.GetSplashCatalogueSetName(projectConfig.ClientConfig);
+            //this is identical in base
 
-            } else if (TargetFrameworkIdentifier == "MonoAndroid"){
-                packagingAppIconField = projectConfig.ClientConfig.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingDroidAppIconName.Value);
-
-                packagingSplashField = projectConfig.ClientConfig.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingDroidSplashName.Value);
-            }
-
+            AssetCatalogueName = this.GetAssetCatalogueName(projectConfig.ClientConfig, TargetFrameworkIdentifier);
 
             AppIconOutput = this.GetMediaOutput(projectConfig.ClientConfig.AppIconFields, AssetCatalogueName, projectConfig.ClientConfig);
 

@@ -11,15 +11,15 @@ namespace Build.Client.Extensions
     public static class MediaExtensions
     {
         public static IEnumerable<string> GetExistingMediaFiles(this BaseTask baseTask, string buildConfiguration){
-            var mediaResourceDir = baseTask.GetMediaResourceDir(buildConfiguration);
+            var buildConfigResourceDir = baseTask.GetBuildConfigurationResourceDir(buildConfiguration);
             try
             {
-                var files = Directory.EnumerateFiles(mediaResourceDir, "*.png", SearchOption.AllDirectories);
+                var files = Directory.EnumerateFiles(buildConfigResourceDir, "*.png", SearchOption.AllDirectories);
                 if (baseTask.Debug)
                 {
                     if (files.Any())
                     {
-                        baseTask.Log.LogMessage("{0} png files found in media resources folder {1}", files.Count(), mediaResourceDir);
+                        baseTask.Log.LogMessage("{0} png files found in resources folder {1}", files.Count(), buildConfigResourceDir);
                         foreach (var file in files)
                         {
                             baseTask.LogDebug("Media file found {0}", file);
@@ -27,7 +27,7 @@ namespace Build.Client.Extensions
                     }
                     else
                     {
-                        baseTask.Log.LogMessage("No files found in media resources folder {0}", mediaResourceDir);
+                        baseTask.Log.LogMessage("No files found in resources folder {0}", buildConfigResourceDir);
                     }
                 }
                 return files;
@@ -40,23 +40,23 @@ namespace Build.Client.Extensions
 
         }
 
-        public static string GetMediaResourceDir(this BaseTask baseTask, string buildConfiguration)
+        public static string GetBuildConfigurationResourceDir(this BaseTask baseTask, string buildConfiguration)
         {
-            var buildResourceDir = baseTask.GetBuildResourceDir();
-            baseTask.LogDebug("BuildResourceDir located at '{0}'", buildResourceDir);
-            baseTask.LogDebug("BuildConfiguration '{0}'", buildConfiguration);
+            var buildResourceDir = baseTask.GetTapResourcesDir();
+            baseTask.LogDebug($"{Consts.TapResourcesDir} located at {buildResourceDir}", buildResourceDir);
+            baseTask.LogDebug("BuildConfiguration {0}", buildConfiguration);
 
             try
             {
-                var mediaResourceDir = Path.Combine(buildResourceDir, Consts.MediaResourcesDir, buildConfiguration);
+                var mediaResourceDir = Path.Combine(buildResourceDir, buildConfiguration);
                 if (!Directory.Exists(mediaResourceDir))
                 {
-                    baseTask.LogDebug("Created media-resources folder at '{0}'", mediaResourceDir);
+                    baseTask.LogDebug("Created resource folder at '{0}'", mediaResourceDir);
                     Directory.CreateDirectory(mediaResourceDir);
                 }
                 else
                 {
-                    baseTask.LogDebug("media-resources folder location '{0}'", mediaResourceDir);
+                    baseTask.LogDebug("Resource folder location '{0}'", mediaResourceDir);
                 }
                 var directoryInfo = new DirectoryInfo(mediaResourceDir);
                 return directoryInfo.FullName;

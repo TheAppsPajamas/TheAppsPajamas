@@ -51,10 +51,10 @@ namespace Build.Client.BuildTasks
             allMediaFields.AddRange(AppIconFields);
             allMediaFields.AddRange(SplashFields);
 
-            var mediaResourcesDir = this.GetMediaResourceDir(BuildConfiguration);
+            var buildConfigurationResourceDir = this.GetBuildConfigurationResourceDir(BuildConfiguration);
 
             foreach(var field in allMediaFields){
-                var existingFilePath = Path.Combine(mediaResourcesDir, field.GetMetadata(MetadataType.Path), field.GetMetadata(MetadataType.MediaName).ApplyPngExt());
+                var existingFilePath = Path.Combine(buildConfigurationResourceDir, field.GetMetadata(MetadataType.Path), field.GetMetadata(MetadataType.MediaName).ApplyPngExt());
 
                 var outputDir = Path.Combine(ProjectDir, field.GetMetadata(MetadataType.Path));
 

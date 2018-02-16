@@ -60,7 +60,7 @@ namespace Build.Client.BuildTasks
                 //don't need to do this anymore because we're programtaically removing them from the build
                 //delete all resources in theappspajamas folder
 
-                //var allItems = project.Xml.ItemGroups.SelectMany(x => x.Items);
+
 
                 //var buildResourceItems = allItems.Where(x => x.Include.Contains(Consts.TheAppsPajamasResourcesDir));
 
@@ -73,6 +73,7 @@ namespace Build.Client.BuildTasks
 
                 //LogDebug("Delete {0} from {1} folder", filesDeleted, Consts.MediaResourcesDir);
 
+
                 //add files (again asset catalogue stuff)
                 var addItemGroup = project.Xml.CreateItemGroupElement();
                 project.Xml.InsertAfterChild(addItemGroup, project.Xml.LastChild);
@@ -80,7 +81,6 @@ namespace Build.Client.BuildTasks
                 {
                     foreach (var fileToAdd in FilesToAddToProject)
                     {
-
                         LogDebug("Added file {1} to {0}", fileToAdd.ItemSpec, fileToAdd.GetMetadata(MetadataType.IncludePath));
                         addItemGroup.AddItem(fileToAdd.ItemSpec, fileToAdd.GetMetadata(MetadataType.IncludePath).GetPathRelativeToProject(ProjectDir));
                     }
@@ -97,6 +97,7 @@ namespace Build.Client.BuildTasks
                     LogDebug("Project should modify original {0}", ProjectShouldModifyOriginal);
                 }
 
+ 
                 //always save (because of the removing allpajama resources)
                 var withoutExt = Path.Combine(System.IO.Path.GetDirectoryName(ProjectFileLoad), Path.GetFileNameWithoutExtension(ProjectFileLoad));
 

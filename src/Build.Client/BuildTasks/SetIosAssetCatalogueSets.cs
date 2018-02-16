@@ -29,6 +29,7 @@ namespace Build.Client.BuildTasks
 
         public ITaskItem[] ExistingFilesToAddToProject { get; set; }
         public ITaskItem[] ExistingOutputImageAssets { get; set; }
+
         [Output]
         public ITaskItem[] FilesToAddToProject { get; set; }
 
@@ -40,14 +41,12 @@ namespace Build.Client.BuildTasks
         {
             Log.LogMessage("Set Ios Asset Cataloge Sets started");
 
-
+            //turns out msbuild adds to the output array itself, so if we send the output back down, and into the same 
+            //item property it will get added
             var filesToAddToModifiedProject = new List<ITaskItem>();
-            //make sure catalogue contents.json is in list
-            if (ExistingFilesToAddToProject != null && ExistingFilesToAddToProject.Any())
-            {
-                filesToAddToModifiedProject.AddRange(ExistingFilesToAddToProject);
-            }
 
+
+            //this above discovery will change this
             var outputImageAssets = new List<ITaskItem>();
             if (ExistingOutputImageAssets != null && ExistingOutputImageAssets.Any()){
                 outputImageAssets.AddRange(ExistingOutputImageAssets);
@@ -69,7 +68,7 @@ namespace Build.Client.BuildTasks
 
             try
             {
-                var mediaResourcesBuildConfigDir = this.GetMediaResourceDir(BuildConfiguration);
+                var buildConfigurationResourceDir = this.GetBuildConfigurationResourceDir(BuildConfiguration);
 
                 //could handle disbled here
                 var firstField = AppIconFields.FirstOrDefault();
@@ -251,7 +250,7 @@ namespace Build.Client.BuildTasks
                                 LogDebug("Set second asset catalogue set filename to {0}", outputImageCatalogue2.filename);
                             }
 
-                            var existingFilePath = Path.Combine(mediaResourcesBuildConfigDir
+                            var existingFilePath = Path.Combine(buildConfigurationResourceDir
                                                                 , field.GetMetadata(MetadataType.Path)
                                                                 , field.GetMetadata(MetadataType.MediaName).ApplyPngExt());
 
@@ -294,7 +293,7 @@ namespace Build.Client.BuildTasks
                             NullValueHandling = NullValueHandling.Ignore
                         });
 
-                    var mediaResourceCatalogueSetContentsPath = Path.Combine(mediaResourcesBuildConfigDir, AssetCatalogueName.ItemSpec, catalogue, Consts.iOSContents);
+                    var mediaResourceCatalogueSetContentsPath = Path.Combine(buildConfigurationResourceDir, AssetCatalogueName.ItemSpec, catalogue, Consts.iOSContents);
                     LogDebug($"Added media-resource {catalogue} Contents.json at path {mediaResourceCatalogueSetContentsPath}");
 
                     Log.LogMessage($"Saving media-resources {catalogue} Contents.json to {mediaResourceCatalogueSetContentsPath}");

@@ -43,11 +43,10 @@
     <Target Name="LoadLocalBuildConfig" 
         BeforeTargets="_GetReferenceAssemblyPaths;_BeforeCoreCompileInterfaceDefinitions" >
         <LoadLocalBuildConfig Debug="$(BuildDebug)" ProjectName="$(MSBuildProjectName)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" TargetFrameworkIdentifier='$(TargetFrameworkIdentifier)'>
-            <Output TaskParameter="BuildResourceDir" PropertyName="BuildResourceDir" />
+            <Output TaskParameter="TapResourceDir" PropertyName="TapResourceDir" />
             <Output TaskParameter="PackagingOutput" ItemName="PackagingFields" />
             <Output TaskParameter="AppIconOutput" ItemName="AppIconFields" />
             <Output TaskParameter="AssetCatalogueName" PropertyName="AssetCatalogueName"/>
-            <Output TaskParameter="AppIconCatalogueName" PropertyName="AppIconCatalogueName"/>
             <Output TaskParameter="SplashOutput" ItemName="SplashFields" />
             <Output TaskParameter="NeedsLoadRemote" PropertyName="NeedsLoadRemote" />
 
@@ -64,11 +63,10 @@
         AfterTargets="LoadLocalBuildConfig" 
         Condition="'$(NeedsLoadRemote)' == 'True' And '$(TapShouldContinue)' == 'True' ">
         <LoadRemoteBuildConfig Debug="$(BuildDebug)" ProjectName="$(MSBuildProjectName)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" TargetFrameworkIdentifier='$(TargetFrameworkIdentifier)'>
-            <Output TaskParameter="BuildResourceDir" PropertyName="BuildResourceDir" />
+            <Output TaskParameter="TapResourceDir" PropertyName="TapResourceDir" />
             <Output TaskParameter="PackagingOutput" ItemName="PackagingFields" />
             <Output TaskParameter="AppIconOutput" ItemName="AppIconFields" />
             <Output TaskParameter="AssetCatalogueName" PropertyName="AssetCatalogueName"/>
-            <Output TaskParameter="AppIconCatalogueName" PropertyName="AppIconCatalogueName"/>
             <Output TaskParameter="Token" PropertyName="BuildAccessToken"/>
             <Output TaskParameter="BuildAppId" PropertyName="BuildAppId" />
             <Output TaskParameter="SplashOutput" ItemName="SplashFields" />
@@ -140,7 +138,7 @@
  
 
     <Target Name="SetIosPlist" 
-        AfterTargets="DownloadMediaFiles" 
+        AfterTargets="SetDroidMedia" 
         Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' And '$(TapShouldContinue)' == 'True' ">
         <SetIosPlist Debug="$(BuildDebug)" 
             PackagesDir="$(PackagesDir)" 
@@ -203,7 +201,7 @@
        <!--     <ImageAsset Remove="$(TheAppsPajamasResourceDir)/**"/>-->
 <!--            <ITunesArtwork Remove="**"/>-->
         </ItemGroup>
-
+        
        <ItemGroup>
             <ImageAsset Include="%(IosImageAssets.Identity)"/>
          <!--   <ITunesArtwork Include="%(IosITunesArtwork.Identity)" />-->
@@ -212,7 +210,7 @@
     </Target>
 
     <Target Name="RemoveTapResources"
-        AfterTargets="SetIosAssetCatalogueSets;SetDroidMedia">
+        AfterTargets="SetIosAssetCatalogueSets">
         <Message Text="Removing Tap Resources from project"/>
         <ItemGroup>
             <ImageAsset Remove="$(TheAppsPajamasResourceDir)/**"/>
@@ -226,7 +224,7 @@
     </Target>
     
     <Target Name="ModifyProject" 
-        AfterTargets="SetDroidMedia;SetIosAssetCatalogueSets"
+        AfterTargets="SetIosAssetCatalogueSets"
         Condition=" '$(TapShouldContinue)' == 'True' ">
            <ModifyProject Debug="$(BuildDebug)" 
             PackagesDir="$(PackagesDir)" 

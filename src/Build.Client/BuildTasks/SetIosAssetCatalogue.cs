@@ -45,21 +45,21 @@ namespace Build.Client.BuildTasks
 
             var existingAssets = new List<ITaskItem>();
 
-            if (ExistingImageAssets != null && ExistingImageAssets.Length != 0)
+            if (ExistingImageAssets != null && ExistingImageAssets.Any())
             {
                 existingAssets.AddRange(ExistingImageAssets);
-            } else if (ExistingImageAssets == null || ExistingImageAssets.Length == 0){
+            } else if (ExistingImageAssets == null || ExistingImageAssets.Any() == false){
                 LogDebug("No existing image assets found in project");
             }
 
-            foreach (var taskItem in existingAssets)
-            {
-                LogDebug("Existing asset in project {0}", taskItem.ItemSpec);
-            }
+            //foreach (var taskItem in existingAssets)
+            //{
+            //    LogDebug("Existing asset in project {0}", taskItem.ItemSpec);
+            //}
 
             try
             {
-                var mediaResourcesBuildConfigDir = this.GetMediaResourceDir(BuildConfiguration);
+                var buildConfigurationResourceDir = this.GetBuildConfigurationResourceDir(BuildConfiguration);
 
                 ////could handle disbled here
                 //var firstField = AppIconFields.FirstOrDefault();
@@ -107,7 +107,7 @@ namespace Build.Client.BuildTasks
                     LogDebug("Created {0} folder at {1}", AssetCatalogueName, projectAssetCatalogueDir);
                 } 
 
-                var mediaResourceAssetCatalogueContentsPath = Path.Combine(mediaResourcesBuildConfigDir, AssetCatalogueName.ItemSpec, Consts.iOSContents);
+                var mediaResourceAssetCatalogueContentsPath = Path.Combine(buildConfigurationResourceDir, AssetCatalogueName.ItemSpec, Consts.iOSContents);
                 if (!File.Exists(mediaResourceAssetCatalogueContentsPath))
                 {
                     LogDebug("Creating Asset catalogue Contents.json at {0}", mediaResourceAssetCatalogueContentsPath);
@@ -135,8 +135,7 @@ namespace Build.Client.BuildTasks
                 }
 
                 Log.LogMessage("SetAssetCatalogues wants to add {0} files to the build project", filesToAddToModifiedProject.Count());
-                Log.LogMessage("SetAssetCatalogues wants to show {0} media-resources files in the final project", filesToAddToModifiedProject.Count());
-
+               
                 FilesToAddToProject = filesToAddToModifiedProject.ToArray();
 
                 OutputImageAssets = outputImageAssets.ToArray();

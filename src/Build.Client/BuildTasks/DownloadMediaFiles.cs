@@ -53,7 +53,7 @@ namespace Build.Client.BuildTasks
                 filesToDeleteFromProject.AddRange(FilesToDeleteFromProject);
             }
 
-            var mediaResourceDir = this.GetMediaResourceDir(BuildConfiguration);
+            var buildConfigResourceDir = this.GetBuildConfigurationResourceDir(BuildConfiguration);
             try
             {
                 foreach(var field in allMediaFields){
@@ -73,14 +73,14 @@ namespace Build.Client.BuildTasks
                             LogDebug("Generating url for mediaId {0}, {1}", field.GetMetadata(MetadataType.MediaFileId), BuildAppId.ItemSpec);
                             var url = String.Concat(Consts.UrlBase, Consts.MediaEndpoint, "/", BuildAppId.ItemSpec, "/", field.GetMetadata(MetadataType.MediaFileId));
                             LogDebug("Finding directory");
-                            var directory = Path.Combine(mediaResourceDir, field.GetMetadata(MetadataType.Path));
+                            var directory = Path.Combine(buildConfigResourceDir, field.GetMetadata(MetadataType.Path));
                             LogDebug("Checking directory existance {0}", directory);
                             if (!Directory.Exists(directory))
                             {
                                 LogDebug("Created folder {0}", directory);
                                 Directory.CreateDirectory(directory);
                             }
-                            var fileName = Path.Combine(mediaResourceDir, field.GetMetadata(MetadataType.Path), field.GetMetadata(MetadataType.MediaName).ApplyPngExt());
+                            var fileName = Path.Combine(buildConfigResourceDir, field.GetMetadata(MetadataType.Path), field.GetMetadata(MetadataType.MediaName).ApplyPngExt());
                             Log.LogMessage("Downloading media file {0}, from url {1}", fileName, url);
                             client.DownloadFile(url, fileName);
                         }

@@ -30,7 +30,7 @@ namespace Build.Client.BuildTasks
                 LogDebug("Loading project {0}", ProjectFileModifiedName);
                 var project = collection.LoadProject(ProjectFileModifiedName);
 
-                string[] allMediaFiles = Directory.GetFiles(Path.Combine(ProjectDir, Consts.TheAppsPajamasResourcesDir, Consts.MediaResourcesDir)
+                string[] allMediaFiles = Directory.GetFiles(Path.Combine(ProjectDir, Consts.TapResourcesDir, Consts.MediaResourcesDir)
                                                        , "*.*", SearchOption.AllDirectories);
 
                 if (allMediaFiles == null){

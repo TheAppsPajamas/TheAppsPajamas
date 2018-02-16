@@ -80,19 +80,19 @@ namespace Build.Client.Extensions
 
         public static SecurityConfig GetSecurityConfig(this BaseTask baseTask)
         {
-            baseTask.LogDebug("Loading build-security.config file");
+            baseTask.LogDebug($"Loading {Consts.TapSecurityConfig} file");
 
             try
             {
-                var buildSecurityConfigPath = Path.Combine(baseTask.PackagesDir, "build-security.config");
+                var buildSecurityConfigPath = Path.Combine(baseTask.PackagesDir, Consts.TapSecurityConfig);
                 SecurityConfig buildSecurityConfig = null;
                 if (!File.Exists(buildSecurityConfigPath))
                 {
-                    baseTask.LogDebug("Creating blank build security config at {0}", buildSecurityConfigPath);
+                    baseTask.LogDebug($"Creating empty {Consts.TapSecurityConfig} at {buildSecurityConfigPath}");
                     buildSecurityConfig = new SecurityConfig();
                     var json = JsonConvert.SerializeObject(buildSecurityConfig, Formatting.Indented);
                     File.WriteAllText(buildSecurityConfigPath, json);
-                    baseTask.Log.LogError("Build security config file not found, created at {0}. Please complete username, and password and restart build process", buildSecurityConfigPath);
+                    baseTask.Log.LogError($"{Consts.TapSecurityConfig} file not found, created at {buildSecurityConfigPath}. Please complete username, and password and restart build process");
                     return null;
                 }
                 else
@@ -102,12 +102,12 @@ namespace Build.Client.Extensions
 
                     if (String.IsNullOrEmpty(buildSecurityConfig.UserName) || String.IsNullOrEmpty(buildSecurityConfig.Password))
                     {
-                        baseTask.Log.LogError("Build security config username or password is null, please complete username, and password at {0} and restart build process", buildSecurityConfigPath);
+                        baseTask.Log.LogError($"{Consts.TapSecurityConfig} username or password is null, please complete username, and password at {buildSecurityConfigPath} and restart build process");
                         return null;
                     }
                     else
                     {
-                        baseTask.LogDebug("Build security config file read from {1}\nUsername '{0}'", buildSecurityConfig.UserName, buildSecurityConfigPath);
+                        baseTask.LogDebug($"{Consts.TapSecurityConfig} file read from {buildSecurityConfigPath}Username {buildSecurityConfig.UserName}");
                         return buildSecurityConfig;
                     }
                 }
@@ -250,6 +250,7 @@ namespace Build.Client.Extensions
                         {
                             baseTask.Log.LogError("Catalogue set name undefined");
                         }
+
 
 
                         itemMetadata.Add(MetadataType.Path, Path.Combine(assetCatalogueName.ItemSpec, catalogueSetName));

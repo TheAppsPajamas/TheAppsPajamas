@@ -72,11 +72,10 @@
     <Compile Include="BuildTasks\DeleteUnusedMediaFiles.cs" />
     <Compile Include="Extensions\MediaExtensions.cs" />
     <Compile Include="BuildTasks\DownloadMediaFiles.cs" />
-    <Compile Include="BuildTasks\SetDroidAppIcons.cs" />
+    <Compile Include="BuildTasks\SetDroidMedia.cs" />
     <Compile Include="Helpers\Plist.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="BuildTasks\SetIosAppIcons.cs" />
-    <Compile Include="Models\AppIconAssetCatalogue.cs" />
+    <Compile Include="Models\MediaAssetCatalogue.cs" />
     <Compile Include="BuildTasks\CleanAssetCatalogues.cs" />
     <Compile Include="BuildTasks\SetIosPlist.cs" />
     <Compile Include="Shared\Types\AppIconFieldType.cs" />
@@ -94,8 +93,16 @@
     <Compile Include="Extensions\AuthenticationExtensions.cs" />
     <Compile Include="Shared\Types\BuildConfigRecordSetFieldType.cs" />
     <Compile Include="Shared\Types\MediaOrientationType.cs" />
-    <Compile Include="BuildTasks\SetIosAppIconsV2.cs" />
-    <Compile Include="BuildTasks\SetIosLaunchImages.cs" />
+    <Compile Include="BuildTasks\ModifyProject.cs" />
+    <Compile Include="BuildTasks\SaveModifiedProjectBackToProject.cs" />
+    <Compile Include="BuildTasks\AddResourceBackIntoModifedProject.cs" />
+    <Compile Include="Constants\MetadataType.cs" />
+    <Compile Include="Constants\MSBuildItemName.cs" />
+    <Compile Include="BuildTasks\SetIosAssetCatalogue.cs" />
+    <Compile Include="BuildTasks\SetIosAssetCatalogueSets.cs" />
+    <Compile Include="Models\BuildConfig.cs" />
+    <Compile Include="BuildTasks\DebugDump.cs" />
+    <Compile Include="Constants\MSBuildMetadata.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />

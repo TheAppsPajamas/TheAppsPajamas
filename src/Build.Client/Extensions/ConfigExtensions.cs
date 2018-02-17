@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using Build.Client.BuildTasks;
 using Build.Client.Constants;
 using Build.Client.Models;
@@ -14,20 +16,21 @@ namespace Build.Client.Extensions
 {
     public static class ConfigExtensions
     {
-        public static BuildResourcesConfig GetResourceConfig(this BaseLoadTask baseTask){
-            baseTask.LogDebug("Loading build-resources.config file");
+        public static BuildResourcesConfig GetResourceConfig(this BaseLoadTask baseTask)
+        {
+            baseTask.Log.LogMessage($"Loading {Consts.TapResourcesConfig} file");
 
             try
             {
-                var buildResourcesConfigPath = Path.Combine(baseTask.PackagesDir, "build-resources.config");
+                var buildResourcesConfigPath = Path.Combine(baseTask.PackagesDir, Consts.TapResourcesConfig);
                 BuildResourcesConfig buildResourcesConfig = null;
                 if (!File.Exists(buildResourcesConfigPath))
                 {
-                    baseTask.LogDebug("Creating blank build resources config at {0}", buildResourcesConfigPath);
+                    baseTask.LogDebug($"Creating blank {Consts.TapResourcesConfig} at {buildResourcesConfigPath}");
                     buildResourcesConfig = new BuildResourcesConfig();
                     var json = JsonConvert.SerializeObject(buildResourcesConfig, Formatting.Indented);
                     File.WriteAllText(buildResourcesConfigPath, json);
-                    baseTask.Log.LogError("Build resources config file not found, created at {0}. Please complete appId and restart build process", buildResourcesConfigPath);
+                    baseTask.Log.LogError($"{Consts.TapResourcesConfig} file not found, created at solution root. Please complete TapAppId and restart build process");
                     return null;
                 }
                 else
@@ -35,38 +38,61 @@ namespace Build.Client.Extensions
                     var json = File.ReadAllText(buildResourcesConfigPath);
                     buildResourcesConfig = JsonConvert.DeserializeObject<BuildResourcesConfig>(json);
 
-                    if (buildResourcesConfig.AppId == 0)
+                    if (buildResourcesConfig.TapAppId == 0)
                     {
-                        baseTask.Log.LogError("Build resources config appId is 0, please complete appId at {0} and restart build process", buildResourcesConfigPath);
+                        baseTask.Log.LogError($"{Consts.TapResourcesConfig} TapAppId is 0, please complete TapAppId and restart build process");
                         return null;
                     }
                     else
                     {
-                        baseTask.LogDebug("Build resources config file read from {1}\nAppId '{0}'\n'", buildResourcesConfig.AppId,  buildResourcesConfigPath);
+                        baseTask.LogDebug($"{Consts.TapResourcesConfig} file read, TapAppId '{ buildResourcesConfig.TapAppId}");
                         return buildResourcesConfig;
                     }
                 }
-            } catch (Exception ex){
+            }
+            catch (Exception ex)
+            {
                 baseTask.Log.LogErrorFromException(ex);
             }
             return null;
         }
 
-        public static SecurityConfig GetSecurityConfig(this BaseTask baseTask)
+        public static void SaveResourceConfig(this BaseLoadTask baseTask, BuildResourcesConfig buildResourcesConfig)
         {
-            baseTask.LogDebug("Loading build-security.config file");
+            baseTask.Log.LogMessage($"Saving {Consts.TapResourcesConfig} file");
 
             try
             {
-                var buildSecurityConfigPath = Path.Combine(baseTask.PackagesDir, "build-security.config");
+                var buildResourcesConfigPath = Path.Combine(baseTask.PackagesDir, Consts.TapResourcesConfig);
+
+                var json = JsonConvert.SerializeObject(buildResourcesConfig, Formatting.Indented);
+                File.WriteAllText(buildResourcesConfigPath, json);
+                baseTask.LogDebug($"{Consts.TapResourcesConfig} file saved");
+
+            }
+            catch (Exception ex)
+            {
+                baseTask.Log.LogErrorFromException(ex);
+            }
+        }
+
+
+
+        public static SecurityConfig GetSecurityConfig(this BaseTask baseTask)
+        {
+            baseTask.LogDebug($"Loading {Consts.TapSecurityConfig} file");
+
+            try
+            {
+                var buildSecurityConfigPath = Path.Combine(baseTask.PackagesDir, Consts.TapSecurityConfig);
                 SecurityConfig buildSecurityConfig = null;
                 if (!File.Exists(buildSecurityConfigPath))
                 {
-                    baseTask.LogDebug("Creating blank build security config at {0}", buildSecurityConfigPath);
+                    baseTask.LogDebug($"Creating empty {Consts.TapSecurityConfig} at {buildSecurityConfigPath}");
                     buildSecurityConfig = new SecurityConfig();
                     var json = JsonConvert.SerializeObject(buildSecurityConfig, Formatting.Indented);
                     File.WriteAllText(buildSecurityConfigPath, json);
-                    baseTask.Log.LogError("Build security config file not found, created at {0}. Please complete username, and password and restart build process", buildSecurityConfigPath);
+                    baseTask.Log.LogError($"{Consts.TapSecurityConfig} file not found, created at {buildSecurityConfigPath}. Please complete username, and password and restart build process");
                     return null;
                 }
                 else
@@ -76,12 +102,12 @@ namespace Build.Client.Extensions
 
                     if (String.IsNullOrEmpty(buildSecurityConfig.UserName) || String.IsNullOrEmpty(buildSecurityConfig.Password))
                     {
-                        baseTask.Log.LogError("Build security config username or password is null, please complete username, and password at {0} and restart build process", buildSecurityConfigPath);
+                        baseTask.Log.LogError($"{Consts.TapSecurityConfig} username or password is null, please complete username, and password at {buildSecurityConfigPath} and restart build process");
                         return null;
                     }
                     else
                     {
-                        baseTask.LogDebug("Build security config file read from {1}\nUsername '{0}'", buildSecurityConfig.UserName, buildSecurityConfigPath);
+                        baseTask.LogDebug($"{Consts.TapSecurityConfig} file read from {buildSecurityConfigPath}Username {buildSecurityConfig.UserName}");
                         return buildSecurityConfig;
                     }
                 }
@@ -93,32 +119,173 @@ namespace Build.Client.Extensions
             return null;
         }
 
-        public static ClientConfigDto GetClientConfig(this BaseLoadTask baseTask, string json){
-            try{
+        public static ClientConfigDto GetClientConfig(this BaseLoadTask baseTask, string json)
+        {
+            try
+            {
                 baseTask.LogDebug("Deserializing ClientConfigDto, length '{0}'", json.Length);
                 var clientConfigDto = JsonConvert.DeserializeObject<ClientConfigDto>(json);
                 baseTask.LogDebug("Deserialized ClientConfigDto, packagingFields: '{0}', appIconFields: '{1}', splashFields: '{2}'"
                                   , clientConfigDto.PackagingFields.Count, clientConfigDto.AppIconFields.Count, clientConfigDto.SplashFields.Count);
                 return clientConfigDto;
-            } catch (Exception ex){
+            }
+            catch (Exception ex)
+            {
                 baseTask.Log.LogErrorFromException(ex);
             }
             return null;
         }
 
-        public static ITaskItem[] GetPackagingOutput(this BaseLoadTask baseTask, ClientConfigDto clientConfigDto){
+        public static ITaskItem[] GetPackagingOutput(this BaseLoadTask baseTask, ClientConfigDto clientConfigDto)
+        {
             baseTask.LogDebug("Generating Packaging TaskItems");
 
             var output = new List<ITaskItem>();
-            foreach(var field in clientConfigDto.PackagingFields){
+            foreach (var field in clientConfigDto.PackagingFields)
+            {
                 var itemMetadata = new Dictionary<string, string>();
                 itemMetadata.Add("Value", field.Value);
                 output.Add(new TaskItem(field.FieldId.ToString(), itemMetadata));
             }
 
-            baseTask.Log.LogMessage("Generated {0} Packaging TaskItems",output.Count);
-            return output.ToArray();  
+            baseTask.Log.LogMessage("Generated {0} Packaging TaskItems", output.Count);
+            return output.ToArray();
         }
+
+        public static ITaskItem[] GetFieldTypeOutput<TFieldClientDto>(this BaseLoadTask baseTask, IList<TFieldClientDto> fieldsDto)
+            where TFieldClientDto : BaseFieldClientDto
+        {
+            baseTask.LogDebug("Generating Field Output TaskItems");
+
+            var output = new List<ITaskItem>();
+            foreach (var field in fieldsDto)
+            {
+                var itemMetadata = new Dictionary<string, string>();
+                itemMetadata.Add(MetadataType.Value, field.Value);
+                output.Add(new TaskItem(field.FieldId.ToString(), itemMetadata));
+            }
+
+            baseTask.Log.LogMessage("Generated {0} Field Output TaskItems", output.Count);
+            return output.ToArray();
+        }
+
+
+        public static ITaskItem[] GetMediaOutput<TFieldClientDto>(this BaseLoadTask baseTask
+                                                                  , IList<TFieldClientDto> fieldsDto
+                                                                  , ITaskItem assetCatalogueName
+                                                                  , ClientConfigDto clientConfigDto)
+            where TFieldClientDto : BaseFieldClientDto
+        {
+            baseTask.LogDebug("Generating Media Field TaskItems");
+
+            var output = new List<ITaskItem>();
+
+            foreach (var field in fieldsDto)
+            {
+                var itemMetadata = new Dictionary<string, string>();
+                var fieldType = FieldType.GetAll().FirstOrDefault(x => x.Value == field.FieldId);
+
+                if (fieldType == null)
+                {
+                    throw new Exception($"Missing field type {field.FieldId}");
+                }
+                if (fieldType.ProjectType == ProjectType.Droid)
+                {
+                    StringFieldClientDto droidNameField = null;
+                    if (fieldType is AppIconFieldType)
+                    {
+                        droidNameField = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingDroidAppIconName.Value);
+
+                    }
+                    else if (fieldType is SplashFieldType)
+                    {
+                        droidNameField = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingDroidSplashName.Value);
+
+                    }
+                    if (droidNameField == null || String.IsNullOrEmpty(droidNameField.Value))
+                    {
+                        baseTask.Log.LogError("Droid field name undefined");
+                    }
+                    //these ones are required for both
+                    itemMetadata.Add(MetadataType.LogicalName, droidNameField.Value.ApplyPngExt());
+                    itemMetadata.Add(MetadataType.Path, Path.Combine(Consts.DroidResources, fieldType.GetMetadata(MetadataType.Folder)));
+                    itemMetadata.Add(MetadataType.MediaName, droidNameField.Value.ApplyFieldId(field));
+
+                    itemMetadata.Add(MetadataType.MSBuildItemType, MSBuildItemName.AndroidResource);
+                }
+                else if (fieldType.ProjectType == ProjectType.Ios)
+                {
+                    //do iTunesArtWork
+                    if (String.IsNullOrEmpty(fieldType.GetMetadata(MetadataType.Idiom)))
+                    {
+                        itemMetadata.Add(MetadataType.Path, Consts.iTunesArtworkDir);
+                        itemMetadata.Add(MetadataType.MediaName, fieldType.GetMetadata(MetadataType.FileName).RemovePngExt().ApplyFieldId(field));
+                        itemMetadata.Add(MetadataType.LogicalName, fieldType.GetMetadata(MetadataType.FileName).RemovePngExt());
+
+                        itemMetadata.Add(MetadataType.MSBuildItemType, MSBuildItemName.iTunesArtwork);
+                    }
+                    else //do asset catalogue
+                    {
+                        //need to seperate out image catalogues here, for launchsets and 
+                        string catalogueSetName = null;
+                        if (fieldType is AppIconFieldType)
+                        {
+                            var catalogueSetField = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingIosAppIconXcAssetsName.Value);
+                            catalogueSetName = catalogueSetField.Value.ApplyAppiconsetExt();
+
+                        }
+                        else if (fieldType is SplashFieldType)
+                        {
+                            var catalogueSetField = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingIosLaunchImageXcAssetsName.Value);
+                            catalogueSetName = catalogueSetField.Value.ApplyLaunchimageExt();
+                        }
+
+                        if (!String.IsNullOrEmpty(fieldType.GetMetadata(MetadataType.CataloguePackagingFieldId)))
+                        {
+                            var catalogueSetField = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == Int32.Parse(fieldType.GetMetadata(MetadataType.CataloguePackagingFieldId)));
+                            catalogueSetName = catalogueSetField.Value.ApplyImageSetExt();
+                        }
+
+                        if (String.IsNullOrEmpty(catalogueSetName))
+                        {
+                            baseTask.Log.LogError("Catalogue set name undefined");
+                        }
+
+
+
+                        itemMetadata.Add(MetadataType.Path, Path.Combine(assetCatalogueName.ItemSpec, catalogueSetName));
+                        itemMetadata.Add(MetadataType.LogicalName, fieldType.GetMetadata(MetadataType.FileName));
+                        itemMetadata.Add(MetadataType.MediaName, fieldType.GetMetadata(MetadataType.FileName).RemovePngExt().ApplyFieldId(field));
+
+                        itemMetadata.Add(MetadataType.MSBuildItemType, MSBuildItemName.ImageAsset);
+                        itemMetadata.Add(MetadataType.Size, fieldType.GetMetadata(MetadataType.Size));
+                        itemMetadata.Add(MetadataType.Idiom, fieldType.GetMetadata(MetadataType.Idiom));
+                        itemMetadata.Add(MetadataType.Idiom2, fieldType.GetMetadata(MetadataType.Idiom2));
+                        itemMetadata.Add(MetadataType.Scale, fieldType.GetMetadata(MetadataType.Scale));
+
+                        itemMetadata.Add(MetadataType.Subtype, fieldType.GetMetadata(MetadataType.Subtype));
+                        itemMetadata.Add(MetadataType.Extent, fieldType.GetMetadata(MetadataType.Extent));
+                        itemMetadata.Add(MetadataType.MinimumSystemVersion, fieldType.GetMetadata(MetadataType.MinimumSystemVersion));
+                        itemMetadata.Add(MetadataType.Orientation, fieldType.GetMetadata(MetadataType.Orientation));
+                        itemMetadata.Add(MetadataType.ContentsFileName, fieldType.GetMetadata(MetadataType.FileName));
+
+                        //we can use this to build a list to operate on as such
+                        itemMetadata.Add(MetadataType.CatalogueSetName, catalogueSetName);
+                    }
+                }
+                itemMetadata.Add(MetadataType.MediaFileId, field.Value);
+                itemMetadata.Add(MetadataType.Disabled, field.Disabled.ToString());
+                itemMetadata.Add(MetadataType.FieldDescription, fieldType.DisplayName);
+
+                var taskItem = new TaskItem(field.FieldId.ToString(), itemMetadata);
+                baseTask.LogDebug(GetDebugStringFromTaskItem(taskItem, itemMetadata));
+                output.Add(taskItem);
+            }
+
+            baseTask.Log.LogMessage("Generated {0} Media Field TaskItems", output.Count);
+            return output.ToArray();
+        }
+
 
         public static ITaskItem[] GetAppIconOutput(this BaseLoadTask baseTask, ClientConfigDto clientConfigDto, ITaskItem assetCatalogueName, ITaskItem appIconCatalogueName)
         {
@@ -129,50 +296,75 @@ namespace Build.Client.Extensions
             foreach (var field in clientConfigDto.AppIconFields)
             {
                 var itemMetadata = new Dictionary<string, string>();
-                itemMetadata.Add("MediaFileId", field.Value);
                 var fieldType = FieldType.AppIcons().FirstOrDefault(x => x.Value == field.FieldId);
-                string logicalName = String.Empty;
-                string path = String.Empty;
-                string mediaName = String.Empty;
-                if (fieldType.ProjectType == ProjectType.Droid){
+                //string logicalName = String.Empty;
+                //string path = String.Empty;
+                //string mediaName = String.Empty;
+                if (fieldType.ProjectType == ProjectType.Droid)
+                {
                     var packagingIcon = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingDroidAppIconName.Value);
                     if (packagingIcon == null || String.IsNullOrEmpty(packagingIcon.Value))
                     {
                         baseTask.Log.LogError("Icon name undefined");
                     }
-                    logicalName = Path.Combine(fieldType.GetMetadata("folder"), packagingIcon.Value.ApplyPngExt());
-                    path = Path.Combine(Consts.DroidResources, fieldType.GetMetadata("folder"));
-                    mediaName = String.Concat(packagingIcon.Value, "_", field.Value);
-                } else if (fieldType.ProjectType == ProjectType.Ios){
+                    //these ones are required for both
+                    itemMetadata.Add(MetadataType.LogicalName, packagingIcon.Value.ApplyPngExt());
+                    itemMetadata.Add(MetadataType.Path, Path.Combine(Consts.DroidResources, fieldType.GetMetadata(MetadataType.Folder)));
+                    itemMetadata.Add(MetadataType.MediaName, packagingIcon.Value.ApplyFieldId(field));
+
+                    itemMetadata.Add(MetadataType.MSBuildItemType, MSBuildItemName.AndroidResource);
+                }
+                else if (fieldType.ProjectType == ProjectType.Ios)
+                {
                     //do iTunesArtWork
-                    if (String.IsNullOrEmpty(fieldType.GetMetadata("idiom")))
+                    if (String.IsNullOrEmpty(fieldType.GetMetadata(MetadataType.Idiom)))
                     {
-                        path = String.Empty;
-                        mediaName = string.Concat(fieldType.GetMetadata("osFileName").RemovePngExt(), "_", field.Value);
-                        logicalName = fieldType.GetMetadata("osFileName").RemovePngExt();
+                        itemMetadata.Add(MetadataType.Path, Consts.iTunesArtworkDir);
+                        itemMetadata.Add(MetadataType.MediaName, fieldType.GetMetadata(MetadataType.FileName).RemovePngExt().ApplyFieldId(field));
+                        itemMetadata.Add(MetadataType.LogicalName, fieldType.GetMetadata(MetadataType.FileName).RemovePngExt());
+
+                        itemMetadata.Add(MetadataType.MSBuildItemType, MSBuildItemName.iTunesArtwork);
                     }
                     else //do asset catalogue
                     {
-                        path = Path.Combine(assetCatalogueName.ItemSpec, appIconCatalogueName.ItemSpec);
-                        logicalName = Path.Combine(path, fieldType.GetMetadata("osFileName"));
-                        mediaName = string.Concat(fieldType.GetMetadata("osFileName").RemovePngExt(), "_", field.Value);
+                        itemMetadata.Add(MetadataType.Path, Path.Combine(assetCatalogueName.ItemSpec, appIconCatalogueName.ItemSpec));
+                        itemMetadata.Add(MetadataType.LogicalName, fieldType.GetMetadata(MetadataType.FileName));
+                        itemMetadata.Add(MetadataType.MediaName, fieldType.GetMetadata(MetadataType.FileName).RemovePngExt().ApplyFieldId(field));
 
-                        itemMetadata.Add("size", fieldType.GetMetadata("size"));
-                        itemMetadata.Add("idiom", fieldType.GetMetadata("idiom"));
-                        itemMetadata.Add("idiom2", fieldType.GetMetadata("idiom2"));
-                        itemMetadata.Add("scale", fieldType.GetMetadata("scale"));
-                        itemMetadata.Add("CatalogueName", fieldType.GetMetadata("osFileName"));
+                        itemMetadata.Add(MetadataType.MSBuildItemType, MSBuildItemName.ImageAsset);
+                        itemMetadata.Add(MetadataType.Size, fieldType.GetMetadata(MetadataType.Size));
+                        itemMetadata.Add(MetadataType.Idiom, fieldType.GetMetadata(MetadataType.Idiom));
+                        itemMetadata.Add(MetadataType.Idiom2, fieldType.GetMetadata(MetadataType.Idiom2));
+                        itemMetadata.Add(MetadataType.Scale, fieldType.GetMetadata(MetadataType.Scale));
+                        itemMetadata.Add(MetadataType.ContentsFileName, fieldType.GetMetadata(MetadataType.FileName));
                     }
                 }
-                itemMetadata.Add("Path", path);
-                itemMetadata.Add("LogicalName", logicalName);
+                itemMetadata.Add(MetadataType.MediaFileId, field.Value);
+                itemMetadata.Add(MetadataType.Disabled, field.Disabled.ToString());
+                itemMetadata.Add(MetadataType.FieldDescription, fieldType.DisplayName);
 
-                itemMetadata.Add("MediaName", mediaName);
-                output.Add(new TaskItem(field.FieldId.ToString(), itemMetadata));
+                var taskItem = new TaskItem(field.FieldId.ToString(), itemMetadata);
+                baseTask.LogDebug(GetDebugStringFromTaskItem(taskItem, itemMetadata));
+                output.Add(taskItem);
             }
 
             baseTask.Log.LogMessage("Generated {0} AppIcon TaskItems", output.Count);
             return output.ToArray();
+        }
+
+        public static string GetDebugStringFromTaskItem(ITaskItem taskItem, Dictionary<string, string> itemMetadata)
+        {
+            var sb = new StringBuilder();
+            sb.AppendFormat("Adding task item with itemspec {0}", taskItem.ItemSpec);
+
+
+            foreach (var meta in itemMetadata)
+            {
+                sb.AppendFormat(", Metadata key {0} : value {1}", meta.Key, meta.Value);
+            }
+
+            return sb.ToString();
+
         }
 
         public static ITaskItem[] GetSplashOutput(this BaseLoadTask baseTask, ClientConfigDto clientConfigDto)
@@ -183,23 +375,25 @@ namespace Build.Client.Extensions
             foreach (var field in clientConfigDto.SplashFields)
             {
                 var itemMetadata = new Dictionary<string, string>();
-                itemMetadata.Add("MediaFileId", field.Value);
                 var fieldType = FieldType.Splash().FirstOrDefault(x => x.Value == field.FieldId);
-                string logicalName = String.Empty; 
-                string path = String.Empty;
-                string mediaName = String.Empty;
                 if (fieldType.ProjectType == ProjectType.Droid)
                 {
-                    var packagingIcon = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingDroidAppIconName.Value);
+                    var splashNameField = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingDroidSplashName.Value);
 
-                    logicalName = Path.Combine(fieldType.GetMetadata("folder"), string.Concat(packagingIcon.Value, ".png"));
-                    mediaName = String.Concat(packagingIcon.Value, "_", field.Value);
-                    path = Path.Combine(Consts.DroidResources, fieldType.GetMetadata("folder"));
-                } 
-                itemMetadata.Add("Path", path);
-                itemMetadata.Add("LogicalName", logicalName);
-                itemMetadata.Add("MediaName", mediaName);
-                output.Add(new TaskItem(field.FieldId.ToString(), itemMetadata));
+                    itemMetadata.Add(MetadataType.LogicalName, splashNameField.Value.ApplyPngExt());
+                    itemMetadata.Add(MetadataType.Path, Path.Combine(Consts.DroidResources, fieldType.GetMetadata(MetadataType.Folder)));
+                    itemMetadata.Add(MetadataType.MediaName, splashNameField.Value.ApplyFieldId(field));
+                }
+                else if (fieldType.ProjectType == ProjectType.Ios)
+                {
+                    //TODO
+                }
+                itemMetadata.Add(MetadataType.MediaFileId, field.Value);
+                itemMetadata.Add(MetadataType.FieldDescription, fieldType.DisplayName);
+                itemMetadata.Add(MetadataType.Disabled, field.Disabled.ToString());
+                var taskItem = new TaskItem(field.FieldId.ToString(), itemMetadata);
+                baseTask.LogDebug(GetDebugStringFromTaskItem(taskItem, itemMetadata));
+                output.Add(taskItem);
             }
 
             baseTask.Log.LogMessage("Generated {0} Splash TaskItems", output.Count);

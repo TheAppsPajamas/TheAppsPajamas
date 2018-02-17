@@ -498,7 +498,7 @@ Copyright (C) 2013-2016 Xamarin. All rights reserved.
     </ItemGroup>
 
     <PropertyGroup>
-        <_AppManifest>N</_AppManifest>
+ <!--       <_AppManifest>N</_AppManifest>-->
         <_ACTool_PartialAppManifestCache>N</_ACTool_PartialAppManifestCache> 
         <_ACTool_BundleResourceCache>N</_ACTool_BundleResourceCache>
     </PropertyGroup>
@@ -554,7 +554,7 @@ Copyright (C) 2013-2016 Xamarin. All rights reserved.
 		<AtlasTexture>fals</AtlasTexture>
 		<CoreMLModel>false</CoreMLModel>
           <_IBToolCache>N</_IBToolCache>
-		<_AppManifest>false</_AppManifest>
+	<!--	<_AppManifest>false</_AppManifest>-->
 	</PropertyGroup>
 
     <ItemGroup>

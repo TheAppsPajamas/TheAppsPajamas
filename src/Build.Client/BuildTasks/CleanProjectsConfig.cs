@@ -9,22 +9,22 @@ namespace Build.Client.BuildTasks
     {
         public override bool Execute()
         {
-            Log.LogMessage("Cleaning build resource project.config");
+            Log.LogMessage($"Cleaning {Consts.ProjectsConfig}");
 
-            var buildResourceDir = this.GetBuildResourceDir();
-            if (String.IsNullOrEmpty(buildResourceDir))
+            var tapResourcesDir = this.GetTapResourcesDir();
+            if (String.IsNullOrEmpty(tapResourcesDir))
             {
-                Log.LogMessage("Build Resource folder not found, further clean not required");
+                Log.LogMessage($"{Consts.TapResourcesDir} folder not found, further clean not required");
                 return true;
             }
 
-            var projectsConfigPath = Path.Combine(buildResourceDir, Consts.ProjectConfig);
+            var projectsConfigPath = Path.Combine(tapResourcesDir, Consts.ProjectsConfig);
             if (File.Exists(projectsConfigPath)){
                 File.Delete(projectsConfigPath);
-                Log.LogMessage("Build resource project config file deleted");
-                LogDebug("Project config file deleted at {0}", projectsConfigPath);
+                Log.LogMessage($"{Consts.ProjectsConfig} file deleted");
+                LogDebug($"{Consts.ProjectsConfig} file deleted at {projectsConfigPath}", projectsConfigPath);
             } else {
-                Log.LogMessage("Build resource project config file not found, further clean not required");
+                Log.LogMessage($"{Consts.ProjectsConfig} file not found, further clean not required");
             }
             return true;
         }

@@ -1,5 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Build.Client.Constants;
 using Build.Client.Extensions;
+using Build.Client.Models;
+using Build.Shared.Types;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
@@ -10,39 +15,49 @@ namespace Build.Client.BuildTasks
         [Output]
         public bool NeedsLoadRemote { get; set; }
 
+        public LoadLocalBuildConfig()
+        {
+            _taskName = "LoadLocalBuildConfig";
+        }
+
+
         public override bool Execute()
         {
-            Log.LogMessage("Running LoadLocalBuildConfig");
-
-            LogDebug("Project name '{0}'", ProjectName);
-            LogDebug("Build configuration '{0}'", BuildConfiguration);
-
-            BuildResourceDir = this.GetBuildResourceDir();
-            if (String.IsNullOrEmpty(BuildResourceDir)){
-                NeedsLoadRemote = true;
-                Log.LogMessage("Build Resource folder not found, forcing remote load");
-                return true;
-            }
-
-            var projectConfig = this.GetProjectConfig();
-
-            if (projectConfig.ClientConfig == null){
-                Log.LogMessage("{1} configuration not found for project {0} in project.config, forcing remote load", ProjectName, BuildConfiguration);
-                NeedsLoadRemote = true;
-                return true;
-            }
-            if (TargetFrameworkIdentifier == "Xamarin.iOS")
+            var baseResult = base.Execute();
+            if (baseResult == false)
             {
-                AssetCatalogueName = this.GetAssetCatalogueName(projectConfig.ClientConfig);
-                AppIconCatalogueName = this.GetAppIconCatalogueName(projectConfig.ClientConfig);
-
+                return false;
             }
-            PackagingOutput = this.GetPackagingOutput(projectConfig.ClientConfig);
-            AppIconOutput = this.GetAppIconOutput(projectConfig.ClientConfig, AssetCatalogueName, AppIconCatalogueName);
-            //SplashOutput = this.GetSplashOutput(projectConfig.ClientConfig);
 
 
+            TapResourceDir = this.GetTapResourcesDir();
+            if (String.IsNullOrEmpty(TapResourceDir)){
+                NeedsLoadRemote = true;
+                Log.LogMessage($"{Consts.TapResourcesDir} folder not found, forcing remote load");
+                return true;
+            }
 
+
+            //this is not quite identical in base
+
+            var projectConfigs = this.GetProjectsConfig();
+            var projectConfig = projectConfigs.Projects.FirstOrDefault(x => x.BuildConfiguration == BuildConfiguration);
+
+            if (projectConfig == null || projectConfig.ClientConfig == null){
+                Log.LogMessage($"{BuildConfiguration} configuration not found for project {ProjectName} in {Consts.ProjectsConfig}, forcing remote load");
+                NeedsLoadRemote = true;
+                return true;
+            }
+
+            //this is identical in base
+
+            AssetCatalogueName = this.GetAssetCatalogueName(projectConfig.ClientConfig, TargetFrameworkIdentifier);
+
+            AppIconOutput = this.GetMediaOutput(projectConfig.ClientConfig.AppIconFields, AssetCatalogueName, projectConfig.ClientConfig);
+
+            SplashOutput = this.GetMediaOutput(projectConfig.ClientConfig.SplashFields, AssetCatalogueName, projectConfig.ClientConfig);
+
+            PackagingOutput = this.GetFieldTypeOutput(projectConfig.ClientConfig.PackagingFields);
 
             return true;
         }

@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Build.Client.Models
 {
-    public class AppIconAssetCatalogue
+    public class MediaAssetCatalogue
     {
         public List<Image> images { get; set; } = new List<Image>();
         public Info info { get; set; } = new Info();
     }
-
     public class Image
     {
         public string size { get; set; }
@@ -17,6 +17,13 @@ namespace Build.Client.Models
         public string scale { get; set; }
         public string role { get; set; }
         public string subtype { get; set; }
+
+        [JsonProperty(PropertyName = "minimum-system-version")]
+        public string minimumsystemversion { get; set;}
+
+        public string orientation { get; set; }
+
+        public string extent { get; set; }
     }
 
     public class Info

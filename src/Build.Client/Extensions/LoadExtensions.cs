@@ -14,23 +14,23 @@ namespace Build.Client.Extensions
 {
     public static class LoadExtensions
     {
-        public static string GetBuildResourceDir(this BaseTask baseTask)
+        public static string GetTapResourcesDir(this BaseTask baseTask)
         {
-            baseTask.LogDebug("ProjectDir located at '{0}'", baseTask.ProjectDir);
+            baseTask.LogDebug("ProjectDir located at {0}", baseTask.ProjectDir);
 
             try
             {
-                var buildResourceDir = Path.Combine(baseTask.ProjectDir, Consts.BuildResourcesDir);
-                if (!Directory.Exists(buildResourceDir))
+                var tapResourceDir = Path.Combine(baseTask.ProjectDir, Consts.TapResourcesDir);
+                if (!Directory.Exists(tapResourceDir))
                 {
-                    baseTask.LogDebug("Created Build-Resources folder at '{0}'", buildResourceDir);
-                    Directory.CreateDirectory(buildResourceDir);
+                    baseTask.LogDebug($"Created {Consts.TapResourcesDir} folder at {tapResourceDir}");
+                    Directory.CreateDirectory(tapResourceDir);
                 }
                 else
                 {
-                    baseTask.LogDebug("Build-Resources folder location '{0}'", buildResourceDir);
+                    baseTask.LogDebug($"{Consts.TapResourcesDir} folder location {tapResourceDir}");
                 }
-                var directoryInfo = new DirectoryInfo(buildResourceDir);
+                var directoryInfo = new DirectoryInfo(tapResourceDir);
                 return directoryInfo.FullName;
             }
             catch (Exception ex)
@@ -40,27 +40,27 @@ namespace Build.Client.Extensions
             return null;
         }
 
-        public static ProjectConfig GetProjectConfig(this BaseLoadTask baseTask)
+        public static ProjectsConfig GetProjectsConfig(this BaseLoadTask baseTask)
         {
-            baseTask.LogDebug("Loading project.config file");
+            baseTask.LogDebug($"Loading {Consts.ProjectsConfig} file");
 
             try
             {
-                var projectConfigPath = Path.Combine(baseTask.BuildResourceDir, Consts.ProjectConfig);
-                ProjectConfig projectConfig = null;
-                if (!File.Exists(projectConfigPath))
+                var projectsConfigPath = Path.Combine(baseTask.TapResourceDir, Consts.ProjectsConfig);
+                ProjectsConfig projectConfigs = null;
+                if (!File.Exists(projectsConfigPath))
                 {
-                    baseTask.Log.LogMessage("Project config file file not found, created at {0}", projectConfigPath);
-                    projectConfig = new ProjectConfig();
-                    var json = JsonConvert.SerializeObject(projectConfig, Formatting.Indented);
-                    File.WriteAllText(projectConfigPath, json);
-                    return projectConfig;
+                    baseTask.Log.LogMessage($"{Consts.ProjectsConfig} file file not found, created at {0}", projectsConfigPath);
+                    projectConfigs = new ProjectsConfig();
+                    var json = JsonConvert.SerializeObject(projectConfigs, Formatting.Indented);
+                    File.WriteAllText(projectsConfigPath, json);
+                    return projectConfigs;
                 }
                 else
                 {
-                    var json = File.ReadAllText(projectConfigPath);
-                    projectConfig = JsonConvert.DeserializeObject<ProjectConfig>(json);
-                    return projectConfig;
+                    var json = File.ReadAllText(projectsConfigPath);
+                    projectConfigs = JsonConvert.DeserializeObject<ProjectsConfig>(json);
+                    return projectConfigs;
 
                 }
             }
@@ -71,17 +71,18 @@ namespace Build.Client.Extensions
             return null;
         }
 
-        public static bool SaveProject(this BaseLoadTask baseTask, ProjectConfig projectConfig)
+
+        public static bool SaveProjects(this BaseLoadTask baseTask, ProjectsConfig projectsConfig)
         {
-            baseTask.LogDebug("Saving project.config file");
+            baseTask.LogDebug($"Saving {Consts.ProjectsConfig} file");
 
             try
             {
-                var projectConfigPath = Path.Combine(baseTask.BuildResourceDir, Consts.ProjectConfig);
+                var projectsConfigPath = Path.Combine(baseTask.TapResourceDir, Consts.ProjectsConfig);
 
-                baseTask.Log.LogMessage("Saving project config at {0}", projectConfigPath);
-                var json = JsonConvert.SerializeObject(projectConfig, Formatting.Indented);
-                File.WriteAllText(projectConfigPath, json);
+                baseTask.Log.LogMessage($"Saving {Consts.ProjectsConfig} at {projectsConfigPath}");
+                var json = JsonConvert.SerializeObject(projectsConfig, Formatting.Indented);
+                File.WriteAllText(projectsConfigPath, json);
 
             }
             catch (Exception ex)
@@ -91,28 +92,45 @@ namespace Build.Client.Extensions
             return true;
         }
 
-        public static ITaskItem GetAssetCatalogueName(this BaseLoadTask baseTask, ClientConfigDto clientConfigDto)
+        public static ITaskItem GetAssetCatalogueName(this BaseLoadTask baseTask, ClientConfigDto clientConfigDto, string TargetFrameworkIdentifier)
         {
-            var assetCatalogue = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingIosAssetCatalogueName.Value);
-            if (assetCatalogue == null || String.IsNullOrEmpty(assetCatalogue.Value))
+            if (TargetFrameworkIdentifier == "Xamarin.iOS")
             {
-                baseTask.Log.LogError("Asset catalogue undefined");
-            }
+                var assetCatalogueField = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingIosAssetCatalogueName.Value);
+                if (assetCatalogueField == null || String.IsNullOrEmpty(assetCatalogueField.Value))
+                {
+                    baseTask.Log.LogError("Asset catalogue undefined");
+                }
 
-            baseTask.Log.LogMessage("AssetCatalogue name {0}", assetCatalogue.Value.ApplyXcAssetsExt());
-            return new TaskItem(assetCatalogue.Value.ApplyXcAssetsExt());
+                baseTask.Log.LogMessage("AssetCatalogue name {0}", assetCatalogueField.Value.ApplyXcAssetsExt());
+                return new TaskItem(assetCatalogueField.Value.ApplyXcAssetsExt());
+            } else {
+                return null;
+            }
         }
 
-        public static ITaskItem GetAppIconCatalogueName(this BaseLoadTask baseTask, ClientConfigDto clientConfigDto)
+        public static ITaskItem GetAppIconCatalogueSetName(this BaseLoadTask baseTask, ClientConfigDto clientConfigDto)
         {
 
-            var appIconName = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingIosAppIconXcAssetsName.Value);
-            if (appIconName == null || String.IsNullOrEmpty(appIconName.Value))
+            var appIconNameField = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingIosAppIconXcAssetsName.Value);
+            if (appIconNameField == null || String.IsNullOrEmpty(appIconNameField.Value))
             {
                 baseTask.Log.LogError("AppIconSet catalogue name undefined");
             }
-            baseTask.Log.LogMessage("AppIconCatalogue name {0}", appIconName.Value.ApplyAppiconsetExt());
-            return new TaskItem(appIconName.Value.ApplyAppiconsetExt());
+            baseTask.Log.LogMessage("AppIconCatalogue name {0}", appIconNameField.Value.ApplyAppiconsetExt());
+            return new TaskItem(appIconNameField.Value.ApplyAppiconsetExt());
+        }
+
+        public static ITaskItem GetSplashCatalogueSetName(this BaseLoadTask baseTask, ClientConfigDto clientConfigDto)
+        {
+
+            var launchImageCatalogueSetName = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingIosLaunchImageXcAssetsName.Value);
+            if (launchImageCatalogueSetName == null || String.IsNullOrEmpty(launchImageCatalogueSetName.Value))
+            {
+                baseTask.Log.LogError("LaunchImageCatalogueSet catalogue name undefined");
+            }
+            baseTask.Log.LogMessage("LaunchImageCatalogueSet name {0}", launchImageCatalogueSetName.Value.ApplyLaunchimageExt());
+            return new TaskItem(launchImageCatalogueSetName.Value.ApplyLaunchimageExt());
         }
     }
 }

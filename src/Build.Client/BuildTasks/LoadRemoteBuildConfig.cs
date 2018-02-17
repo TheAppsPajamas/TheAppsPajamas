@@ -9,40 +9,48 @@ using Build.Client.Extensions;
 using System.Linq;
 using Build.Client.Constants;
 using System.Text;
+using Build.Shared.Types;
+using System.Collections.Generic;
 
 namespace Build.Client.BuildTasks
 {
     public class LoadRemoteBuildConfig : BaseLoadTask
     {
-        [Output] 
+        [Output]
         public ITaskItem Token { get; set; }
 
         [Output]
         public ITaskItem BuildAppId { get; set; }
 
+        public LoadRemoteBuildConfig()
+        {
+            _taskName = "LoadRemoteBuildConfig";
+        }
+
         public override bool Execute()
         {
-
-            Log.LogMessage("Running LoadRemoteBuildConfig");
-
-            LogDebug("Project name '{0}'", ProjectName);
-            LogDebug("Build configuration '{0}'", BuildConfiguration);
-
-            BuildResourceDir = this.GetBuildResourceDir();
-            if (String.IsNullOrEmpty(BuildResourceDir))
-                return false;
-
-            var buildResourcesConfig = this.GetResourceConfig();
-
-            var securityConfig = this.GetSecurityConfig();
-
-            if (buildResourcesConfig == null || securityConfig == null)
-            {
-                Log.LogError("Build configuration files not set, please see solution root and complete");
+            var baseResult = base.Execute();
+            if (baseResult == false){
                 return false;
             }
 
-            BuildAppId = new TaskItem(buildResourcesConfig.AppId.ToString());
+            TapResourceDir = this.GetTapResourcesDir();
+            if (String.IsNullOrEmpty(TapResourceDir))
+            {
+                Log.LogError($"{Consts.TapResourcesDir} folder not found, exiting");
+                return false;
+            }
+
+
+            var securityConfig = this.GetSecurityConfig();
+
+            if (securityConfig == null)
+            {
+                Log.LogError($"{Consts.TapSecurityConfig} file not set, please see solution root and complete");
+                return false;
+            }
+
+            BuildAppId = new TaskItem(_tapResourcesConfig.TapAppId.ToString());
 
             Token = this.Login(securityConfig);
             if (Token == null){
@@ -50,7 +58,8 @@ namespace Build.Client.BuildTasks
                 return false;
             }
 
-            var url = String.Concat(Consts.UrlBase, Consts.ClientEndpoint, "?", "appId=", buildResourcesConfig.AppId, "&projectName=", ProjectName, "&buildConfiguration=", BuildConfiguration );
+            var unmodifedProjectName = ProjectName.Replace(Consts.ModifiedProjectNameExtra, String.Empty);
+            var url = String.Concat(Consts.UrlBase, Consts.ClientEndpoint, "?", "appId=", _tapResourcesConfig.TapAppId, "&projectName=", unmodifedProjectName, "&buildConfiguration=", BuildConfiguration );
 
             Log.LogMessage("Loading remote build config from '{0}'", url);
 
@@ -69,6 +78,22 @@ namespace Build.Client.BuildTasks
                     //return object
                 }
             }
+            catch (WebException ex){
+                var response = ex.Response as HttpWebResponse;
+                if (response == null)
+                {
+                    LogDebug("Webexception not ususal status code encountered, fatal, exiting");
+                    Log.LogErrorFromException(ex);
+                    return false;
+                }
+
+                if (response.StatusCode == HttpStatusCode.NotFound){
+                    Log.LogWarning($"Tap server responded with message '{response.StatusDescription}', TheAppsPajamams cannot continue, exiting gracefully, build will continue");
+                    TapShouldContinue = bool.FalseString;
+                    return true;
+                }
+
+            }
             catch (Exception ex)
             {
                 Log.LogErrorFromException(ex);
@@ -80,20 +105,32 @@ namespace Build.Client.BuildTasks
             if (clientConfigDto == null)
                 return false;
 
-            var projectConfig = this.GetProjectConfig();
+            //this is not quite identical in base
 
-            projectConfig.ClientConfig = clientConfigDto;
-            if (!this.SaveProject(projectConfig))
-                return false;
-            if (TargetFrameworkIdentifier == "Xamarin.iOS")
-            {
-                AssetCatalogueName = this.GetAssetCatalogueName(projectConfig.ClientConfig);
-                AppIconCatalogueName = this.GetAppIconCatalogueName(projectConfig.ClientConfig);
+            var projectsConfig = this.GetProjectsConfig();
 
+            var projectConfig = projectsConfig.Projects.FirstOrDefault(x => x.BuildConfiguration == BuildConfiguration);
+
+            if (projectConfig == null){
+                projectConfig = new ProjectConfig();
+                projectsConfig.Projects.Add(projectConfig);
             }
-            PackagingOutput = this.GetPackagingOutput(clientConfigDto);
-            AppIconOutput = this.GetAppIconOutput(projectConfig.ClientConfig, AssetCatalogueName, AppIconCatalogueName);
-            //SplashOutput = this.GetSplashOutput(clientConfigDto);
+
+            projectConfig.BuildConfiguration = BuildConfiguration;
+            projectConfig.ClientConfig = clientConfigDto;
+            if (!this.SaveProjects(projectsConfig))
+                return false;
+
+            //this is identical in base
+
+            AssetCatalogueName = this.GetAssetCatalogueName(projectConfig.ClientConfig, TargetFrameworkIdentifier);
+
+            AppIconOutput = this.GetMediaOutput(projectConfig.ClientConfig.AppIconFields, AssetCatalogueName, projectConfig.ClientConfig);
+
+            SplashOutput = this.GetMediaOutput(projectConfig.ClientConfig.SplashFields, AssetCatalogueName, projectConfig.ClientConfig);
+
+            PackagingOutput = this.GetFieldTypeOutput(projectConfig.ClientConfig.PackagingFields);
+
 
             return true;
         }

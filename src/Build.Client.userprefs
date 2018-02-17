@@ -1,10 +1,11 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/NugetContent/build/Xamarin.iOS.WatchApp.Common.targets">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/BuildTasks/SetIosAssetCatalogueSets.cs">
     <Files>
-      <File FileName="Build.Client/NugetContent/build/Build.Client.targets" Line="8" Column="13" />
-      <File FileName="Build.Client/Build.Client.csproj" Line="120" Column="119" />
-      <File FileName="Build.Client/NugetContent/build/Xamarin.iOS.Common.targets" Line="381" Column="5" />
-      <File FileName="Build.Client/NugetContent/build/Xamarin.iOS.WatchApp.Common.targets" Line="19" Column="1" />
+      <File FileName="Build.Client/BuildTasks/DeleteUnusedMediaFiles.cs" Line="134" Column="13" />
+      <File FileName="Build.Client/BuildTasks/ModifyProject.cs" Line="57" Column="107" />
+      <File FileName="Build.Client/NugetContent/build/Build.Client.targets" Line="234" Column="1" />
+      <File FileName="Build.Client/BuildTasks/DebugDump.cs" Line="34" Column="65" />
+      <File FileName="Build.Client/BuildTasks/SetIosAssetCatalogueSets.cs" Line="346" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

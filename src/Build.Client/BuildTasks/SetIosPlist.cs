@@ -34,17 +34,17 @@ namespace Build.Client.BuildTasks
                 var plist = (Dictionary<string, object>)Plist.readPlist(IosPlist);
                 LogDebug("Plist {0} read, {1} nodes", IosPlist, plist.Count());
 
-                var packageName = PackagingFields
+                var packageNameField = PackagingFields
                     .FirstOrDefault(x => FieldType.FromValue(Int32.Parse(x.ItemSpec)) == FieldType.PackagingIosName);
 
-                if (packageName != null && !String.IsNullOrEmpty(packageName.GetMetadata("Value")))
+                if (packageNameField != null && !String.IsNullOrEmpty(packageNameField.GetMetadata("Value")))
                 {
-                    LogDebug("Package name found, check against resource value '{0}'", packageName.GetMetadata("Value"));
+                    LogDebug("Package name found, check against resource value '{0}'", packageNameField.GetMetadata("Value"));
 
                     if (plist.ContainsKey("CFBundleName")){
                         var bundleName = (string)plist["CFBundleName"];
-                        if (bundleName != packageName.GetMetadata("Value")){
-                            plist["CFBundleName"] = packageName.GetMetadata("Value");
+                        if (bundleName != packageNameField.GetMetadata("Value")){
+                            plist["CFBundleName"] = packageNameField.GetMetadata("Value");
                             Log.LogMessage("Package name / Bundle name changed to '{0}', setting Plist", plist["CFBundleName"]);
                             touched = true;
                         } else {
@@ -57,9 +57,9 @@ namespace Build.Client.BuildTasks
                     if (plist.ContainsKey("CFBundleDisplayName"))
                     {
                         var bundleDisplayName = (string)plist["CFBundleDisplayName"];
-                        if (bundleDisplayName != packageName.GetMetadata("Value"))
+                        if (bundleDisplayName != packageNameField.GetMetadata("Value"))
                         {
-                            plist["CFBundleDisplayName"] = packageName.GetMetadata("Value");
+                            plist["CFBundleDisplayName"] = packageNameField.GetMetadata("Value");
                             Log.LogMessage("Package name / Bundle display name changed to '{0}', setting Plist", plist["CFBundleDisplayName"]);
                             touched = true;
                         }
@@ -70,7 +70,7 @@ namespace Build.Client.BuildTasks
                     }
                     else
                     {
-                        plist.Add("CFBundleDisplayName", packageName.GetMetadata("Value"));
+                        plist.Add("CFBundleDisplayName", packageNameField.GetMetadata("Value"));
                         touched = true;
                         Log.LogMessage("Package name / Bundle display name not found in Plist, creating with value '{0}'", plist["CFBundleDisplayName"]);
                     }
@@ -80,17 +80,17 @@ namespace Build.Client.BuildTasks
                     Log.LogWarning("Package name not found in packaging fields");
                 }
 
-                var packageIdentifier = PackagingFields
+                var packageIdentifierField = PackagingFields
                     .FirstOrDefault(x => FieldType.FromValue(Int32.Parse(x.ItemSpec)) == FieldType.PackagingIosIdentifier);
 
-                if (packageIdentifier != null && !String.IsNullOrEmpty(packageIdentifier.GetMetadata("Value")))
+                if (packageIdentifierField != null && !String.IsNullOrEmpty(packageIdentifierField.GetMetadata("Value")))
                 {
                     if (plist.ContainsKey("CFBundleIdentifier"))
                     {
                         var bundleIdentifier = (string)plist["CFBundleIdentifier"];
-                        if (bundleIdentifier != packageIdentifier.GetMetadata("Value"))
+                        if (bundleIdentifier != packageIdentifierField.GetMetadata("Value"))
                         {
-                            plist["CFBundleIdentifier"] = packageIdentifier.GetMetadata("Value");
+                            plist["CFBundleIdentifier"] = packageIdentifierField.GetMetadata("Value");
                             Log.LogMessage("Package identifier changed to '{0}', setting Plist", plist["CFBundleIdentifier"]);
                             touched = true;
                         }
@@ -101,7 +101,7 @@ namespace Build.Client.BuildTasks
                     }
                     else
                     {
-                        plist.Add("CFBundleIdentifier", packageIdentifier.GetMetadata("Value"));
+                        plist.Add("CFBundleIdentifier", packageIdentifierField.GetMetadata("Value"));
                         touched = true;
                         Log.LogMessage("Package identifier not found in Plist, creating with value '{0}'", plist["CFBundleIdentifier"]);
                     }
@@ -111,19 +111,19 @@ namespace Build.Client.BuildTasks
                     Log.LogWarning("Package identifier not found in packaging fields");
                 }
 
-                var packageVersionText = PackagingFields
+                var packageVersionTextField = PackagingFields
                         .FirstOrDefault(x => FieldType.FromValue(Int32.Parse(x.ItemSpec)) == FieldType.PackagingIosVersionText);
 
-                if (packageVersionText != null && !String.IsNullOrEmpty(packageVersionText.GetMetadata("Value")))
+                if (packageVersionTextField != null && !String.IsNullOrEmpty(packageVersionTextField.GetMetadata("Value")))
                 {
-                    LogDebug("Package version text found, check against resource value {0}", packageVersionText.GetMetadata("Value"));
+                    LogDebug("Package version text found, check against resource value {0}", packageVersionTextField.GetMetadata("Value"));
 
                     if (plist.ContainsKey("CFBundleShortVersionString"))
                     {
                         var bundleVersionNumber = (string)plist["CFBundleShortVersionString"];
-                        if (bundleVersionNumber != packageVersionText.GetMetadata("Value"))
+                        if (bundleVersionNumber != packageVersionTextField.GetMetadata("Value"))
                         {
-                            plist["CFBundleShortVersionString"] = packageVersionText.GetMetadata("Value");
+                            plist["CFBundleShortVersionString"] = packageVersionTextField.GetMetadata("Value");
                             Log.LogMessage("Package version text / Bundle short version string changed to '{0}', setting Plist", plist["CFBundleShortVersionString"]);
                             touched = true;
                         }
@@ -134,7 +134,7 @@ namespace Build.Client.BuildTasks
                     }
                     else
                     {
-                        plist.Add("CFBundleShortVersionString", packageVersionText.GetMetadata("Value"));
+                        plist.Add("CFBundleShortVersionString", packageVersionTextField.GetMetadata("Value"));
                         touched = true;
                         Log.LogMessage("Package version text / Bundle short version string not found in Plist, creating with value '{0}'", plist["CFBundleVersion"]);
                     }
@@ -144,19 +144,19 @@ namespace Build.Client.BuildTasks
                     Log.LogWarning("Package version text not found in packaging fields");
                 }
 
-                var packageVersionNumber = PackagingFields
+                var packageVersionNumberField = PackagingFields
                     .FirstOrDefault(x => FieldType.FromValue(Int32.Parse(x.ItemSpec)) == FieldType.PackagingIosVersionNumber);
 
-                if (packageVersionNumber != null && !String.IsNullOrEmpty(packageVersionNumber.GetMetadata("Value")))
+                if (packageVersionNumberField != null && !String.IsNullOrEmpty(packageVersionNumberField.GetMetadata("Value")))
                 {
-                    LogDebug("Package version number found, check against resource value {0}", packageVersionNumber.GetMetadata("Value"));
+                    LogDebug("Package version number found, check against resource value {0}", packageVersionNumberField.GetMetadata("Value"));
 
                     if (plist.ContainsKey("CFBundleVersion"))
                     {
                         var bundleVersionNumber = (string)plist["CFBundleVersion"];
-                        if (bundleVersionNumber != packageVersionNumber.GetMetadata("Value"))
+                        if (bundleVersionNumber != packageVersionNumberField.GetMetadata("Value"))
                         {
-                            plist["CFBundleVersion"] = packageVersionNumber.GetMetadata("Value");
+                            plist["CFBundleVersion"] = packageVersionNumberField.GetMetadata("Value");
                             Log.LogMessage("Package version number / Bundle version changed to '{0}', setting Plist", plist["CFBundleVersion"]);
                             touched = true;
                         }
@@ -167,7 +167,7 @@ namespace Build.Client.BuildTasks
                     }
                     else
                     {
-                        plist.Add("CFBundleVersion", packageVersionNumber.GetMetadata("Value"));
+                        plist.Add("CFBundleVersion", packageVersionNumberField.GetMetadata("Value"));
                         touched = true;
                         Log.LogMessage("Package version number / Bundle version not found in Plist, creating with value '{0}'", plist["CFBundleVersion"]);
                     }
@@ -177,18 +177,18 @@ namespace Build.Client.BuildTasks
                     Log.LogWarning("Package version number not found in packaging fields");
                 }
 
-                var assetCatalogueName = PackagingFields
+                var assetCatalogueNameField = PackagingFields
                     .FirstOrDefault(x => FieldType.FromValue(Int32.Parse(x.ItemSpec)) == FieldType.PackagingIosAssetCatalogueName);
 
-                var appIconCatalogueName = PackagingFields
+                var appIconCatalogueNameField = PackagingFields
                     .FirstOrDefault(x => FieldType.FromValue(Int32.Parse(x.ItemSpec)) == FieldType.PackagingIosAppIconXcAssetsName);
 
-                if (assetCatalogueName != null && !String.IsNullOrEmpty(assetCatalogueName.GetMetadata("Value"))
-                    && appIconCatalogueName != null && !String.IsNullOrEmpty(appIconCatalogueName.GetMetadata("Value"))
+                if (assetCatalogueNameField != null && !String.IsNullOrEmpty(assetCatalogueNameField.GetMetadata("Value"))
+                    && appIconCatalogueNameField != null && !String.IsNullOrEmpty(appIconCatalogueNameField.GetMetadata("Value"))
                    )
                 {
-                    var appIconSetPath = Path.Combine(assetCatalogueName.GetMetadata("Value").ApplyXcAssetsExt()
-                                                  , appIconCatalogueName.GetMetadata("Value").ApplyAppiconsetExt());
+                    var appIconSetPath = Path.Combine(assetCatalogueNameField.GetMetadata("Value").ApplyXcAssetsExt()
+                                                  , appIconCatalogueNameField.GetMetadata("Value").ApplyAppiconsetExt());
 
                     LogDebug("Package app icon catalogue found, check against resource value {0}", appIconSetPath);
 

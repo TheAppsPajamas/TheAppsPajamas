@@ -22,6 +22,8 @@
 
   <UsingTask TaskName="Build.Client.BuildTasks.SetIosAssetCatalogue" AssemblyFile="$(BuildClientToolAssembly)" />
   <UsingTask TaskName="Build.Client.BuildTasks.SetIosPlist" AssemblyFile="$(BuildClientToolAssembly)" />
+
+  <UsingTask TaskName="Build.Client.BuildTasks.DebugDump" AssemblyFile="$(BuildClientToolAssembly)" />
   <UsingTask TaskName="Build.Client.BuildTasks.ModifyProject" AssemblyFile="$(BuildClientToolAssembly)" />
   <UsingTask TaskName="Build.Client.BuildTasks.SaveModifiedProjectBackToProject" AssemblyFile="$(BuildClientToolAssembly)" />
   <UsingTask TaskName="Build.Client.BuildTasks.AddResourceBackIntoModifedProject" AssemblyFile="$(BuildClientToolAssembly)" />

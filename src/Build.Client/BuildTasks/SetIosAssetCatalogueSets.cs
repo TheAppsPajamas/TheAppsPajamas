@@ -48,7 +48,8 @@ namespace Build.Client.BuildTasks
 
             //this above discovery will change this
             var outputImageAssets = new List<ITaskItem>();
-            if (ExistingOutputImageAssets != null && ExistingOutputImageAssets.Any()){
+            if (ExistingOutputImageAssets != null && ExistingOutputImageAssets.Any())
+            {
                 outputImageAssets.AddRange(ExistingOutputImageAssets);
             }
 
@@ -57,7 +58,9 @@ namespace Build.Client.BuildTasks
             if (ExistingImageAssets != null && ExistingImageAssets.Length != 0)
             {
                 existingAssets.AddRange(ExistingImageAssets);
-            } else if (ExistingImageAssets == null || ExistingImageAssets.Length == 0){
+            }
+            else if (ExistingImageAssets == null || ExistingImageAssets.Length == 0)
+            {
                 LogDebug("No existing image assets found in project");
             }
 
@@ -66,287 +69,290 @@ namespace Build.Client.BuildTasks
                 LogDebug("Existing asset in project {0}", taskItem.ItemSpec);
             }
 
-            try
+            //try
+            //{
+            var buildConfigurationResourceDir = this.GetBuildConfigurationResourceDir(BuildConfiguration);
+
+            //could handle disbled here
+            var firstField = AppIconFields.FirstOrDefault();
+            if (firstField == null)
             {
-                var buildConfigurationResourceDir = this.GetBuildConfigurationResourceDir(BuildConfiguration);
+                Log.LogError("App Icon Field set malformed");
+            }
 
-                //could handle disbled here
-                var firstField = AppIconFields.FirstOrDefault();
-                if (firstField == null)
+            LogDebug("Asset catalogue name {0}", AssetCatalogueName.ItemSpec);
+
+            //LogDebug("AppIconSet name {0}", AppIconCatalogueName.ItemSpec);
+
+
+            LogDebug("Packages Output Folder {0}", PackagesOutputDir);
+
+            //get us a list of required catalogues to create/operate on here
+
+            var allFields = new List<ITaskItem>();
+            allFields.AddRange(AppIconFields);
+            allFields.AddRange(SplashFields);
+
+            var cataloguesToSet = allFields
+                .GroupBy(x => x.GetMetadata(MetadataType.CatalogueSetName))
+                .Select(x => x.Key)
+                .ToList();
+
+            cataloguesToSet = cataloguesToSet.Where(x => !String.IsNullOrEmpty(x)).ToList();
+
+            foreach (var catalogue in cataloguesToSet)
+            {
+
+                LogDebug("Asset Catalogue set found in metadata {0}", catalogue);
+            }
+
+            //for temp testing jsut make it do app icons - till we've got the other contents.json stuff in
+            foreach (var catalogue in cataloguesToSet)
+            {
+                LogDebug("Asset Catalogue set required {0}", catalogue);
+                //create catalogue set folder, and contents.json
+                var packagesCatalogueSetDir = Path.Combine(PackagesOutputDir, AssetCatalogueName.ItemSpec, catalogue);
+
+                if (!Directory.Exists(packagesCatalogueSetDir))
                 {
-                    Log.LogError("App Icon Field set malformed");
+                    Directory.CreateDirectory(packagesCatalogueSetDir);
+                    LogDebug($"Created packages {catalogue} folder at {packagesCatalogueSetDir}");
                 }
 
-                LogDebug("Asset catalogue name {0}", AssetCatalogueName.ItemSpec);
+                var projectCatalogueSetDir = Path.Combine(ProjectDir, AssetCatalogueName.ItemSpec, catalogue);
 
-                //LogDebug("AppIconSet name {0}", AppIconCatalogueName.ItemSpec);
-
-
-                LogDebug("Packages Output Folder {0}", PackagesOutputDir);
-
-                //get us a list of required catalogues to create/operate on here
-
-                var allFields = new List<ITaskItem>();
-                allFields.AddRange(AppIconFields);
-                allFields.AddRange(SplashFields);
-
-                var cataloguesToSet = allFields
-                    .GroupBy(x => x.GetMetadata(MetadataType.CatalogueSetName))
-                    .Select(x => x.Key)
-                    .ToList();
-
-                cataloguesToSet = cataloguesToSet.Where(x => !String.IsNullOrEmpty(x)).ToList();
-
-                foreach(var catalogue in cataloguesToSet){
-
-                    LogDebug("Asset Catalogue set found in metadata {0}", catalogue);
+                if (!Directory.Exists(projectCatalogueSetDir))
+                {
+                    Directory.CreateDirectory(projectCatalogueSetDir);
+                    LogDebug($"Created project {catalogue} folder at {projectCatalogueSetDir}");
                 }
 
-                //for temp testing jsut make it do app icons - till we've got the other contents.json stuff in
-                foreach (var catalogue in cataloguesToSet)
+                var packagesCatalogueSetContentsPath = Path.Combine(PackagesOutputDir, AssetCatalogueName.ItemSpec, catalogue, Consts.iOSContents);
+                outputImageAssets.Add(new TaskItem(packagesCatalogueSetContentsPath));
+
+
+                //TODO we need to have a different contents set for each type - just use string matching from extension
+                //this type can probably change to CatalogueSet - they're similar, and if we load them with 
+                //the right json setting, all null fields will disapear
+
+                string defaultContents = String.Empty;
+                MediaAssetCatalogue mediaResourceCatalogueSetContents = null;
+                MediaAssetCatalogue outputCatalogueSetContents = null;
+                if (catalogue.Contains(".appiconset"))
                 {
-                    LogDebug("Asset Catalogue set required {0}", catalogue);
-                    //create catalogue set folder, and contents.json
-                    var packagesCatalogueSetDir = Path.Combine(PackagesOutputDir, AssetCatalogueName.ItemSpec, catalogue);
+                    defaultContents = Consts.AppIconCatalogueSetDefaultContents;
+                    mediaResourceCatalogueSetContents = JsonConvert.DeserializeObject<MediaAssetCatalogue>(defaultContents);
 
-                    if (!Directory.Exists(packagesCatalogueSetDir))
+                    outputCatalogueSetContents = JsonConvert.DeserializeObject<MediaAssetCatalogue>(defaultContents);
+                }
+                else if (catalogue.Contains(".launchimage"))
+                {
+                    defaultContents = Consts.LaunchImageCatalogueSetDefaultContents;
+                    mediaResourceCatalogueSetContents = new MediaAssetCatalogue();
+                    outputCatalogueSetContents = new MediaAssetCatalogue();
+
+                }
+                else if (catalogue.Contains(".imageset"))
+                {
+                    defaultContents = Consts.ImageCatalogueSetDefaultContents;
+                    mediaResourceCatalogueSetContents = JsonConvert.DeserializeObject<MediaAssetCatalogue>(defaultContents);
+
+                    outputCatalogueSetContents = JsonConvert.DeserializeObject<MediaAssetCatalogue>(defaultContents);
+                }
+                else
+                {
+                    throw new Exception($"Cannot figure catalogue {0} default contents out");
+                }
+
+
+
+                foreach (var field in allFields.Where(x => x.GetMetadata(MetadataType.CatalogueSetName) == catalogue))
+                {
+                    //skip itunes artwork first, something else will do that
+                    if (String.IsNullOrEmpty(field.GetMetadata(MetadataType.Idiom)))
                     {
-                        Directory.CreateDirectory(packagesCatalogueSetDir);
-                        LogDebug($"Created packages {catalogue} folder at {packagesCatalogueSetDir}");
+
+                        //var existingFilePath = Path.Combine(mediaResourcesBuildConfigDir, Consts.iTunesArtworkDir, field.GetMetadata(MetadataType.MediaName).ApplyPngExt());
+                        //var packagesOutputFilePath = Path.Combine(PackagesOutputDir, field.GetMetadata(MetadataType.LogicalName));
+
+                        //var projectOutputFilePath = Path.Combine(base.ProjectDir, field.GetMetadata(MetadataType.LogicalName));
+
+                        //if (existingAssets.FirstOrDefault(x => x.ItemSpec == existingFilePath.GetPathRelativeToProject(ProjectDir)) == null)
+                        //{
+                        //    LogDebug("Adding {0} to add to project list as it is not in current project", existingFilePath);
+                        //    filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.iTunesArtwork, new Dictionary<string, string> { { MetadataType.IncludePath, existingFilePath } }));
+                        //}
+
+                        //if (existingAssets.FirstOrDefault(x => x.ItemSpec == projectOutputFilePath.GetPathRelativeToProject(ProjectDir)) == null)
+                        //{
+                        //    LogDebug("Adding {0} to add to project list as it is not in current project", projectOutputFilePath);
+                        //    filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.iTunesArtwork, new Dictionary<string, string> { { MetadataType.IncludePath, projectOutputFilePath } }));
+                        //}
+
+                        //File.Copy(existingFilePath, projectOutputFilePath, true);
+                        //File.Copy(existingFilePath, packagesOutputFilePath, true);
+                        //outputITunesArtwork.Add(new TaskItem(packagesOutputFilePath));
+                        //var artworkTaskItem = new TaskItem(field.GetMetadata(MetadataType.LogicalName));
+
+                        //LogDebug("Added {2} from {0} to {1}", existingFilePath, projectOutputFilePath, MSBuildItemName.iTunesArtwork);
+
+                        continue;
                     }
 
-                    var projectCatalogueSetDir = Path.Combine(ProjectDir, AssetCatalogueName.ItemSpec, catalogue);
-
-                    if (!Directory.Exists(projectCatalogueSetDir))
-                    {
-                        Directory.CreateDirectory(projectCatalogueSetDir);
-                        LogDebug($"Created project {catalogue} folder at {projectCatalogueSetDir}");
-                    }
-
-                    var packagesCatalogueSetContentsPath = Path.Combine(PackagesOutputDir, AssetCatalogueName.ItemSpec, catalogue, Consts.iOSContents);
-                    outputImageAssets.Add(new TaskItem(packagesCatalogueSetContentsPath));
-
-
-                    //TODO we need to have a different contents set for each type - just use string matching from extension
-                    //this type can probably change to CatalogueSet - they're similar, and if we load them with 
-                    //the right json setting, all null fields will disapear
-
-                    string defaultContents = String.Empty;
-                    MediaAssetCatalogue mediaResourceCatalogueSetContents = null;
-                    MediaAssetCatalogue outputCatalogueSetContents = null;
+                    Image mediaResourceImageSet = null;
+                    Image outputImageSet = null;
                     if (catalogue.Contains(".appiconset"))
                     {
-                        defaultContents = Consts.AppIconCatalogueSetDefaultContents;
-                        mediaResourceCatalogueSetContents = JsonConvert.DeserializeObject<MediaAssetCatalogue>(defaultContents);
+                        mediaResourceImageSet = GetAppIconCatalogueSetReference(mediaResourceCatalogueSetContents, field);
+                        outputImageSet = GetAppIconCatalogueSetReference(outputCatalogueSetContents, field);
 
-                        outputCatalogueSetContents = JsonConvert.DeserializeObject<MediaAssetCatalogue>(defaultContents);
+
                     }
                     else if (catalogue.Contains(".launchimage"))
                     {
-                        defaultContents = Consts.LaunchImageCatalogueSetDefaultContents;
-                        mediaResourceCatalogueSetContents = new MediaAssetCatalogue();
-                        outputCatalogueSetContents = new MediaAssetCatalogue();
+                        mediaResourceImageSet = GetLaunchImageCatalogueSetReference(mediaResourceCatalogueSetContents, field);
+                        outputImageSet = GetLaunchImageCatalogueSetReference(outputCatalogueSetContents, field);
 
                     }
                     else if (catalogue.Contains(".imageset"))
                     {
-                        defaultContents = Consts.ImageCatalogueSetDefaultContents;
-                        mediaResourceCatalogueSetContents = JsonConvert.DeserializeObject<MediaAssetCatalogue>(defaultContents);
+                        mediaResourceImageSet = GetImageCatalogueSetReference(mediaResourceCatalogueSetContents, field);
+                        outputImageSet = GetImageCatalogueSetReference(outputCatalogueSetContents, field);
 
-                        outputCatalogueSetContents = JsonConvert.DeserializeObject<MediaAssetCatalogue>(defaultContents);
-                    } else {
-                        throw new Exception($"Cannot figure catalogue {0} default contents out");
                     }
-
-
-
-                    foreach (var field in allFields.Where(x => x.GetMetadata(MetadataType.CatalogueSetName)  == catalogue))
+                    else
                     {
-                        //skip itunes artwork first, something else will do that
-                        if (String.IsNullOrEmpty(field.GetMetadata(MetadataType.Idiom)))
-                        {
-
-                            //var existingFilePath = Path.Combine(mediaResourcesBuildConfigDir, Consts.iTunesArtworkDir, field.GetMetadata(MetadataType.MediaName).ApplyPngExt());
-                            //var packagesOutputFilePath = Path.Combine(PackagesOutputDir, field.GetMetadata(MetadataType.LogicalName));
-
-                            //var projectOutputFilePath = Path.Combine(base.ProjectDir, field.GetMetadata(MetadataType.LogicalName));
-
-                            //if (existingAssets.FirstOrDefault(x => x.ItemSpec == existingFilePath.GetPathRelativeToProject(ProjectDir)) == null)
-                            //{
-                            //    LogDebug("Adding {0} to add to project list as it is not in current project", existingFilePath);
-                            //    filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.iTunesArtwork, new Dictionary<string, string> { { MetadataType.IncludePath, existingFilePath } }));
-                            //}
-
-                            //if (existingAssets.FirstOrDefault(x => x.ItemSpec == projectOutputFilePath.GetPathRelativeToProject(ProjectDir)) == null)
-                            //{
-                            //    LogDebug("Adding {0} to add to project list as it is not in current project", projectOutputFilePath);
-                            //    filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.iTunesArtwork, new Dictionary<string, string> { { MetadataType.IncludePath, projectOutputFilePath } }));
-                            //}
-
-                            //File.Copy(existingFilePath, projectOutputFilePath, true);
-                            //File.Copy(existingFilePath, packagesOutputFilePath, true);
-                            //outputITunesArtwork.Add(new TaskItem(packagesOutputFilePath));
-                            //var artworkTaskItem = new TaskItem(field.GetMetadata(MetadataType.LogicalName));
-
-                            //LogDebug("Added {2} from {0} to {1}", existingFilePath, projectOutputFilePath, MSBuildItemName.iTunesArtwork);
-
-                            continue;
-                        }
-
-                        Image mediaResourceImageSet = null;
-                        Image outputImageSet = null;
-                        if (catalogue.Contains(".appiconset"))
-                        {
-                            mediaResourceImageSet = GetAppIconCatalogueSetReference(mediaResourceCatalogueSetContents, field);
-                            outputImageSet = GetAppIconCatalogueSetReference(outputCatalogueSetContents, field);
-
-
-                        }
-                        else if (catalogue.Contains(".launchimage"))
-                        {
-                            mediaResourceImageSet = GetLaunchImageCatalogueSetReference(mediaResourceCatalogueSetContents, field);
-                            outputImageSet = GetLaunchImageCatalogueSetReference(outputCatalogueSetContents, field);
-
-                        }
-                        else if (catalogue.Contains(".imageset"))
-                        {
-                            mediaResourceImageSet = GetImageCatalogueSetReference(mediaResourceCatalogueSetContents, field);
-                            outputImageSet = GetImageCatalogueSetReference(outputCatalogueSetContents, field);
-
-                        }
-                        else
-                        {
-                            throw new Exception("Error finding catalogue");
-                            //throw new Exception($"Cannot calculate image catalogue or field {field.GetMetadata(MetadataType.LogicalName)}, size {1}, idiom {field.GetMetadata(MetadataType.Idiom)}, scale {field.GetMetadata(MetadataType.Scale)}");
-                        }
-
-
-                        if (outputImageSet == null)
-                        {
-                            Log.LogWarning("Image catalogue not found for field {0}, size {1}, idiom {2}, scale {3}"
-                                           , field.GetMetadata(MetadataType.LogicalName)
-                                           , field.GetMetadata(MetadataType.Size)
-                                           , field.GetMetadata(MetadataType.Idiom)
-                                           , field.GetMetadata(MetadataType.Scale));
-                            //return false;
-                        }
-                        else
-                        {
-                            outputImageSet.filename = field.GetMetadata(MetadataType.ContentsFileName);
-                            mediaResourceImageSet.filename = field.GetMetadata(MetadataType.MediaName).ApplyPngExt();
-                            LogDebug("Set asset catalogue set filename to {0}", outputImageSet.filename);
-
-                            //sometimes we use the same image twice in the contents.json
-                            var outputImageCatalogue2 = outputCatalogueSetContents.images.FirstOrDefault(x => x.size == field.GetMetadata(MetadataType.Size)
-                                                                                                       && x.idiom == field.GetMetadata(MetadataType.Idiom2)
-                                                                                                       && x.scale == field.GetMetadata(MetadataType.Scale));
-                            if (outputImageCatalogue2 != null)
-                            {
-                                outputImageCatalogue2.filename = field.GetMetadata(MetadataType.ContentsFileName);
-                                var mediaResourceImageCatalogue2 = mediaResourceCatalogueSetContents.images.FirstOrDefault(x => x.size == field.GetMetadata(MetadataType.Size)
-                                                                                                       && x.idiom == field.GetMetadata(MetadataType.Idiom2)
-                                                                                                       && x.scale == field.GetMetadata(MetadataType.Scale));
-                                mediaResourceImageCatalogue2.filename = field.GetMetadata(MetadataType.MediaName).ApplyPngExt();
-                                LogDebug("Set second asset catalogue set filename to {0}", outputImageCatalogue2.filename);
-                            }
-
-                            var existingFilePath = Path.Combine(buildConfigurationResourceDir
-                                                                , field.GetMetadata(MetadataType.Path)
-                                                                , field.GetMetadata(MetadataType.MediaName).ApplyPngExt());
-
-                            var packagingOutputFilePath = Path.Combine(PackagesOutputDir, field.GetMetadata(MetadataType.Path)
-                                                              , field.GetMetadata(MetadataType.LogicalName));
-
-                            var projectOutputFilePath = Path.Combine(ProjectDir, field.GetMetadata(MetadataType.Path)
-                                                              , field.GetMetadata(MetadataType.LogicalName));
-
-                            //we want a list of existing imageassets, and itunesartwork to work of, rather than a test of file existence
-
-                            if (existingAssets.FirstOrDefault(x => x.ItemSpec == existingFilePath.GetPathRelativeToProject(ProjectDir)) == null)
-                            {
-                                LogDebug("Adding {0} to add to project list as it is not in current project", existingFilePath);
-                                filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.ImageAsset, new Dictionary<string, string> { { MetadataType.IncludePath, existingFilePath } }));
-
-                            }
-
-                            if (existingAssets.FirstOrDefault(x => x.ItemSpec == projectOutputFilePath.GetPathRelativeToProject(ProjectDir)) == null)
-                            {
-                                LogDebug("Adding {0} to add to project list as it is not in current project", projectOutputFilePath);
-                                filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.ImageAsset, new Dictionary<string, string> { { MetadataType.IncludePath, projectOutputFilePath } }));
-
-                            }
-
-                            LogDebug("Copying file {0} to {1}", existingFilePath, projectOutputFilePath);
-                            File.Copy(existingFilePath, projectOutputFilePath, true);
-                            File.Copy(existingFilePath, packagingOutputFilePath, true);
-                            outputImageAssets.Add(new TaskItem(packagingOutputFilePath));
-
-                        }
+                        throw new Exception("Error finding catalogue");
+                        //throw new Exception($"Cannot calculate image catalogue or field {field.GetMetadata(MetadataType.LogicalName)}, size {1}, idiom {field.GetMetadata(MetadataType.Idiom)}, scale {field.GetMetadata(MetadataType.Scale)}");
                     }
 
-                    //mediaresource (output)
-                    mediaResourceCatalogueSetContents.images = mediaResourceCatalogueSetContents.images.Where(x => !String.IsNullOrEmpty(x.filename)).ToList();
 
-                    var mediaResourceCatalogueSetJson = JsonConvert.SerializeObject(mediaResourceCatalogueSetContents, Formatting.Indented
-                        , new JsonSerializerSettings
-                        {
-                            NullValueHandling = NullValueHandling.Ignore
-                        });
-
-                    var mediaResourceCatalogueSetContentsPath = Path.Combine(buildConfigurationResourceDir, AssetCatalogueName.ItemSpec, catalogue, Consts.iOSContents);
-                    LogDebug($"Added media-resource {catalogue} Contents.json at path {mediaResourceCatalogueSetContentsPath}");
-
-                    Log.LogMessage($"Saving media-resources {catalogue} Contents.json to {mediaResourceCatalogueSetContentsPath}");
-                    File.WriteAllText(mediaResourceCatalogueSetContentsPath, mediaResourceCatalogueSetJson);
-
-                    //packagesAppIconSetContentsPath
-                    //output
-                    outputCatalogueSetContents.images = outputCatalogueSetContents.images.Where(x => !String.IsNullOrEmpty(x.filename)).ToList();
-
-                    var outputCatalogueSetJson = JsonConvert.SerializeObject(outputCatalogueSetContents, Formatting.Indented
-                        , new JsonSerializerSettings
-                        {
-                            NullValueHandling = NullValueHandling.Ignore
-                        });
-
-                    if (existingAssets.FirstOrDefault(x => x.ItemSpec == mediaResourceCatalogueSetContentsPath.GetPathRelativeToProject(ProjectDir)) == null)
+                    if (outputImageSet == null)
                     {
-                        LogDebug("Adding {0} to add to project list as it is not in current project", mediaResourceCatalogueSetContentsPath);
-                        filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.ImageAsset
-                                                                     , new Dictionary<string, string> { { MetadataType.IncludePath, mediaResourceCatalogueSetContentsPath } }));
-
+                        Log.LogWarning("Image catalogue not found for field {0}, size {1}, idiom {2}, scale {3}"
+                                       , field.GetMetadata(MetadataType.LogicalName)
+                                       , field.GetMetadata(MetadataType.Size)
+                                       , field.GetMetadata(MetadataType.Idiom)
+                                       , field.GetMetadata(MetadataType.Scale));
+                        //return false;
                     }
-
-                    var projectOutputCatalogueSetContentsPath = Path.Combine(ProjectDir, AssetCatalogueName.ItemSpec, catalogue, Consts.iOSContents);
-                    LogDebug($"Added project output {catalogue} Contents.json at path {projectOutputCatalogueSetContentsPath}");
-
-                    if (existingAssets.FirstOrDefault(x => x.ItemSpec == projectOutputCatalogueSetContentsPath.GetPathRelativeToProject(ProjectDir)) == null)
+                    else
                     {
-                        LogDebug("Adding {0} to add to project list as it is not in current project", projectOutputCatalogueSetContentsPath);
-                        filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.ImageAsset
-                                                                     , new Dictionary<string, string> { { MetadataType.IncludePath, projectOutputCatalogueSetContentsPath } }));
+                        outputImageSet.filename = field.GetMetadata(MetadataType.ContentsFileName);
+                        mediaResourceImageSet.filename = field.GetMetadata(MetadataType.MediaName).ApplyPngExt();
+                        LogDebug("Set asset catalogue set filename to {0}", outputImageSet.filename);
+
+                        //sometimes we use the same image twice in the contents.json
+                        var outputImageCatalogue2 = outputCatalogueSetContents.images.FirstOrDefault(x => x.size == field.GetMetadata(MetadataType.Size)
+                                                                                                   && x.idiom == field.GetMetadata(MetadataType.Idiom2)
+                                                                                                   && x.scale == field.GetMetadata(MetadataType.Scale));
+                        if (outputImageCatalogue2 != null)
+                        {
+                            outputImageCatalogue2.filename = field.GetMetadata(MetadataType.ContentsFileName);
+                            var mediaResourceImageCatalogue2 = mediaResourceCatalogueSetContents.images.FirstOrDefault(x => x.size == field.GetMetadata(MetadataType.Size)
+                                                                                                   && x.idiom == field.GetMetadata(MetadataType.Idiom2)
+                                                                                                   && x.scale == field.GetMetadata(MetadataType.Scale));
+                            mediaResourceImageCatalogue2.filename = field.GetMetadata(MetadataType.MediaName).ApplyPngExt();
+                            LogDebug("Set second asset catalogue set filename to {0}", outputImageCatalogue2.filename);
+                        }
+
+                        var existingFilePath = Path.Combine(buildConfigurationResourceDir
+                                                            , field.GetMetadata(MetadataType.Path)
+                                                            , field.GetMetadata(MetadataType.MediaName).ApplyPngExt());
+
+                        var packagingOutputFilePath = Path.Combine(PackagesOutputDir, field.GetMetadata(MetadataType.Path)
+                                                          , field.GetMetadata(MetadataType.LogicalName));
+
+                        var projectOutputFilePath = Path.Combine(ProjectDir, field.GetMetadata(MetadataType.Path)
+                                                          , field.GetMetadata(MetadataType.LogicalName));
+
+                        //we want a list of existing imageassets, and itunesartwork to work of, rather than a test of file existence
+
+                        if (existingAssets.FirstOrDefault(x => x.ItemSpec == existingFilePath.GetPathRelativeToProject(ProjectDir)) == null)
+                        {
+                            LogDebug("Adding {0} to add to project list as it is not in current project", existingFilePath);
+                            filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.ImageAsset, new Dictionary<string, string> { { MetadataType.IncludePath, existingFilePath } }));
+
+                        }
+
+                        if (existingAssets.FirstOrDefault(x => x.ItemSpec == projectOutputFilePath.GetPathRelativeToProject(ProjectDir)) == null)
+                        {
+                            LogDebug("Adding {0} to add to project list as it is not in current project", projectOutputFilePath);
+                            filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.ImageAsset, new Dictionary<string, string> { { MetadataType.IncludePath, projectOutputFilePath } }));
+
+                        }
+
+                        LogDebug("Copying file {0} to {1}", existingFilePath, projectOutputFilePath);
+                        File.Copy(existingFilePath, projectOutputFilePath, true);
+                        File.Copy(existingFilePath, packagingOutputFilePath, true);
+                        outputImageAssets.Add(new TaskItem(packagingOutputFilePath));
 
                     }
+                }
 
-                    Log.LogMessage($"Saving project {catalogue} Contents.json to {projectOutputCatalogueSetContentsPath}");
-                    File.WriteAllText(projectOutputCatalogueSetContentsPath, outputCatalogueSetJson);
-                    File.WriteAllText(packagesCatalogueSetContentsPath, outputCatalogueSetJson);
+                //mediaresource (output)
+                mediaResourceCatalogueSetContents.images = mediaResourceCatalogueSetContents.images.Where(x => !String.IsNullOrEmpty(x.filename)).ToList();
+
+                var mediaResourceCatalogueSetJson = JsonConvert.SerializeObject(mediaResourceCatalogueSetContents, Formatting.Indented
+                    , new JsonSerializerSettings
+                    {
+                        NullValueHandling = NullValueHandling.Ignore
+                    });
+
+                var mediaResourceCatalogueSetContentsPath = Path.Combine(buildConfigurationResourceDir, AssetCatalogueName.ItemSpec, catalogue, Consts.iOSContents);
+                LogDebug($"Added media-resource {catalogue} Contents.json at path {mediaResourceCatalogueSetContentsPath}");
+
+                Log.LogMessage($"Saving media-resources {catalogue} Contents.json to {mediaResourceCatalogueSetContentsPath}");
+                File.WriteAllText(mediaResourceCatalogueSetContentsPath, mediaResourceCatalogueSetJson);
+
+                //packagesAppIconSetContentsPath
+                //output
+                outputCatalogueSetContents.images = outputCatalogueSetContents.images.Where(x => !String.IsNullOrEmpty(x.filename)).ToList();
+
+                var outputCatalogueSetJson = JsonConvert.SerializeObject(outputCatalogueSetContents, Formatting.Indented
+                    , new JsonSerializerSettings
+                    {
+                        NullValueHandling = NullValueHandling.Ignore
+                    });
+
+                if (existingAssets.FirstOrDefault(x => x.ItemSpec == mediaResourceCatalogueSetContentsPath.GetPathRelativeToProject(ProjectDir)) == null)
+                {
+                    LogDebug("Adding {0} to add to project list as it is not in current project", mediaResourceCatalogueSetContentsPath);
+                    filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.ImageAsset
+                                                                 , new Dictionary<string, string> { { MetadataType.IncludePath, mediaResourceCatalogueSetContentsPath } }));
 
                 }
 
+                var projectOutputCatalogueSetContentsPath = Path.Combine(ProjectDir, AssetCatalogueName.ItemSpec, catalogue, Consts.iOSContents);
+                LogDebug($"Added project output {catalogue} Contents.json at path {projectOutputCatalogueSetContentsPath}");
 
-                Log.LogMessage("Asset Catalogue Sets wants to add {0} files to the build project", filesToAddToModifiedProject.Count());
-                Log.LogMessage("Asset Catalogue Sets wants to show {0} media-resources files in the final project", filesToAddToModifiedProject.Count());
+                if (existingAssets.FirstOrDefault(x => x.ItemSpec == projectOutputCatalogueSetContentsPath.GetPathRelativeToProject(ProjectDir)) == null)
+                {
+                    LogDebug("Adding {0} to add to project list as it is not in current project", projectOutputCatalogueSetContentsPath);
+                    filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.ImageAsset
+                                                                 , new Dictionary<string, string> { { MetadataType.IncludePath, projectOutputCatalogueSetContentsPath } }));
 
-                FilesToAddToProject = filesToAddToModifiedProject.ToArray();
+                }
 
-                OutputImageAssets = outputImageAssets.ToArray();
+                Log.LogMessage($"Saving project {catalogue} Contents.json to {projectOutputCatalogueSetContentsPath}");
+                File.WriteAllText(projectOutputCatalogueSetContentsPath, outputCatalogueSetJson);
+                File.WriteAllText(packagesCatalogueSetContentsPath, outputCatalogueSetJson);
 
-                return true;
-            } catch (Exception ex){
-                Log.LogErrorFromException(ex);
-                return false;
             }
+
+
+            Log.LogMessage("Asset Catalogue Sets wants to add {0} files to the build project", filesToAddToModifiedProject.Count());
+            Log.LogMessage("Asset Catalogue Sets wants to show {0} media-resources files in the final project", filesToAddToModifiedProject.Count());
+
+            FilesToAddToProject = filesToAddToModifiedProject.ToArray();
+
+            OutputImageAssets = outputImageAssets.ToArray();
+
+            return true;
+            //} catch (Exception ex){
+            //    Log.LogErrorFromException(ex);
+            //    return false;
+            //}
         }
 
         private static Image GetLaunchImageCatalogueSetReference(MediaAssetCatalogue catalogueSetContents, ITaskItem field)
@@ -370,8 +376,9 @@ namespace Build.Client.BuildTasks
             //return set.FirstOrDefault();
 
             var image = new Image();
-            if (!String.IsNullOrEmpty(field.GetMetadata(MetadataType.Idiom))){
-                image.idiom = field.GetMetadata(MetadataType.Idiom);    
+            if (!String.IsNullOrEmpty(field.GetMetadata(MetadataType.Idiom)))
+            {
+                image.idiom = field.GetMetadata(MetadataType.Idiom);
             }
             if (!String.IsNullOrEmpty(field.GetMetadata(MetadataType.Subtype)))
             {
@@ -407,7 +414,8 @@ namespace Build.Client.BuildTasks
 
         private static Image GetImageCatalogueSetReference(MediaAssetCatalogue catalogueSetContents, ITaskItem field)
         {
-            if (!String.IsNullOrEmpty(field.GetMetadata(MetadataType.Subtype))){
+            if (!String.IsNullOrEmpty(field.GetMetadata(MetadataType.Subtype)))
+            {
                 var image = new Image();
                 image.idiom = field.GetMetadata(MetadataType.Idiom);
                 image.subtype = field.GetMetadata(MetadataType.Subtype);

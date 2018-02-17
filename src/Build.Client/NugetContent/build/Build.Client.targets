@@ -85,10 +85,28 @@
             PackagesDir="$(PackagesDir)" 
             AppIconFields="@(AppIconFields)" 
             SplashFields="@(SplashFields)" 
+            DroidResources="@(AndroidResource)"
+            IosImageAssets="@(ImageAsset)"
+            IosItunesArtwork="@(iTunesArtwork)"
             BuildConfiguration="$(Configuration)">
             <Output TaskParameter="FilesToDeleteFromProject" ItemName="FilesToDeleteFromProject" />
+            <Output TaskParameter="DroidResourcesToRemoveFromProject" ItemName="DroidResourceToRemoveFromProject" />
+            <Output TaskParameter="IosImageAssetsToRemoveFromProject" ItemName="IosImageAssetsToRemoveFromProject" />
+            <Output TaskParameter="IosItunesArtworkToRemoveFromProject" ItemName="IosItunesArtworkToRemoveFromProject" />
+
+   
             
         </DeleteUnusedMediaFiles>
+
+        <ItemGroup>
+            <AndroidResource Remove="@(DroidResourceToRemoveFromProject)"/>
+        </ItemGroup>
+        <ItemGroup>
+            <ImageAsset Remove="@(IosImageAssetsToRemoveFromProject)"/>
+        </ItemGroup>
+        <ItemGroup>
+            <iTunesArtwork Remove="@(IosItunesArtworkToRemoveFromProject)"/>
+        </ItemGroup>
     </Target>
     
     <Target Name="DownloadMediaFiles" 
@@ -173,7 +191,6 @@
 
     </Target>
 
-    
 
     <Target Name="SetIosAssetCatalogueSets" 
         AfterTargets="SetIosAssetCatalogue" 
@@ -209,28 +226,51 @@
 
     </Target>
 
+
+    
     <Target Name="RemoveTapResources"
         AfterTargets="SetIosAssetCatalogueSets">
-        <Message Text="Removing Tap Resources from project"/>
+        <Message Text="Removing Tap Resources from project, TapResource folder $(TheAppsPajamasResourceDir)"/>
+
         <ItemGroup>
             <ImageAsset Remove="$(TheAppsPajamasResourceDir)/**"/>
-<!--            <ITunesArtwork Remove="**"/>-->
         </ItemGroup>
+
+<!--        <ItemGroup>
+            <ImageAsset Remove="@(ImageAsset)" Condition=" '@(ImageAsset->Contains('$(TheAppsPajamasResourceDir)'))' == 'True'  "/>
+
+        </ItemGroup>-->
 
         <ItemGroup>
             <AndroidResource Remove="$(TheAppsPajamasResourceDir)/**"/>
         </ItemGroup>
+
         <Message Text="Tap Resources removed from project"/>
     </Target>
-    
+
+
+
+<!--    <Target Name="DebugDump"
+        AfterTargets="RemoveTapResources"
+        Condition=" '$(TapShouldContinue)' == 'True' ">
+           <DebugDump Debug="$(BuildDebug)" 
+            PackagesDir="$(PackagesDir)" 
+            ProjectDir="$(MSBuildProjectDirectory)" 
+            ImageAssets="@(ImageAsset)"
+            FilesToAddToProject="@(FilesToAddToProject)"
+            FilesToDeleteFromProject="@(FilesToDeleteFromProject)">
+
+        </DebugDump>
+    </Target> -->
     <Target Name="ModifyProject" 
-        AfterTargets="SetIosAssetCatalogueSets"
+        AfterTargets="RemoveTapResources"
         Condition=" '$(TapShouldContinue)' == 'True' ">
            <ModifyProject Debug="$(BuildDebug)" 
             PackagesDir="$(PackagesDir)" 
-            ProjectDir="$(MSBuildProjectDirectory)" 
+            ProjectDir="$(MSBuildProjectDirectory)"             
             ProjectFileLoad="$(MSBuildProjectFullPath)"
-            FilesToAddToProject="@(FilesToAddToProject)">
+            FilesToAddToProject="@(FilesToAddToProject)"
+            FilesToDeleteFromProject="@(FilesToDeleteFromProject)">
             <Output TaskParameter="ProjectFileSave" PropertyName="ModifiedProjectFullPath"/>
 
             <Output TaskParameter="ProjectShouldModifyOriginal" PropertyName="ProjectShouldModifyOriginal"/>

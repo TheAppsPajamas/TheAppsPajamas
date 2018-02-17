@@ -28,8 +28,8 @@ namespace Build.Client.BuildTasks
 
         public override bool Execute()
         {
-            try
-            {
+            //try
+            //{
                 //List<ILogger> loggers = new List<ILogger>();
                 //loggers.Add(new ConsoleLogger());
 
@@ -47,12 +47,18 @@ namespace Build.Client.BuildTasks
                     //think this should work, won't be able to test until we have are further along
                     foreach (var deleteItem in FilesToDeleteFromProject)
                     {
-                        var existingItem = existingItems.FirstOrDefault(x => x.ItemType == deleteItem.ItemSpec
-                                                                        && x.Include == deleteItem.GetMetadata(MetadataType.DeletePath).GetPathRelativeToProject(ProjectDir));
+                        var existingItem = existingItems.FirstOrDefault(x => x.Include == deleteItem.ItemSpec.GetPathRelativeToProject(ProjectDir));
 
+                    //&& x.Include == deleteItem.GetMetadata(MetadataType.DeletePath).GetPathRelativeToProject(ProjectDir));
+                    if (existingItem != null)
+                    {
                         existingItem.Parent.RemoveChild(existingItem);
+                    } else {
+                        LogDebug($"File to delete not found in project, not removing {deleteItem.ItemSpec}");
+                    }
+                        File.Delete(deleteItem.ItemSpec);
 
-                        LogDebug("Removed {0} from project", deleteItem.GetMetadata(MetadataType.DeletePath));
+                        LogDebug("Removed {0} from project, and deleted", deleteItem.ItemSpec);
 
                     }
                 }
@@ -112,13 +118,13 @@ namespace Build.Client.BuildTasks
 
                 //collection.un
 
-            }
-            catch (Exception ex)
-            {
-                Log.LogErrorFromException(ex);
-                return false;
+            //}
+            //catch (Exception ex)
+            //{
+            //    Log.LogErrorFromException(ex);
+            //    return false;
 
-            }
+            //}
             return true;
         }
     }

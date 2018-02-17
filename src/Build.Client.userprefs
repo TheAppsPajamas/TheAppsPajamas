@@ -1,5 +1,13 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workbench />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/BuildTasks/SetIosAssetCatalogueSets.cs">
+    <Files>
+      <File FileName="Build.Client/BuildTasks/DeleteUnusedMediaFiles.cs" Line="134" Column="13" />
+      <File FileName="Build.Client/BuildTasks/ModifyProject.cs" Line="57" Column="107" />
+      <File FileName="Build.Client/NugetContent/build/Build.Client.targets" Line="234" Column="1" />
+      <File FileName="Build.Client/BuildTasks/DebugDump.cs" Line="34" Column="65" />
+      <File FileName="Build.Client/BuildTasks/SetIosAssetCatalogueSets.cs" Line="346" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />

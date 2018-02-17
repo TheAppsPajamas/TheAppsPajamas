@@ -64,6 +64,11 @@ namespace Build.Client.Constants
         public const string DeletePath = "DeletePath";
 
         /// <summary>
+        /// The path of the file to be deleted from the project, relative to the project directory (used for remove, as they are added to the project relativly).
+        /// </summary>
+        public const string DeleteRelativePath = "DeleteRelativePath";
+
+        /// <summary>
         /// The relative path (without file name) of the appspajamas media file.
         /// </summary>
         public const string Path = "Path";

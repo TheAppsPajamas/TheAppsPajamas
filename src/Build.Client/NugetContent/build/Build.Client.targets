@@ -21,11 +21,11 @@
 
     
     <!-- TODO disabled this so we can always run loadremote -->
-   <Target Name="CleanProjectsConfig" 
+<!--   <Target Name="CleanProjectsConfig" 
         AfterTargets="Clean" >
         <CleanProjectsConfig Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)">
         </CleanProjectsConfig>
-    </Target>
+    </Target>-->
     <!-- this cleans the packages folder can't clean the others without modifying the project - painful-->
     <Target Name="CleanAssetCatalogues" 
         AfterTargets="Clean" 
@@ -42,7 +42,7 @@
         </Target>
 
     <!-- no longer using this, we're running load remote evetyime to see what happens -->
-   <Target Name="LoadLocalBuildConfig" 
+<!--   <Target Name="LoadLocalBuildConfig" 
         BeforeTargets="_GetReferenceAssemblyPaths;_BeforeCoreCompileInterfaceDefinitions" >
         <LoadLocalBuildConfig Debug="$(BuildDebug)" ProjectName="$(MSBuildProjectName)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" TargetFrameworkIdentifier='$(TargetFrameworkIdentifier)'>
             <Output TaskParameter="TapResourceDir" PropertyName="TapResourceDir" />
@@ -57,13 +57,13 @@
             <Output TaskParameter="TapShouldContinue" PropertyName="TapShouldContinue" />
         </LoadLocalBuildConfig>
 
-    </Target>
+    </Target>-->
 
-
+    <!-- 
+        Condition=" '$(TapShouldContinue)' == 'True' "-->
     
     <Target Name="LoadRemoteBuildConfig" 
-        AfterTargets="_GetReferenceAssemblyPaths;_BeforeCoreCompileInterfaceDefinitions" 
-        Condition=" '$(TapShouldContinue)' == 'True' ">
+        AfterTargets="_GetReferenceAssemblyPaths;_BeforeCoreCompileInterfaceDefinitions" >
         <LoadRemoteBuildConfig 
             Debug="$(BuildDebug)" 
             ProjectName="$(MSBuildProjectName)" 

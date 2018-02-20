@@ -1,14 +1,5 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/NugetContent/build/Build.Client.targets">
-    <Files>
-      <File FileName="Build.Client/Models/ClientConfigDto.cs" Line="11" Column="5" />
-      <File FileName="Build.Client/BuildTasks/LoadLocalBuildConfig.cs" Line="60" Column="88" />
-      <File FileName="Build.Client/BuildTasks/LoadRemoteBuildConfig.cs" Line="131" Column="13" />
-      <File FileName="Build.Client/Extensions/LoadExtensions.cs" Line="111" Column="9" />
-      <File FileName="Build.Client/Extensions/ConfigExtensions.cs" Line="288" Column="1" />
-      <File FileName="Build.Client/NugetContent/build/Build.Client.targets" Line="24" Column="5" />
-    </Files>
-  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workbench />
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />

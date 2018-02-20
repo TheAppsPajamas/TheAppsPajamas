@@ -5,9 +5,8 @@ namespace Build.Client.Models
 {
     public class ClientConfigDto
     {
-        public IList<StringFieldClientDto> PackagingFields { get; set; }
-        public IList<MediaFieldClientDto> AppIconFields { get; set; }
-        public IList<MediaFieldClientDto> SplashFields { get; set; }
-
+        public PackagingClientDto Packaging { get; set; } = new PackagingClientDto();
+        public AppIconClientDto AppIcon { get; set; } = new AppIconClientDto();
+        public SplashClientDto Splash { get; set; } = new SplashClientDto();
     }
 }

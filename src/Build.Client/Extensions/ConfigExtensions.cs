@@ -126,7 +126,7 @@ namespace Build.Client.Extensions
                 baseTask.LogDebug("Deserializing ClientConfigDto, length '{0}'", json.Length);
                 var clientConfigDto = JsonConvert.DeserializeObject<ClientConfigDto>(json);
                 baseTask.LogDebug("Deserialized ClientConfigDto, packagingFields: '{0}', appIconFields: '{1}', splashFields: '{2}'"
-                                  , clientConfigDto.PackagingFields.Count, clientConfigDto.AppIconFields.Count, clientConfigDto.SplashFields.Count);
+                                  , clientConfigDto.Packaging.Fields.Count, clientConfigDto.AppIcon.Fields.Count, clientConfigDto.Splash.Fields.Count);
                 return clientConfigDto;
             }
             catch (Exception ex)
@@ -141,7 +141,7 @@ namespace Build.Client.Extensions
             baseTask.LogDebug("Generating Packaging TaskItems");
 
             var output = new List<ITaskItem>();
-            foreach (var field in clientConfigDto.PackagingFields)
+            foreach (var field in clientConfigDto.Packaging.Fields)
             {
                 var itemMetadata = new Dictionary<string, string>();
                 itemMetadata.Add("Value", field.Value);
@@ -194,12 +194,12 @@ namespace Build.Client.Extensions
                     StringFieldClientDto droidNameField = null;
                     if (fieldType is AppIconFieldType)
                     {
-                        droidNameField = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingDroidAppIconName.Value);
+                        droidNameField = clientConfigDto.Packaging.Fields.FirstOrDefault(x => x.FieldId == FieldType.PackagingDroidAppIconName.Value);
 
                     }
                     else if (fieldType is SplashFieldType)
                     {
-                        droidNameField = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingDroidSplashName.Value);
+                        droidNameField = clientConfigDto.Packaging.Fields.FirstOrDefault(x => x.FieldId == FieldType.PackagingDroidSplashName.Value);
 
                     }
                     if (droidNameField == null || String.IsNullOrEmpty(droidNameField.Value))
@@ -230,19 +230,19 @@ namespace Build.Client.Extensions
                         string catalogueSetName = null;
                         if (fieldType is AppIconFieldType)
                         {
-                            var catalogueSetField = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingIosAppIconXcAssetsName.Value);
+                            var catalogueSetField = clientConfigDto.Packaging.Fields.FirstOrDefault(x => x.FieldId == FieldType.PackagingIosAppIconXcAssetsName.Value);
                             catalogueSetName = catalogueSetField.Value.ApplyAppiconsetExt();
 
                         }
                         else if (fieldType is SplashFieldType)
                         {
-                            var catalogueSetField = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingIosLaunchImageXcAssetsName.Value);
+                            var catalogueSetField = clientConfigDto.Packaging.Fields.FirstOrDefault(x => x.FieldId == FieldType.PackagingIosLaunchImageXcAssetsName.Value);
                             catalogueSetName = catalogueSetField.Value.ApplyLaunchimageExt();
                         }
 
                         if (!String.IsNullOrEmpty(fieldType.GetMetadata(MetadataType.CataloguePackagingFieldId)))
                         {
-                            var catalogueSetField = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == Int32.Parse(fieldType.GetMetadata(MetadataType.CataloguePackagingFieldId)));
+                            var catalogueSetField = clientConfigDto.Packaging.Fields.FirstOrDefault(x => x.FieldId == Int32.Parse(fieldType.GetMetadata(MetadataType.CataloguePackagingFieldId)));
                             catalogueSetName = catalogueSetField.Value.ApplyImageSetExt();
                         }
 
@@ -286,72 +286,6 @@ namespace Build.Client.Extensions
             return output.ToArray();
         }
 
-
-        public static ITaskItem[] GetAppIconOutput(this BaseLoadTask baseTask, ClientConfigDto clientConfigDto, ITaskItem assetCatalogueName, ITaskItem appIconCatalogueName)
-        {
-            baseTask.LogDebug("Generating AppIcon TaskItems");
-
-            var output = new List<ITaskItem>();
-
-            foreach (var field in clientConfigDto.AppIconFields)
-            {
-                var itemMetadata = new Dictionary<string, string>();
-                var fieldType = FieldType.AppIcons().FirstOrDefault(x => x.Value == field.FieldId);
-                //string logicalName = String.Empty;
-                //string path = String.Empty;
-                //string mediaName = String.Empty;
-                if (fieldType.ProjectType == ProjectType.Droid)
-                {
-                    var packagingIcon = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingDroidAppIconName.Value);
-                    if (packagingIcon == null || String.IsNullOrEmpty(packagingIcon.Value))
-                    {
-                        baseTask.Log.LogError("Icon name undefined");
-                    }
-                    //these ones are required for both
-                    itemMetadata.Add(MetadataType.LogicalName, packagingIcon.Value.ApplyPngExt());
-                    itemMetadata.Add(MetadataType.Path, Path.Combine(Consts.DroidResources, fieldType.GetMetadata(MetadataType.Folder)));
-                    itemMetadata.Add(MetadataType.MediaName, packagingIcon.Value.ApplyFieldId(field));
-
-                    itemMetadata.Add(MetadataType.MSBuildItemType, MSBuildItemName.AndroidResource);
-                }
-                else if (fieldType.ProjectType == ProjectType.Ios)
-                {
-                    //do iTunesArtWork
-                    if (String.IsNullOrEmpty(fieldType.GetMetadata(MetadataType.Idiom)))
-                    {
-                        itemMetadata.Add(MetadataType.Path, Consts.iTunesArtworkDir);
-                        itemMetadata.Add(MetadataType.MediaName, fieldType.GetMetadata(MetadataType.FileName).RemovePngExt().ApplyFieldId(field));
-                        itemMetadata.Add(MetadataType.LogicalName, fieldType.GetMetadata(MetadataType.FileName).RemovePngExt());
-
-                        itemMetadata.Add(MetadataType.MSBuildItemType, MSBuildItemName.iTunesArtwork);
-                    }
-                    else //do asset catalogue
-                    {
-                        itemMetadata.Add(MetadataType.Path, Path.Combine(assetCatalogueName.ItemSpec, appIconCatalogueName.ItemSpec));
-                        itemMetadata.Add(MetadataType.LogicalName, fieldType.GetMetadata(MetadataType.FileName));
-                        itemMetadata.Add(MetadataType.MediaName, fieldType.GetMetadata(MetadataType.FileName).RemovePngExt().ApplyFieldId(field));
-
-                        itemMetadata.Add(MetadataType.MSBuildItemType, MSBuildItemName.ImageAsset);
-                        itemMetadata.Add(MetadataType.Size, fieldType.GetMetadata(MetadataType.Size));
-                        itemMetadata.Add(MetadataType.Idiom, fieldType.GetMetadata(MetadataType.Idiom));
-                        itemMetadata.Add(MetadataType.Idiom2, fieldType.GetMetadata(MetadataType.Idiom2));
-                        itemMetadata.Add(MetadataType.Scale, fieldType.GetMetadata(MetadataType.Scale));
-                        itemMetadata.Add(MetadataType.ContentsFileName, fieldType.GetMetadata(MetadataType.FileName));
-                    }
-                }
-                itemMetadata.Add(MetadataType.MediaFileId, field.Value);
-                itemMetadata.Add(MetadataType.Disabled, field.Disabled.ToString());
-                itemMetadata.Add(MetadataType.FieldDescription, fieldType.DisplayName);
-
-                var taskItem = new TaskItem(field.FieldId.ToString(), itemMetadata);
-                baseTask.LogDebug(GetDebugStringFromTaskItem(taskItem, itemMetadata));
-                output.Add(taskItem);
-            }
-
-            baseTask.Log.LogMessage("Generated {0} AppIcon TaskItems", output.Count);
-            return output.ToArray();
-        }
-
         public static string GetDebugStringFromTaskItem(ITaskItem taskItem, Dictionary<string, string> itemMetadata)
         {
             var sb = new StringBuilder();
@@ -367,38 +301,7 @@ namespace Build.Client.Extensions
 
         }
 
-        public static ITaskItem[] GetSplashOutput(this BaseLoadTask baseTask, ClientConfigDto clientConfigDto)
-        {
-            baseTask.LogDebug("Generating Splash TaskItems");
 
-            var output = new List<ITaskItem>();
-            foreach (var field in clientConfigDto.SplashFields)
-            {
-                var itemMetadata = new Dictionary<string, string>();
-                var fieldType = FieldType.Splash().FirstOrDefault(x => x.Value == field.FieldId);
-                if (fieldType.ProjectType == ProjectType.Droid)
-                {
-                    var splashNameField = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingDroidSplashName.Value);
-
-                    itemMetadata.Add(MetadataType.LogicalName, splashNameField.Value.ApplyPngExt());
-                    itemMetadata.Add(MetadataType.Path, Path.Combine(Consts.DroidResources, fieldType.GetMetadata(MetadataType.Folder)));
-                    itemMetadata.Add(MetadataType.MediaName, splashNameField.Value.ApplyFieldId(field));
-                }
-                else if (fieldType.ProjectType == ProjectType.Ios)
-                {
-                    //TODO
-                }
-                itemMetadata.Add(MetadataType.MediaFileId, field.Value);
-                itemMetadata.Add(MetadataType.FieldDescription, fieldType.DisplayName);
-                itemMetadata.Add(MetadataType.Disabled, field.Disabled.ToString());
-                var taskItem = new TaskItem(field.FieldId.ToString(), itemMetadata);
-                baseTask.LogDebug(GetDebugStringFromTaskItem(taskItem, itemMetadata));
-                output.Add(taskItem);
-            }
-
-            baseTask.Log.LogMessage("Generated {0} Splash TaskItems", output.Count);
-            return output.ToArray();
-        }
 
     }
 }

@@ -49,6 +49,9 @@
         </PackageReference>
     <!-- Marks all packages as 'local only' so they don't end up in the nuspec. -->
     <PackageReference Update="@(PackageReference)" PrivateAssets="All" />
+    <PackageReference Include="NuGet.Build.Packaging">
+      <Version>0.2.2</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -101,8 +104,10 @@
     <Compile Include="BuildTasks\SetIosAssetCatalogue.cs" />
     <Compile Include="BuildTasks\SetIosAssetCatalogueSets.cs" />
     <Compile Include="Models\BuildConfig.cs" />
-    <Compile Include="BuildTasks\DebugDump.cs" />
-    <Compile Include="Constants\MSBuildMetadata.cs" />
+    <Compile Include="Models\BaseHolderClientDto.cs" />
+    <Compile Include="Models\AppIconClientDto.cs" />
+    <Compile Include="Models\SplashClientDto.cs" />
+    <Compile Include="Models\PackagingClientDto.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />

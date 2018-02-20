@@ -20,12 +20,13 @@
  
 
     
-    <!-- TODO not sure how these will affect things -->
-    <Target Name="CleanProjectsConfig" 
+    <!-- TODO disabled this so we can always run loadremote -->
+<!--    <Target Name="CleanProjectsConfig" 
         AfterTargets="Clean" >
         <CleanProjectsConfig Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)">
         </CleanProjectsConfig>
-    </Target>
+    </Target>-->
+    <!-- this cleans the packages folder can't clean the others without modifying the project - painful-->
     <Target Name="CleanAssetCatalogues" 
         AfterTargets="Clean" 
         Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' ">
@@ -39,8 +40,9 @@
             <Message Text="MSBuildBinPath: $(MSBuildBinPath)" />
             <Message Text="MSBuildExtensionsPath: $(MSBuildExtensionsPath)" />
         </Target>
-    
-    <Target Name="LoadLocalBuildConfig" 
+
+    <!-- no longer using this, we're running load remote evetyime to see what happens -->
+<!--    <Target Name="LoadLocalBuildConfig" 
         BeforeTargets="_GetReferenceAssemblyPaths;_BeforeCoreCompileInterfaceDefinitions" >
         <LoadLocalBuildConfig Debug="$(BuildDebug)" ProjectName="$(MSBuildProjectName)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" TargetFrameworkIdentifier='$(TargetFrameworkIdentifier)'>
             <Output TaskParameter="TapResourceDir" PropertyName="TapResourceDir" />
@@ -55,25 +57,31 @@
             <Output TaskParameter="TapShouldContinue" PropertyName="TapShouldContinue" />
         </LoadLocalBuildConfig>
 
-    </Target>
+    </Target>-->
 
 
     
     <Target Name="LoadRemoteBuildConfig" 
-        AfterTargets="LoadLocalBuildConfig" 
-        Condition="'$(NeedsLoadRemote)' == 'True' And '$(TapShouldContinue)' == 'True' ">
-        <LoadRemoteBuildConfig Debug="$(BuildDebug)" ProjectName="$(MSBuildProjectName)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" TargetFrameworkIdentifier='$(TargetFrameworkIdentifier)'>
-            <Output TaskParameter="TapResourceDir" PropertyName="TapResourceDir" />
-            <Output TaskParameter="PackagingOutput" ItemName="PackagingFields" />
-            <Output TaskParameter="AppIconOutput" ItemName="AppIconFields" />
-            <Output TaskParameter="AssetCatalogueName" PropertyName="AssetCatalogueName"/>
-            <Output TaskParameter="Token" PropertyName="BuildAccessToken"/>
-            <Output TaskParameter="BuildAppId" PropertyName="BuildAppId" />
-            <Output TaskParameter="SplashOutput" ItemName="SplashFields" />
+        AfterTargets="_GetReferenceAssemblyPaths;_BeforeCoreCompileInterfaceDefinitions" 
+        Condition=" '$(TapShouldContinue)' == 'True' ">
+        <LoadRemoteBuildConfig 
+            Debug="$(BuildDebug)" 
+            ProjectName="$(MSBuildProjectName)" 
+            BuildConfiguration="$(Configuration)" 
+            PackagesDir="$(PackagesDir)" 
+            ProjectDir="$(MSBuildProjectDirectory)" 
+            TargetFrameworkIdentifier='$(TargetFrameworkIdentifier)'>
+                <Output TaskParameter="TapResourceDir" PropertyName="TapResourceDir" />
+                <Output TaskParameter="PackagingOutput" ItemName="PackagingFields" />
+                <Output TaskParameter="AppIconOutput" ItemName="AppIconFields" />
+                <Output TaskParameter="AssetCatalogueName" PropertyName="AssetCatalogueName"/>
+                <Output TaskParameter="Token" PropertyName="BuildAccessToken"/>
+                <Output TaskParameter="BuildAppId" PropertyName="BuildAppId" />
+                <Output TaskParameter="SplashOutput" ItemName="SplashFields" />
 
-            <Output TaskParameter="TheAppsPajamasResourceDir" PropertyName="TheAppsPajamasResourceDir" />
+                <Output TaskParameter="TheAppsPajamasResourceDir" PropertyName="TheAppsPajamasResourceDir" />
 
-            <Output TaskParameter="TapShouldContinue" PropertyName="TapShouldContinue" />
+                <Output TaskParameter="TapShouldContinue" PropertyName="TapShouldContinue" />
         </LoadRemoteBuildConfig>
     </Target>
     

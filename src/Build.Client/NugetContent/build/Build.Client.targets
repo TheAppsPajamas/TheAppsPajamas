@@ -52,12 +52,12 @@
             <Output TaskParameter="SplashOutput" ItemName="SplashFields" />
             <Output TaskParameter="NeedsLoadRemote" PropertyName="NeedsLoadRemote" />
 
-            <Output TaskParameter="TheAppsPajamasResourceDir" PropertyName="TheAppsPajamasResourceDir" />
+            <Output TaskParameter="TapResourceDirRelative" PropertyName="TapResourceDirRelative" />
 
             <Output TaskParameter="TapShouldContinue" PropertyName="TapShouldContinue" />
         </LoadLocalBuildConfig>
 
-    </Target>-->
+    </Target>
 
 
     
@@ -79,7 +79,7 @@
                 <Output TaskParameter="BuildAppId" PropertyName="BuildAppId" />
                 <Output TaskParameter="SplashOutput" ItemName="SplashFields" />
 
-                <Output TaskParameter="TheAppsPajamasResourceDir" PropertyName="TheAppsPajamasResourceDir" />
+                <Output TaskParameter="TapResourceDirRelative" PropertyName="TapResourceDirRelative" />
 
                 <Output TaskParameter="TapShouldContinue" PropertyName="TapShouldContinue" />
         </LoadRemoteBuildConfig>
@@ -223,7 +223,7 @@
 
         <ItemGroup>
             <ImageAsset Remove="$(AssetCatalogueName)/**"/>
-       <!--     <ImageAsset Remove="$(TheAppsPajamasResourceDir)/**"/>-->
+       <!--     <ImageAsset Remove="$(TapResourceDirRelative)/**"/>-->
 <!--            <ITunesArtwork Remove="**"/>-->
         </ItemGroup>
         
@@ -238,19 +238,19 @@
     
     <Target Name="RemoveTapResources"
         AfterTargets="SetIosAssetCatalogueSets">
-        <Message Text="Removing Tap Resources from project, TapResource folder $(TheAppsPajamasResourceDir)"/>
+        <Message Text="Removing Tap Resources from project, TapResource folder $(TapResourceDirRelative)"/>
 
         <ItemGroup>
-            <ImageAsset Remove="$(TheAppsPajamasResourceDir)/**"/>
+            <ImageAsset Remove="$(TapResourceDirRelative)/**"/>
         </ItemGroup>
 
 <!--        <ItemGroup>
-            <ImageAsset Remove="@(ImageAsset)" Condition=" '@(ImageAsset->Contains('$(TheAppsPajamasResourceDir)'))' == 'True'  "/>
+            <ImageAsset Remove="@(ImageAsset)" Condition=" '@(ImageAsset->Contains('$(TapResourceDirRelative)'))' == 'True'  "/>
 
         </ItemGroup>-->
 
         <ItemGroup>
-            <AndroidResource Remove="$(TheAppsPajamasResourceDir)/**"/>
+            <AndroidResource Remove="$(TapResourceDirRelative)/**"/>
         </ItemGroup>
 
         <Message Text="Tap Resources removed from project"/>

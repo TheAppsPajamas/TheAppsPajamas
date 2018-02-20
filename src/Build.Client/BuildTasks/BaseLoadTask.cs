@@ -33,7 +33,7 @@ namespace Build.Client.BuildTasks
         public ITaskItem[] SplashOutput { get; set; }
 
         [Output]
-        public ITaskItem TheAppsPajamasResourceDir { get; set; }
+        public ITaskItem TapResourceDirRelative { get; set; }
 
         [Output]
         public string TapShouldContinue { get; set; }
@@ -49,7 +49,7 @@ namespace Build.Client.BuildTasks
             LogDebug($"Project name {ProjectName}");
             LogDebug($"Build configuration {BuildConfiguration}");
 
-            TheAppsPajamasResourceDir = new TaskItem(Consts.TapResourcesDir);
+            TapResourceDirRelative = new TaskItem(Consts.TapResourcesDir);
             TapShouldContinue = bool.TrueString;
 
             _tapResourcesConfig = this.GetResourceConfig();

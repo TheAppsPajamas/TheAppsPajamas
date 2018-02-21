@@ -138,7 +138,6 @@ namespace Build.Client.BuildTasks
             AppIconHolderOutput = this.GetHolderOutput(projectConfig.ClientConfig.AppIcon, "App icon");
             SplashHolderOutput = this.GetHolderOutput(projectConfig.ClientConfig.Splash, "Splash");
 
-
             return true;
         }
     }

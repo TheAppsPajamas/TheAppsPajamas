@@ -21,6 +21,8 @@ namespace Build.Client.BuildTasks
         public ITaskItem AssetCatalogueName { get; set; }
 
         public string PackagesOutputDir { get; set; }
+        public ITaskItem AppIconHolder { get; set; }
+        public ITaskItem SplashHolder { get; set; }
 
         public ITaskItem[] ExistingImageAssets { get; set; }
 
@@ -36,7 +38,6 @@ namespace Build.Client.BuildTasks
         public override bool Execute()
         {
             Log.LogMessage("Set Ios Asset Catalogue started");
-
 
             var filesToAddToModifiedProject = new List<ITaskItem>();
 

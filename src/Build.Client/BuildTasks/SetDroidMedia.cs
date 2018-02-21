@@ -17,6 +17,9 @@ namespace Build.Client.BuildTasks
 
         public ITaskItem[] ExistingAndroidResources { get; set; }
 
+        public ITaskItem AppIconHolder { get; set; }
+        public ITaskItem SplashHolder { get; set; }
+
         [Output]
         public ITaskItem[] FilesToAddToProject { get; set; }
 
@@ -48,12 +51,39 @@ namespace Build.Client.BuildTasks
             }
 
             var allMediaFields = new List<ITaskItem>();
-            allMediaFields.AddRange(AppIconFields);
-            allMediaFields.AddRange(SplashFields);
+
+            if (AppIconHolder.IsDisabled())
+            {
+                Log.LogMessage($"App icons are disabled in this configuration");
+            } else {
+                LogDebug($"App icons are enabled in this configuration");
+                allMediaFields.AddRange(AppIconFields);
+            }
+            if (SplashHolder.IsDisabled())
+            {
+                Log.LogMessage($"Splash screens are disabled in this configuration");
+            }
+            else
+            {
+                LogDebug($"Splash screens are enabled in this configuration");
+                allMediaFields.AddRange(SplashFields);
+            }
+
+            //left out because it might give us an empty array and null out
+            if (AppIconHolder.IsDisabled() && SplashHolder.IsDisabled()){
+
+                Log.LogMessage($"Both media types are disabled in this configuration, SetDroidMedia does not need to continue");
+                return true;
+            }
 
             var buildConfigurationResourceDir = this.GetBuildConfigurationResourceDir(BuildConfiguration);
 
             foreach(var field in allMediaFields){
+                if (field.IsDisabled()){
+                    Log.LogWarning($"{field.GetMetadata(MetadataType.FieldDescription)} is disabled in this configuration");
+                    continue;
+                }
+
                 var existingFilePath = Path.Combine(buildConfigurationResourceDir, field.GetMetadata(MetadataType.Path), field.GetMetadata(MetadataType.MediaName).ApplyPngExt());
 
                 var outputDir = Path.Combine(ProjectDir, field.GetMetadata(MetadataType.Path));

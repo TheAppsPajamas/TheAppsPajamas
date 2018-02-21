@@ -56,7 +56,7 @@ namespace Build.Client.Constants
         /// <summary>
         /// If the field is actually disabled.
         /// </summary>
-        public const string Disabled = "Disabled";
+        public const string Disabled = "TapDisabled";
 
         /// <summary>
         /// The path of the file to be deleted from the project.

@@ -121,19 +121,19 @@ namespace Build.Client.Extensions
 
         public static ClientConfigDto GetClientConfig(this BaseLoadTask baseTask, string json)
         {
-            try
-            {
+   //         //try
+            //{
                 baseTask.LogDebug("Deserializing ClientConfigDto, length '{0}'", json.Length);
                 var clientConfigDto = JsonConvert.DeserializeObject<ClientConfigDto>(json);
                 baseTask.LogDebug("Deserialized ClientConfigDto, packagingFields: '{0}', appIconFields: '{1}', splashFields: '{2}'"
                                   , clientConfigDto.Packaging.Fields.Count, clientConfigDto.AppIcon.Fields.Count, clientConfigDto.Splash.Fields.Count);
                 return clientConfigDto;
-            }
-            catch (Exception ex)
-            {
-                baseTask.Log.LogErrorFromException(ex);
-            }
-            return null;
+            //}
+            //catch (Exception ex)
+            //{
+            //    baseTask.Log.LogErrorFromException(ex);
+            //}
+            //return null;
         }
 
         public static ITaskItem[] GetPackagingOutput(this BaseLoadTask baseTask, ClientConfigDto clientConfigDto)
@@ -164,14 +164,18 @@ namespace Build.Client.Extensions
         public static ITaskItem[] GetStringFieldOutput<TFieldClientDto>(this BaseLoadTask baseTask, IList<TFieldClientDto> fieldsDto)
             where TFieldClientDto : BaseFieldClientDto
         {
-            baseTask.LogDebug("Generating Field Output TaskItems");
+            baseTask.LogDebug("Generating String Field Output TaskItems");
 
             var output = new List<ITaskItem>();
             foreach (var field in fieldsDto)
             {
                 var itemMetadata = new Dictionary<string, string>();
                 itemMetadata.Add(MetadataType.Value, field.Value);
-                output.Add(new TaskItem(field.FieldId.ToString(), itemMetadata));
+                var taskItem = new TaskItem(field.FieldId.ToString(), itemMetadata);
+
+                var fieldType = FieldType.GetAll().FirstOrDefault(x => x.Value == field.FieldId);
+                taskItem.SetDisabledMetadata(baseTask, field.Disabled, fieldType.DisplayName);
+                output.Add(taskItem);
             }
 
             baseTask.Log.LogMessage("Generated {0} Field Output TaskItems", output.Count);

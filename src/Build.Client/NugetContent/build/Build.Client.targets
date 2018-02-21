@@ -76,10 +76,10 @@
                 <Output TaskParameter="AppIconFieldOutput" ItemName="AppIconFields" />
                 <Output TaskParameter="SplashFieldOutput" ItemName="SplashFields" />
 
-                <Output TaskParameter="BuildConfigHolderOutput" PropertyName="BuildConfigHolder" />
-                <Output TaskParameter="PackagingHolderOutput" PropertyName="PackagingHolder" />
-                <Output TaskParameter="AppIconHolderOutput" PropertyName="AppIconHolder" />
-                <Output TaskParameter="SplashHolderOutput" PropertyName="SplashHolder" />
+                <Output TaskParameter="BuildConfigHolderOutput" ItemName="BuildConfigHolder" />
+                <Output TaskParameter="PackagingHolderOutput" ItemName="PackagingHolder" />
+                <Output TaskParameter="AppIconHolderOutput" ItemName="AppIconHolder" />
+                <Output TaskParameter="SplashHolderOutput" ItemName="SplashHolder" />
             
                 <Output TaskParameter="AssetCatalogueName" PropertyName="AssetCatalogueName"/>
                 <Output TaskParameter="Token" PropertyName="BuildAccessToken"/>
@@ -143,7 +143,12 @@
     <Target Name="SetDroidManifest" 
         AfterTargets="DownloadMediaFiles" 
         Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid' And '$(TapShouldContinue)' == 'True' ">
-        <SetDroidManifest Debug="$(BuildDebug)" ProjectDir="$(MSBuildProjectDirectory)" PackagingFields="@(PackagingFields)" AndroidManifest="$(AndroidManifest)">
+        <SetDroidManifest 
+            Debug="$(BuildDebug)" 
+            ProjectDir="$(MSBuildProjectDirectory)" 
+            PackagingFields="@(PackagingFields)" 
+            PackagingHolder="@(PackagingHolder)"
+            AndroidManifest="$(AndroidManifest)">
         </SetDroidManifest>
     </Target>
     
@@ -156,6 +161,8 @@
             ProjectDir="$(MSBuildProjectDirectory)" 
             AppIconFields="@(AppIconFields)"
             SplashFields="@(SplashFields)"
+            AppIconHolder="@(AppIconHolder)"
+            SplashHolder="@(SplashHolder)"
             ExistingAndroidResources="@(AndroidResource)">
             <Output TaskParameter="OutputAndroidAssets" ItemName="AndroidAppIcons" />    
             <Output TaskParameter="FilesToAddToProject" ItemName="FilesToAddToProject" />
@@ -194,6 +201,8 @@
             AppIconFields="@(AppIconFields)" 
             AssetCatalogueName="$(AssetCatalogueName)" 
             ExistingImageAssets="@(ImageAsset)"
+            AppIconHolder="$(AppIconHolder)"
+            SplashHolder="$(SplashHolder)"
             PackagesOutputDir="$(MSBuildThisFileDirectory)">
             <Output TaskParameter="OutputImageAssets" ItemName="IosImageAssets" />           
 

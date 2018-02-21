@@ -109,6 +109,7 @@
     <Compile Include="Models\SplashClientDto.cs" />
     <Compile Include="Models\PackagingClientDto.cs" />
     <Compile Include="Models\BuildConfigClientDto.cs" />
+    <Compile Include="Extensions\TaskItemExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />

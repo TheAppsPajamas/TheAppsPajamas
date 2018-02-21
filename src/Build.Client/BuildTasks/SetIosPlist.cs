@@ -15,9 +15,16 @@ namespace Build.Client.BuildTasks
 
         public ITaskItem[] PackagingFields { get; set; }
 
+        public ITaskItem PackagingHolder { get; set; }
+
         public override bool Execute()
         {
             Log.LogMessage("Setting Ios Plist file");
+
+            if (PackagingHolder.IsDisabled()){
+                Log.LogMessage($"Packaging is disabled in this configuration, plist will not be set");
+                return true;
+            }
 
             if (String.IsNullOrEmpty(IosPlist))
             {
@@ -34,10 +41,11 @@ namespace Build.Client.BuildTasks
                 var plist = (Dictionary<string, object>)Plist.readPlist(IosPlist);
                 LogDebug("Plist {0} read, {1} nodes", IosPlist, plist.Count());
 
+                #region PackagingName
                 var packageNameField = PackagingFields
                     .FirstOrDefault(x => FieldType.FromValue(Int32.Parse(x.ItemSpec)) == FieldType.PackagingIosName);
 
-                if (packageNameField != null && !String.IsNullOrEmpty(packageNameField.GetMetadata("Value")))
+                if (packageNameField != null && packageNameField.IsEnabled() && !String.IsNullOrEmpty(packageNameField.GetMetadata("Value")))
                 {
                     LogDebug("Package name found, check against resource value '{0}'", packageNameField.GetMetadata("Value"));
 
@@ -74,16 +82,21 @@ namespace Build.Client.BuildTasks
                         touched = true;
                         Log.LogMessage("Package name / Bundle display name not found in Plist, creating with value '{0}'", plist["CFBundleDisplayName"]);
                     }
+                } else if (packageNameField != null && packageNameField.IsDisabled()){
+                    Log.LogWarning("Package name is disabled, it will not be set in plist");
                 }
                 else
                 {
                     Log.LogWarning("Package name not found in packaging fields");
                 }
 
+                #endregion
+
+                #region Identifier
                 var packageIdentifierField = PackagingFields
                     .FirstOrDefault(x => FieldType.FromValue(Int32.Parse(x.ItemSpec)) == FieldType.PackagingIosIdentifier);
 
-                if (packageIdentifierField != null && !String.IsNullOrEmpty(packageIdentifierField.GetMetadata("Value")))
+                if (packageIdentifierField != null && packageIdentifierField.IsEnabled() && !String.IsNullOrEmpty(packageIdentifierField.GetMetadata("Value")))
                 {
                     if (plist.ContainsKey("CFBundleIdentifier"))
                     {
@@ -106,15 +119,22 @@ namespace Build.Client.BuildTasks
                         Log.LogMessage("Package identifier not found in Plist, creating with value '{0}'", plist["CFBundleIdentifier"]);
                     }
                 }
+                else if (packageIdentifierField != null && packageIdentifierField.IsDisabled())
+                {
+                    Log.LogWarning("Package identifier is disabled, it will not be set in plist");
+                }
                 else
                 {
                     Log.LogWarning("Package identifier not found in packaging fields");
                 }
 
+                #endregion
+
+                #region VersionText
                 var packageVersionTextField = PackagingFields
                         .FirstOrDefault(x => FieldType.FromValue(Int32.Parse(x.ItemSpec)) == FieldType.PackagingIosVersionText);
 
-                if (packageVersionTextField != null && !String.IsNullOrEmpty(packageVersionTextField.GetMetadata("Value")))
+                if (packageVersionTextField != null && packageVersionTextField.IsEnabled() && !String.IsNullOrEmpty(packageVersionTextField.GetMetadata("Value")))
                 {
                     LogDebug("Package version text found, check against resource value {0}", packageVersionTextField.GetMetadata("Value"));
 
@@ -139,15 +159,23 @@ namespace Build.Client.BuildTasks
                         Log.LogMessage("Package version text / Bundle short version string not found in Plist, creating with value '{0}'", plist["CFBundleVersion"]);
                     }
                 }
+
+                else if (packageVersionTextField != null && packageVersionTextField.IsDisabled())
+                {
+                    Log.LogWarning("Package version text is disabled, it will not be set in plist");
+                }
                 else
                 {
                     Log.LogWarning("Package version text not found in packaging fields");
                 }
 
+                #endregion
+
+                #region VersionNumber
                 var packageVersionNumberField = PackagingFields
                     .FirstOrDefault(x => FieldType.FromValue(Int32.Parse(x.ItemSpec)) == FieldType.PackagingIosVersionNumber);
 
-                if (packageVersionNumberField != null && !String.IsNullOrEmpty(packageVersionNumberField.GetMetadata("Value")))
+                if (packageVersionNumberField != null && packageVersionNumberField.IsEnabled() && !String.IsNullOrEmpty(packageVersionNumberField.GetMetadata("Value")))
                 {
                     LogDebug("Package version number found, check against resource value {0}", packageVersionNumberField.GetMetadata("Value"));
 
@@ -172,19 +200,29 @@ namespace Build.Client.BuildTasks
                         Log.LogMessage("Package version number / Bundle version not found in Plist, creating with value '{0}'", plist["CFBundleVersion"]);
                     }
                 }
+                else if (packageVersionNumberField != null && packageVersionNumberField.IsDisabled())
+                {
+                    Log.LogWarning("Package name is disabled, it will not be set in plist");
+                }
                 else
                 {
                     Log.LogWarning("Package version number not found in packaging fields");
                 }
 
+#endregion
                 var assetCatalogueNameField = PackagingFields
                     .FirstOrDefault(x => FieldType.FromValue(Int32.Parse(x.ItemSpec)) == FieldType.PackagingIosAssetCatalogueName);
 
+                #region AppIconAssetCatalogueSet
                 var appIconCatalogueNameField = PackagingFields
                     .FirstOrDefault(x => FieldType.FromValue(Int32.Parse(x.ItemSpec)) == FieldType.PackagingIosAppIconXcAssetsName);
 
-                if (assetCatalogueNameField != null && !String.IsNullOrEmpty(assetCatalogueNameField.GetMetadata("Value"))
-                    && appIconCatalogueNameField != null && !String.IsNullOrEmpty(appIconCatalogueNameField.GetMetadata("Value"))
+                if (assetCatalogueNameField != null 
+                    && assetCatalogueNameField.IsEnabled() 
+                    && !String.IsNullOrEmpty(assetCatalogueNameField.GetMetadata("Value"))
+                    && appIconCatalogueNameField != null 
+                    && appIconCatalogueNameField.IsEnabled()
+                    && !String.IsNullOrEmpty(appIconCatalogueNameField.GetMetadata("Value"))
                    )
                 {
                     var appIconSetPath = Path.Combine(assetCatalogueNameField.GetMetadata("Value").ApplyXcAssetsExt()
@@ -213,10 +251,150 @@ namespace Build.Client.BuildTasks
                         Log.LogMessage("Package app icon catalogue not found in Plist, creating with value '{0}'", plist["XSAppIconAssets"]);
                     }
                 }
-                else
+
+                else if (assetCatalogueNameField != null && assetCatalogueNameField.IsDisabled())
+                {
+                    Log.LogWarning("Asset catalogue name is disabled, cannot set app icon catalogue set name in plist");
+                }
+                else if (appIconCatalogueNameField != null && appIconCatalogueNameField.IsDisabled())
+                {
+                    Log.LogWarning("AppIcon catalogue set name is disabled, cannot set app icon catalogue set name in plist");
+                }               else
                 {
                     Log.LogWarning("Package app icon catalogue not found in packaging fields");
                 }
+
+                #endregion
+
+                #region UseLaunchStoryboard
+
+                bool useLaunchStoryboard = false;
+                var useLaunchStoryboardField = PackagingFields
+                    .FirstOrDefault(x => FieldType.FromValue(Int32.Parse(x.ItemSpec)) == FieldType.PackagingIosUseLaunchStoryboard);
+                if (useLaunchStoryboardField != null
+                    && useLaunchStoryboardField.IsEnabled()
+                    && !String.IsNullOrEmpty(useLaunchStoryboardField.GetMetadata("Value")))
+                {
+                    useLaunchStoryboard = useLaunchStoryboardField.IsTrue(this);
+                }
+
+                #endregion
+
+
+                #region LaunchAssetCatalogueSet
+                var launchCatalogueNameField = PackagingFields
+                    .FirstOrDefault(x => FieldType.FromValue(Int32.Parse(x.ItemSpec)) == FieldType.PackagingIosLaunchImageXcAssetsName);
+
+                if (assetCatalogueNameField != null
+                    && assetCatalogueNameField.IsEnabled()
+                    && !String.IsNullOrEmpty(assetCatalogueNameField.GetMetadata("Value"))
+                    && launchCatalogueNameField != null
+                    && launchCatalogueNameField.IsEnabled()
+                    && !String.IsNullOrEmpty(launchCatalogueNameField.GetMetadata("Value"))
+                   )
+                {
+                    var setPath = Path.Combine(assetCatalogueNameField.GetMetadata("Value").ApplyXcAssetsExt()
+                                                      , launchCatalogueNameField.GetMetadata("Value").ApplyLaunchimageExt());
+
+                    LogDebug("Package image catalogue found, check against resource value {0}", setPath);
+
+                    if (plist.ContainsKey("XSLaunchImageAssets"))
+                    {
+                        var plistKey = (string)plist["XSLaunchImageAssets"];
+                        if (plistKey != setPath)
+                        {
+                            plist["XSLaunchImageAssets"] = setPath;
+                            Log.LogMessage("Package image catalogue changed to '{0}', setting Plist", plist["XSLaunchImageAssets"]);
+                            touched = true;
+                        }
+                        else
+                        {
+                            Log.LogMessage("Package app icon catalogue unchanged, skipping");
+                        }
+                    }
+                    else
+                    {
+                        plist.Add("XSLaunchImageAssets", setPath);
+                        touched = true;
+                        Log.LogMessage("Package image catalogue not found in Plist, creating with value '{0}'", plist["XSLaunchImageAssets"]);
+                    }
+                }
+
+                else if (assetCatalogueNameField != null && assetCatalogueNameField.IsDisabled())
+                {
+                    Log.LogWarning("Asset catalogue name is disabled, cannot set launch image catalogue set name in plist");
+                }
+                //remove key for launch image catalogue if using storyboard - maybe, or maybe just make sure it's set, and
+                //if a launchstoryboard name is set it'll overwrite it. then we could drop that field
+                else if ((launchCatalogueNameField != null && launchCatalogueNameField.IsDisabled()))
+                {
+                    if (plist.ContainsKey("XSLaunchImageAssets"))
+                    {
+                        plist.Remove("XSLaunchImageAssets"); 
+                        touched = true;
+                        Log.LogWarning("Launch image catalogue set name is disabled, removing from plist");
+                    } else {
+
+                        Log.LogWarning("Launch image catalogue set name is disabled, but not set in plist, no changing");
+                    }
+                }
+                else
+                {
+                    Log.LogWarning("Package launch image catalogue not found in packaging fields");
+                }
+
+                #endregion
+
+
+                #region LaunchStoryboardName
+                var launchStoryboardNameField = PackagingFields
+                    .FirstOrDefault(x => FieldType.FromValue(Int32.Parse(x.ItemSpec)) == FieldType.PackagingIosLaunchStoryboardName);
+
+                if (launchStoryboardNameField != null
+                    && launchStoryboardNameField.IsEnabled()
+                    && !String.IsNullOrEmpty(launchStoryboardNameField.GetMetadata("Value"))
+                   )
+                {
+                    var launchStoryboardName = launchStoryboardNameField.GetMetadata("Value");
+
+                    LogDebug("Package launch storyboard found, check against resource value {0}", launchStoryboardName);
+
+                    if (plist.ContainsKey("UILaunchStoryboardName"))
+                    {
+                        var plistKey = (string)plist["UILaunchStoryboardName"];
+                        if (plistKey != launchStoryboardName)
+                        {
+                            plist["UILaunchStoryboardName"] = launchStoryboardName;
+                            Log.LogMessage("Package launch storyboard changed to '{0}', setting Plist", plist["UILaunchStoryboardName"]);
+                            touched = true;
+                        }
+                        else
+                        {
+                            Log.LogMessage("Package launch storyboard unchanged, skipping");
+                        }
+                    }
+                    else
+                    {
+                        plist.Add("UILaunchStoryboardName", launchStoryboardName);
+                        touched = true;
+                        Log.LogMessage("Package launch storyboard not found in Plist, creating with value '{0}'", plist["UILaunchStoryboardName"]);
+                    }
+                }
+
+                else if ((launchCatalogueNameField != null && launchCatalogueNameField.IsDisabled()))
+                {
+                    Log.LogWarning("Launch launch storyboard is disabled, but not set in plist, no changing");
+
+                }
+                else
+                {
+                    Log.LogWarning("Package launch storyboard not found in packaging fields");
+                }
+
+                #endregion
+
+                //don't need to set other image asset catalogues in plist. bonus
+
 
                 if (touched)
                 {

@@ -133,7 +133,10 @@ namespace Build.Client.BuildTasks
             PackagingFieldOutput = this.GetStringFieldOutput(projectConfig.ClientConfig.Packaging.Fields);
 
 
-            BuildConfigHolderOutput = this
+            BuildConfigHolderOutput = this.GetHolderOutput(projectConfig.ClientConfig.BuildConfig, "Build config");
+            PackagingHolderOutput = this.GetHolderOutput(projectConfig.ClientConfig.Packaging, "Packaging");
+            AppIconHolderOutput = this.GetHolderOutput(projectConfig.ClientConfig.AppIcon, "App icon");
+            SplashHolderOutput = this.GetHolderOutput(projectConfig.ClientConfig.Splash, "Splash");
 
 
             return true;

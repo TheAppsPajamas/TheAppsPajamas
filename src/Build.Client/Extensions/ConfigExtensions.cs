@@ -152,10 +152,13 @@ namespace Build.Client.Extensions
             return output.ToArray();
         }
 
-        public static ITaskItem[] GetHolderOutput<TFieldClientDto>(this BaseLoadTask baseTask, BaseHolderClientDto<TFieldClientDto> holder)
-            where TFieldClientDto : BaseFieldClientDto
+        public static ITaskItem GetHolderOutput(this BaseLoadTask baseTask, IBaseHolderClientDto holder, string description)
         {
-            baseTask.LogDebug($"Generating Holder Output for {holder.GetType().Name}");
+            baseTask.LogDebug($"Generating Holder Output for {description}");
+
+            var taskItem = new TaskItem(MetadataType.FieldHolder);
+            taskItem.SetDisabledMetadata(baseTask, holder.Disabled, description);
+            return taskItem;
         }
         
         public static ITaskItem[] GetStringFieldOutput<TFieldClientDto>(this BaseLoadTask baseTask, IList<TFieldClientDto> fieldsDto)
@@ -280,10 +283,11 @@ namespace Build.Client.Extensions
                     }
                 }
                 itemMetadata.Add(MetadataType.MediaFileId, field.Value);
-                itemMetadata.Add(MetadataType.Disabled, field.Disabled.ToString());
                 itemMetadata.Add(MetadataType.FieldDescription, fieldType.DisplayName);
 
                 var taskItem = new TaskItem(field.FieldId.ToString(), itemMetadata);
+                taskItem.SetDisabledMetadata(baseTask, field.Disabled, fieldType.DisplayName);
+
                 baseTask.LogDebug(GetDebugStringFromTaskItem(taskItem, itemMetadata));
                 output.Add(taskItem);
             }

@@ -1,10 +1,14 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/Extensions/ConfigExtensions.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/NugetContent/build/Build.Client.targets">
     <Files>
-      <File FileName="Build.Client/NugetContent/build/Build.Client.targets" Line="82" Column="71" />
-      <File FileName="Build.Client/BuildTasks/BaseLoadTask.cs" Line="42" Column="32" />
-      <File FileName="Build.Client/BuildTasks/LoadRemoteBuildConfig.cs" Line="133" Column="58" />
-      <File FileName="Build.Client/Extensions/ConfigExtensions.cs" Line="158" Column="84" />
+      <File FileName="Build.Client/NugetContent/build/Build.Client.targets" Line="114" Column="34" />
+      <File FileName="Build.Client/BuildTasks/BaseLoadTask.cs" Line="1" Column="1" />
+      <File FileName="Build.Client/BuildTasks/LoadRemoteBuildConfig.cs" Line="137" Column="50" />
+      <File FileName="Build.Client/Extensions/ConfigExtensions.cs" Line="155" Column="33" />
+      <File FileName="Build.Client/Constants/MetadataType.cs" Line="127" Column="49" />
+      <File FileName="Build.Client/BuildTasks/DeleteUnusedMediaFiles.cs" Line="84" Column="21" />
+      <File FileName="Build.Client/BuildTasks/DownloadMediaFiles.cs" Line="88" Column="80" />
+      <File FileName="Build.Client/BuildTasks/SetIosPlist.cs" Line="396" Column="81" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

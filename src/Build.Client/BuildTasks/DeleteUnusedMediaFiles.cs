@@ -76,8 +76,12 @@ namespace Build.Client.BuildTasks
                 var fileNoExt = Path.GetFileNameWithoutExtension(fileInfo.Name);
 
                 var field = allMediaFields.FirstOrDefault(x => x.GetMetadata(MetadataType.MediaName) == fileNoExt);
-                if (field == null)
+                if (field == null || field.IsDisabled())
                 {
+                    if (field != null && field.IsDisabled()){
+                        Log.LogMessage($"File {file.GetPathRelativeToProject(ProjectDir)} exists, but has been disabled, adding to deletion list");
+                    }
+
                     ITaskItem existingAsset = null;
                     string existingAssetItemGroup = String.Empty;
                     existingAsset = droidResources.FirstOrDefault(x => x.ItemSpec == file.GetPathRelativeToProject(ProjectDir));

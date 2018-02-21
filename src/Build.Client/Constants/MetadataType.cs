@@ -120,5 +120,10 @@ namespace Build.Client.Constants
         /// The catalogue packaging (for landscape / portrait image sets, id)
         /// </summary>
         public const string CataloguePackagingFieldId = "CataloguePackagingFieldId";
+
+        /// <summary>
+        /// The field holder, stored as itemspec.
+        /// </summary>
+        public const string FieldHolder = "FieldHolder";
     }
 }

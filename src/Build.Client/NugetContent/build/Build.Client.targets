@@ -76,10 +76,10 @@
                 <Output TaskParameter="AppIconFieldOutput" ItemName="AppIconFields" />
                 <Output TaskParameter="SplashFieldOutput" ItemName="SplashFields" />
 
-                <Output TaskParameter="BuildConfigHolderOutput" ItemName="BuildConfigHolder" />
-                <Output TaskParameter="PackagingHolderOutput" ItemName="PackagingHolder" />
-                <Output TaskParameter="AppIconHolderOutput" ItemName="AppIconHolder" />
-                <Output TaskParameter="SplashHolderOutput" ItemName="SplashHolder" />
+                <Output TaskParameter="BuildConfigHolderOutput" PropertyName="BuildConfigHolder" />
+                <Output TaskParameter="PackagingHolderOutput" PropertyName="PackagingHolder" />
+                <Output TaskParameter="AppIconHolderOutput" PropertyName="AppIconHolder" />
+                <Output TaskParameter="SplashHolderOutput" PropertyName="SplashHolder" />
             
                 <Output TaskParameter="AssetCatalogueName" PropertyName="AssetCatalogueName"/>
                 <Output TaskParameter="Token" PropertyName="BuildAccessToken"/>
@@ -177,6 +177,7 @@
             PackagesDir="$(PackagesDir)" 
             ProjectDir="$(MSBuildProjectDirectory)" 
             PackagingFields="@(PackagingFields)" 
+            PackagingHolder="$(PackagingHolder)"
             IosPlist="$(_AppManifest)">
             </SetIosPlist>
 

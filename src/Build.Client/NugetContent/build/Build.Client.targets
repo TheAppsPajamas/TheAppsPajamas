@@ -72,12 +72,19 @@
             ProjectDir="$(MSBuildProjectDirectory)" 
             TargetFrameworkIdentifier='$(TargetFrameworkIdentifier)'>
                 <Output TaskParameter="TapResourceDir" PropertyName="TapResourceDir" />
-                <Output TaskParameter="PackagingOutput" ItemName="PackagingFields" />
-                <Output TaskParameter="AppIconOutput" ItemName="AppIconFields" />
+                <Output TaskParameter="PackagingFieldOutput" ItemName="PackagingFields" />
+                <Output TaskParameter="AppIconFieldOutput" ItemName="AppIconFields" />
+                <Output TaskParameter="SplashFieldOutput" ItemName="SplashFields" />
+
+                <Output TaskParameter="BuildConfigHolderOutput" ItemName="BuildConfigHolder" />
+                <Output TaskParameter="PackagingHolderOutput" ItemName="PackagingHolder" />
+                <Output TaskParameter="AppIconHolderOutput" ItemName="AppIconHolder" />
+                <Output TaskParameter="SplashHolderOutput" ItemName="SplashHolder" />
+            
                 <Output TaskParameter="AssetCatalogueName" PropertyName="AssetCatalogueName"/>
                 <Output TaskParameter="Token" PropertyName="BuildAccessToken"/>
                 <Output TaskParameter="BuildAppId" PropertyName="BuildAppId" />
-                <Output TaskParameter="SplashOutput" ItemName="SplashFields" />
+
 
                 <Output TaskParameter="TapResourceDirRelative" PropertyName="TapResourceDirRelative" />
 

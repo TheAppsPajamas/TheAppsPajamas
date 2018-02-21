@@ -21,16 +21,30 @@ namespace Build.Client.BuildTasks
         public string TapResourceDir { get; set; }
 
         [Output]
-        public ITaskItem[] PackagingOutput { get; set; }
+        public ITaskItem[] PackagingFieldOutput { get; set; }
 
         [Output]
-        public ITaskItem[] AppIconOutput { get; set; }
+        public ITaskItem[] AppIconFieldOutput { get; set; }
+
+        [Output]
+        public ITaskItem[] SplashFieldOutput { get; set; }
+
+        [Output]
+        public ITaskItem BuildConfigHolderOutput { get; set; }
+
+        [Output]
+        public ITaskItem PackagingHolderOutput { get; set; }
+
+        [Output]
+        public ITaskItem AppIconHolderOutput { get; set; }
+
+        [Output]
+        public ITaskItem SplashHolderOutput { get; set; }
+
 
         [Output]
         public ITaskItem AssetCatalogueName { get; set; }
 
-        [Output]
-        public ITaskItem[] SplashOutput { get; set; }
 
         [Output]
         public ITaskItem TapResourceDirRelative { get; set; }

@@ -152,7 +152,13 @@ namespace Build.Client.Extensions
             return output.ToArray();
         }
 
-        public static ITaskItem[] GetFieldTypeOutput<TFieldClientDto>(this BaseLoadTask baseTask, IList<TFieldClientDto> fieldsDto)
+        public static ITaskItem[] GetHolderOutput<TFieldClientDto>(this BaseLoadTask baseTask, BaseHolderClientDto<TFieldClientDto> holder)
+            where TFieldClientDto : BaseFieldClientDto
+        {
+            baseTask.LogDebug($"Generating Holder Output for {holder.GetType().Name}");
+        }
+        
+        public static ITaskItem[] GetStringFieldOutput<TFieldClientDto>(this BaseLoadTask baseTask, IList<TFieldClientDto> fieldsDto)
             where TFieldClientDto : BaseFieldClientDto
         {
             baseTask.LogDebug("Generating Field Output TaskItems");
@@ -170,7 +176,7 @@ namespace Build.Client.Extensions
         }
 
 
-        public static ITaskItem[] GetMediaOutput<TFieldClientDto>(this BaseLoadTask baseTask
+        public static ITaskItem[] GetMediaFieldOutput<TFieldClientDto>(this BaseLoadTask baseTask
                                                                   , IList<TFieldClientDto> fieldsDto
                                                                   , ITaskItem assetCatalogueName
                                                                   , ClientConfigDto clientConfigDto)

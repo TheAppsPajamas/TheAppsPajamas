@@ -1,9 +1,10 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/NugetContent/build/Build.Client.targets">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/Extensions/ConfigExtensions.cs">
     <Files>
-      <File FileName="Build.Client/NugetContent/build/Build.Client.targets" Line="63" Column="58" />
-      <File FileName="Build.Client/BuildTasks/BaseLoadTask.cs" Line="36" Column="48" />
-      <File FileName="Build.Client/BuildTasks/LoadRemoteBuildConfig.cs" Line="98" Column="14" />
+      <File FileName="Build.Client/NugetContent/build/Build.Client.targets" Line="82" Column="71" />
+      <File FileName="Build.Client/BuildTasks/BaseLoadTask.cs" Line="42" Column="32" />
+      <File FileName="Build.Client/BuildTasks/LoadRemoteBuildConfig.cs" Line="133" Column="58" />
+      <File FileName="Build.Client/Extensions/ConfigExtensions.cs" Line="158" Column="84" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

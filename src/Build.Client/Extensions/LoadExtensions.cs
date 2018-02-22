@@ -50,7 +50,7 @@ namespace Build.Client.Extensions
                 ProjectsConfig projectConfigs = null;
                 if (!File.Exists(projectsConfigPath))
                 {
-                    baseTask.Log.LogMessage($"{Consts.ProjectsConfig} file file not found, created at {0}", projectsConfigPath);
+                    baseTask.LogInformation($"{Consts.ProjectsConfig} file file not found, created at {projectsConfigPath}");
                     projectConfigs = new ProjectsConfig();
                     var json = JsonConvert.SerializeObject(projectConfigs, Formatting.Indented);
                     File.WriteAllText(projectsConfigPath, json);
@@ -80,7 +80,7 @@ namespace Build.Client.Extensions
             {
                 var projectsConfigPath = Path.Combine(baseTask.TapResourceDir, Consts.ProjectsConfig);
 
-                baseTask.Log.LogMessage($"Saving {Consts.ProjectsConfig} at {projectsConfigPath}");
+                baseTask.LogInformation($"Saving {Consts.ProjectsConfig} at {projectsConfigPath}");
                 var json = JsonConvert.SerializeObject(projectsConfig, Formatting.Indented);
                 File.WriteAllText(projectsConfigPath, json);
 
@@ -92,6 +92,7 @@ namespace Build.Client.Extensions
             return true;
         }
 
+        //TODO this needs a disabled on it
         public static ITaskItem GetAssetCatalogueName(this BaseLoadTask baseTask, ClientConfigDto clientConfigDto, string TargetFrameworkIdentifier)
         {
             if (TargetFrameworkIdentifier == "Xamarin.iOS")
@@ -102,7 +103,7 @@ namespace Build.Client.Extensions
                     baseTask.Log.LogError("Asset catalogue undefined");
                 }
 
-                baseTask.Log.LogMessage("AssetCatalogue name {0}", assetCatalogueField.Value.ApplyXcAssetsExt());
+                baseTask.LogInformation("AssetCatalogue name {0}", assetCatalogueField.Value.ApplyXcAssetsExt());
                 return new TaskItem(assetCatalogueField.Value.ApplyXcAssetsExt());
             } else {
                 return null;

@@ -16,6 +16,50 @@ namespace Build.Client.Extensions
 {
     public static class ConfigExtensions
     {
+        public static ITaskItem GetTapConfig(this BaseTask baseTask)
+        {
+            //baseTask.Log.LogMessage($"Loading {Consts.TapConfig} file");
+
+            try
+            {
+                var tapConfigPath = Path.Combine(baseTask.PackagesDir, Consts.TapConfig);
+                if (!File.Exists(tapConfigPath))
+                {
+                    var tapConfigTaskItem = new TaskItem(MetadataType.TapConfig);
+
+                    tapConfigTaskItem.SetMetadata(MetadataType.TapEndpoint, Consts.ClientEndpoint);
+                    tapConfigTaskItem.SetMetadata(MetadataType.TapLogLevel, TapLogLevel.Information);
+     
+
+                    //baseTask.Log.LogMessage($"Tap log level set to {tapConfigTaskItem.GetMetadata(MetadataType.TapLogLevel)}");
+                    return tapConfigTaskItem;
+                }
+                else
+                {
+                    var json = File.ReadAllText(tapConfigPath);
+                    var tapConfig = JsonConvert.DeserializeObject<TapConfig>(json);
+
+                    var tapConfigTaskItem = new TaskItem(MetadataType.TapConfig);
+
+                    tapConfigTaskItem.SetMetadata(MetadataType.TapEndpoint, tapConfig.Endpoint);
+                    tapConfigTaskItem.SetMetadata(MetadataType.TapLogLevel, tapConfig.TapLogLevel);
+
+                    baseTask.LogInformation($"Tap log level set to {tapConfigTaskItem.GetMetadata(MetadataType.TapLogLevel)}");
+                    return tapConfigTaskItem;
+                }
+            }
+            catch (Exception ex)
+            {
+                var tapConfigTaskItem = new TaskItem(MetadataType.TapConfig);
+
+                tapConfigTaskItem.SetMetadata(MetadataType.TapEndpoint, Consts.ClientEndpoint);
+                tapConfigTaskItem.SetMetadata(MetadataType.TapLogLevel, TapLogLevel.Information);
+                baseTask.Log.LogWarning($"Error trying to read {Consts.TapConfig}, returning defaults");
+                baseTask.LogInformation($"Tap log level set to {tapConfigTaskItem.GetMetadata(MetadataType.TapLogLevel)}");
+                return tapConfigTaskItem;
+            }
+        }
+
         public static BuildResourcesConfig GetResourceConfig(this BaseLoadTask baseTask)
         {
             baseTask.Log.LogMessage($"Loading {Consts.TapResourcesConfig} file");
@@ -59,7 +103,7 @@ namespace Build.Client.Extensions
 
         public static void SaveResourceConfig(this BaseLoadTask baseTask, BuildResourcesConfig buildResourcesConfig)
         {
-            baseTask.Log.LogMessage($"Saving {Consts.TapResourcesConfig} file");
+            baseTask.LogInformation($"Saving {Consts.TapResourcesConfig} file");
 
             try
             {
@@ -148,7 +192,7 @@ namespace Build.Client.Extensions
                 output.Add(new TaskItem(field.FieldId.ToString(), itemMetadata));
             }
 
-            baseTask.Log.LogMessage("Generated {0} Packaging TaskItems", output.Count);
+            baseTask.LogInformation("Generated {0} Packaging TaskItems", output.Count);
             return output.ToArray();
         }
 
@@ -178,7 +222,7 @@ namespace Build.Client.Extensions
                 output.Add(taskItem);
             }
 
-            baseTask.Log.LogMessage("Generated {0} Field Output TaskItems", output.Count);
+            baseTask.LogInformation($"Generated {output.Count} Field Output TaskItems");
             return output.ToArray();
         }
 
@@ -296,7 +340,7 @@ namespace Build.Client.Extensions
                 output.Add(taskItem);
             }
 
-            baseTask.Log.LogMessage("Generated {0} Media Field TaskItems", output.Count);
+            baseTask.LogInformation("Generated {0} Media Field TaskItems", output.Count);
             return output.ToArray();
         }
 

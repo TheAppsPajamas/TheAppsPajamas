@@ -19,16 +19,17 @@ namespace Build.Client.BuildTasks
 
         public override bool Execute()
         {
-            Log.LogMessage("Setting Ios Plist file");
+            var baseResult = base.Execute();
+            LogInformation("Setting Ios Plist file");
 
             if (PackagingHolder.IsDisabled()){
-                Log.LogMessage($"Packaging is disabled in this configuration, plist will not be set");
+                LogInformation($"Packaging is disabled in this configuration, plist will not be set");
                 return true;
             }
 
             if (String.IsNullOrEmpty(IosPlist))
             {
-                Log.LogMessage("Ios Plist file name empty, aborting SetIosPlist as ran successful");
+                LogInformation("Ios Plist file name empty, aborting SetIosPlist as ran successful");
                 return true;
             }
 
@@ -79,12 +80,12 @@ namespace Build.Client.BuildTasks
 
                 if (touched)
                 {
-                    Log.LogMessage("Plist touched, saving");
+                    LogInformation("Plist touched, saving");
                     Plist.writeXml(plist, IosPlist);
                 }
                 else
                 {
-                    Log.LogMessage("Plist untouched, skipping");
+                    LogInformation("Plist untouched, skipping");
                 }
 
             }
@@ -111,17 +112,17 @@ namespace Build.Client.BuildTasks
                     if (bundleName != packageNameField.GetMetadata("Value"))
                     {
                         plist["CFBundleName"] = packageNameField.GetMetadata("Value");
-                        Log.LogMessage("Package name / Bundle name changed to '{0}', setting Plist", plist["CFBundleName"]);
+                        LogInformation("Package name / Bundle name changed to '{0}', setting Plist", plist["CFBundleName"]);
                         touched = true;
                     }
                     else
                     {
-                        Log.LogMessage("Package name / Bundle name unchanged, skipping");
+                        LogInformation("Package name / Bundle name unchanged, skipping");
                     }
                 }
                 else
                 {
-                    Log.LogWarning("Package name / Bundle name not found in Plist");
+                    LogWarning("Package name / Bundle name not found in Plist");
                 }
 
                 if (plist.ContainsKey("CFBundleDisplayName"))
@@ -130,28 +131,28 @@ namespace Build.Client.BuildTasks
                     if (bundleDisplayName != packageNameField.GetMetadata("Value"))
                     {
                         plist["CFBundleDisplayName"] = packageNameField.GetMetadata("Value");
-                        Log.LogMessage("Package name / Bundle display name changed to '{0}', setting Plist", plist["CFBundleDisplayName"]);
+                        LogInformation("Package name / Bundle display name changed to '{0}', setting Plist", plist["CFBundleDisplayName"]);
                         touched = true;
                     }
                     else
                     {
-                        Log.LogMessage("Package name / Bundle display name unchanged, skipping");
+                        LogInformation("Package name / Bundle display name unchanged, skipping");
                     }
                 }
                 else
                 {
                     plist.Add("CFBundleDisplayName", packageNameField.GetMetadata("Value"));
                     touched = true;
-                    Log.LogMessage("Package name / Bundle display name not found in Plist, creating with value '{0}'", plist["CFBundleDisplayName"]);
+                    LogInformation("Package name / Bundle display name not found in Plist, creating with value '{0}'", plist["CFBundleDisplayName"]);
                 }
             }
             else if (packageNameField != null && packageNameField.IsDisabled())
             {
-                Log.LogWarning("Package name is disabled, it will not be set in plist");
+                LogWarning("Package name is disabled, it will not be set in plist");
             }
             else
             {
-                Log.LogWarning("Package name not found in packaging fields");
+                LogWarning("Package name not found in packaging fields");
             }
 
             return touched;
@@ -170,28 +171,28 @@ namespace Build.Client.BuildTasks
                     if (bundleIdentifier != packageIdentifierField.GetMetadata("Value"))
                     {
                         plist["CFBundleIdentifier"] = packageIdentifierField.GetMetadata("Value");
-                        Log.LogMessage("Package identifier changed to '{0}', setting Plist", plist["CFBundleIdentifier"]);
+                        LogInformation("Package identifier changed to '{0}', setting Plist", plist["CFBundleIdentifier"]);
                         touched = true;
                     }
                     else
                     {
-                        Log.LogMessage("Package identifier unchanged, skipping");
+                        LogInformation("Package identifier unchanged, skipping");
                     }
                 }
                 else
                 {
                     plist.Add("CFBundleIdentifier", packageIdentifierField.GetMetadata("Value"));
                     touched = true;
-                    Log.LogMessage("Package identifier not found in Plist, creating with value '{0}'", plist["CFBundleIdentifier"]);
+                    LogInformation("Package identifier not found in Plist, creating with value '{0}'", plist["CFBundleIdentifier"]);
                 }
             }
             else if (packageIdentifierField != null && packageIdentifierField.IsDisabled())
             {
-                Log.LogWarning("Package identifier is disabled, it will not be set in plist");
+                LogWarning("Package identifier is disabled, it will not be set in plist");
             }
             else
             {
-                Log.LogWarning("Package identifier not found in packaging fields");
+                LogWarning("Package identifier not found in packaging fields");
             }
 
             return touched;
@@ -212,29 +213,29 @@ namespace Build.Client.BuildTasks
                     if (bundleVersionNumber != packageVersionTextField.GetMetadata("Value"))
                     {
                         plist["CFBundleShortVersionString"] = packageVersionTextField.GetMetadata("Value");
-                        Log.LogMessage("Package version text / Bundle short version string changed to '{0}', setting Plist", plist["CFBundleShortVersionString"]);
+                        LogInformation("Package version text / Bundle short version string changed to '{0}', setting Plist", plist["CFBundleShortVersionString"]);
                         touched = true;
                     }
                     else
                     {
-                        Log.LogMessage("Package version text / Bundle short version string unchanged, skipping");
+                        LogInformation("Package version text / Bundle short version string unchanged, skipping");
                     }
                 }
                 else
                 {
                     plist.Add("CFBundleShortVersionString", packageVersionTextField.GetMetadata("Value"));
                     touched = true;
-                    Log.LogMessage("Package version text / Bundle short version string not found in Plist, creating with value '{0}'", plist["CFBundleVersion"]);
+                    LogInformation("Package version text / Bundle short version string not found in Plist, creating with value '{0}'", plist["CFBundleVersion"]);
                 }
             }
 
             else if (packageVersionTextField != null && packageVersionTextField.IsDisabled())
             {
-                Log.LogWarning("Package version text is disabled, it will not be set in plist");
+                LogWarning("Package version text is disabled, it will not be set in plist");
             }
             else
             {
-                Log.LogWarning("Package version text not found in packaging fields");
+                LogWarning("Package version text not found in packaging fields");
             }
 
             return touched;
@@ -255,28 +256,28 @@ namespace Build.Client.BuildTasks
                     if (bundleVersionNumber != packageVersionNumberField.GetMetadata("Value"))
                     {
                         plist["CFBundleVersion"] = packageVersionNumberField.GetMetadata("Value");
-                        Log.LogMessage("Package version number / Bundle version changed to '{0}', setting Plist", plist["CFBundleVersion"]);
+                        LogInformation("Package version number / Bundle version changed to '{0}', setting Plist", plist["CFBundleVersion"]);
                         touched = true;
                     }
                     else
                     {
-                        Log.LogMessage("Package version number / Bundle version unchanged, skipping");
+                        LogInformation("Package version number / Bundle version unchanged, skipping");
                     }
                 }
                 else
                 {
                     plist.Add("CFBundleVersion", packageVersionNumberField.GetMetadata("Value"));
                     touched = true;
-                    Log.LogMessage("Package version number / Bundle version not found in Plist, creating with value '{0}'", plist["CFBundleVersion"]);
+                    LogInformation("Package version number / Bundle version not found in Plist, creating with value '{0}'", plist["CFBundleVersion"]);
                 }
             }
             else if (packageVersionNumberField != null && packageVersionNumberField.IsDisabled())
             {
-                Log.LogWarning("Package name is disabled, it will not be set in plist");
+                LogWarning("Package name is disabled, it will not be set in plist");
             }
             else
             {
-                Log.LogWarning("Package version number not found in packaging fields");
+                LogWarning("Package version number not found in packaging fields");
             }
 
             return touched;
@@ -306,33 +307,33 @@ namespace Build.Client.BuildTasks
                     if (xsAppIconAssets != appIconSetPath)
                     {
                         plist["XSAppIconAssets"] = appIconSetPath;
-                        Log.LogMessage("Package app icon catalogue changed to '{0}', setting Plist", plist["XSAppIconAssets"]);
+                        LogInformation("Package app icon catalogue changed to '{0}', setting Plist", plist["XSAppIconAssets"]);
                         touched = true;
                     }
                     else
                     {
-                        Log.LogMessage("Package app icon catalogue unchanged, skipping");
+                        LogInformation("Package app icon catalogue unchanged, skipping");
                     }
                 }
                 else
                 {
                     plist.Add("XSAppIconAssets", appIconSetPath);
                     touched = true;
-                    Log.LogMessage("Package app icon catalogue not found in Plist, creating with value '{0}'", plist["XSAppIconAssets"]);
+                    LogInformation("Package app icon catalogue not found in Plist, creating with value '{0}'", plist["XSAppIconAssets"]);
                 }
             }
 
             else if (assetCatalogueNameField != null && assetCatalogueNameField.IsDisabled())
             {
-                Log.LogWarning("Asset catalogue name is disabled, cannot set app icon catalogue set name in plist");
+                LogWarning("Asset catalogue name is disabled, cannot set app icon catalogue set name in plist");
             }
             else if (appIconCatalogueNameField != null && appIconCatalogueNameField.IsDisabled())
             {
-                Log.LogWarning("AppIcon catalogue set name is disabled, cannot set app icon catalogue set name in plist");
+                LogWarning("AppIcon catalogue set name is disabled, cannot set app icon catalogue set name in plist");
             }
             else
             {
-                Log.LogWarning("Package app icon catalogue not found in packaging fields");
+                LogWarning("Package app icon catalogue not found in packaging fields");
             }
 
             return touched;
@@ -362,25 +363,25 @@ namespace Build.Client.BuildTasks
                     if (plistKey != setPath)
                     {
                         plist["XSLaunchImageAssets"] = setPath;
-                        Log.LogMessage("Package image catalogue changed to '{0}', setting Plist", plist["XSLaunchImageAssets"]);
+                        LogInformation("Package image catalogue changed to '{0}', setting Plist", plist["XSLaunchImageAssets"]);
                         touched = true;
                     }
                     else
                     {
-                        Log.LogMessage("Package app icon catalogue unchanged, skipping");
+                        LogInformation("Package app icon catalogue unchanged, skipping");
                     }
                 }
                 else
                 {
                     plist.Add("XSLaunchImageAssets", setPath);
                     touched = true;
-                    Log.LogMessage("Package image catalogue not found in Plist, creating with value '{0}'", plist["XSLaunchImageAssets"]);
+                    LogInformation("Package image catalogue not found in Plist, creating with value '{0}'", plist["XSLaunchImageAssets"]);
                 }
             }
 
             else if (assetCatalogueNameField != null && assetCatalogueNameField.IsDisabled())
             {
-                Log.LogWarning("Asset catalogue name is disabled, cannot set launch image catalogue set name in plist");
+                LogWarning("Asset catalogue name is disabled, cannot set launch image catalogue set name in plist");
             }
             //remove key for launch image catalogue if using storyboard - maybe, or maybe just make sure it's set, and
             //if a launchstoryboard name is set it'll overwrite it. then we could drop that field
@@ -390,17 +391,17 @@ namespace Build.Client.BuildTasks
                 {
                     plist.Remove("XSLaunchImageAssets");
                     touched = true;
-                    Log.LogWarning("Launch image catalogue set name is disabled, removing from plist");
+                    LogWarning("Launch image catalogue set name is disabled, removing from plist");
                 }
                 else
                 {
 
-                    Log.LogWarning("Launch image catalogue set name is disabled, but not set in plist, no changing");
+                    LogWarning("Launch image catalogue set name is disabled, but not set in plist, no changing");
                 }
             }
             else
             {
-                Log.LogWarning("Package launch image catalogue not found in packaging fields");
+                LogWarning("Package launch image catalogue not found in packaging fields");
             }
 
             return touched;
@@ -426,30 +427,30 @@ namespace Build.Client.BuildTasks
                     if (plistKey != launchStoryboardName)
                     {
                         plist["UILaunchStoryboardName"] = launchStoryboardName;
-                        Log.LogMessage("Package launch storyboard changed to '{0}', setting Plist", plist["UILaunchStoryboardName"]);
+                        LogInformation("Package launch storyboard changed to '{0}', setting Plist", plist["UILaunchStoryboardName"]);
                         touched = true;
                     }
                     else
                     {
-                        Log.LogMessage("Package launch storyboard unchanged, skipping");
+                        LogInformation("Package launch storyboard unchanged, skipping");
                     }
                 }
                 else
                 {
                     plist.Add("UILaunchStoryboardName", launchStoryboardName);
                     touched = true;
-                    Log.LogMessage("Package launch storyboard not found in Plist, creating with value '{0}'", plist["UILaunchStoryboardName"]);
+                    LogInformation("Package launch storyboard not found in Plist, creating with value '{0}'", plist["UILaunchStoryboardName"]);
                 }
             }
 
             else if (launchStoryboardNameField != null && launchStoryboardNameField.IsDisabled())
             {
-                Log.LogWarning("Launch launch storyboard is disabled, but not set in plist, no changing");
+                LogWarning("Launch launch storyboard is disabled, but not set in plist, no changing");
 
             }
             else
             {
-                Log.LogWarning("Package launch storyboard not found in packaging fields");
+                LogWarning("Package launch storyboard not found in packaging fields");
             }
 
             return touched;
@@ -475,30 +476,30 @@ namespace Build.Client.BuildTasks
                     if (plisyValue != usesNonExemptEncryption)
                     {
                         plist["ITSAppUsesNonExemptEncryption"] = usesNonExemptEncryption;
-                        Log.LogMessage("Package uses non exempt encryption changed to '{0}', setting Plist", plist["ITSAppUsesNonExemptEncryption"]);
+                        LogInformation("Package uses non exempt encryption changed to '{0}', setting Plist", plist["ITSAppUsesNonExemptEncryption"]);
                         touched = true;
                     }
                     else
                     {
-                        Log.LogMessage("Package uses non exempt encryption unchanged, skipping");
+                        LogInformation("Package uses non exempt encryption unchanged, skipping");
                     }
                 }
                 else
                 {
                     plist.Add("ITSAppUsesNonExemptEncryption", usesNonExemptEncryption);
                     touched = true;
-                    Log.LogMessage("Package uses non exempt encryption not found in Plist, creating with value '{0}'", plist["ITSAppUsesNonExemptEncryption"]);
+                    LogInformation("Package uses non exempt encryption not found in Plist, creating with value '{0}'", plist["ITSAppUsesNonExemptEncryption"]);
                 }
             }
 
             else if ((usesNonExemptEncryptionField != null && usesNonExemptEncryptionField.IsDisabled()))
             {
-                Log.LogWarning("Launch uses non exempt encryption is disabled, but not set in plist, no changing");
+                LogWarning("Launch uses non exempt encryption is disabled, but not set in plist, no changing");
 
             }
             else
             {
-                Log.LogWarning("Package luses non exempt encryption not found in packaging fields");
+                LogWarning("Package luses non exempt encryption not found in packaging fields");
             }
 
             return touched;

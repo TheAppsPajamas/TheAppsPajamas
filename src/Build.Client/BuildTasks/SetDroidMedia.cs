@@ -29,7 +29,8 @@ namespace Build.Client.BuildTasks
         public string BuildConfiguration { get; set; }
         public override bool Execute()
         {
-            Log.LogMessage("Set Droid Media started");
+            var baseResult = base.Execute();
+            LogInformation("Set Droid Media started");
 
             var filesToAddToModifiedProject = new List<ITaskItem>();
             var outputAndroidAssets = new List<ITaskItem>();
@@ -45,23 +46,26 @@ namespace Build.Client.BuildTasks
                 LogDebug("No existing android resource assets found in project");
             }
 
-            foreach (var taskItem in existingAssets)
+            if (this.IsVerbose())
             {
-                LogDebug("Existing asset in project {0}", taskItem.ItemSpec);
+                foreach (var taskItem in existingAssets)
+                {
+                    LogVerbose("Existing asset in project {0}", taskItem.ItemSpec);
+                }
             }
 
             var allMediaFields = new List<ITaskItem>();
 
             if (AppIconHolder.IsDisabled())
             {
-                Log.LogMessage($"App icons are disabled in this configuration");
+                LogInformation($"App icons are disabled in this configuration");
             } else {
                 LogDebug($"App icons are enabled in this configuration");
                 allMediaFields.AddRange(AppIconFields);
             }
             if (SplashHolder.IsDisabled())
             {
-                Log.LogMessage($"Splash screens are disabled in this configuration");
+                LogInformation($"Splash screens are disabled in this configuration");
             }
             else
             {

@@ -61,7 +61,7 @@ namespace Build.Client.BuildTasks
             var unmodifedProjectName = ProjectName.Replace(Consts.ModifiedProjectNameExtra, String.Empty);
             var url = String.Concat(Consts.UrlBase, Consts.ClientEndpoint, "?", "appId=", _tapResourcesConfig.TapAppId, "&projectName=", unmodifedProjectName, "&buildConfiguration=", BuildConfiguration );
 
-            Log.LogMessage("Loading remote build config from '{0}'", url);
+            LogInformation("Loading remote build config from '{0}'", url);
 
             string jsonClientConfig = null;
             try
@@ -71,7 +71,7 @@ namespace Build.Client.BuildTasks
                     client.SetWebClientHeaders(Token);
 
                     jsonClientConfig = client.DownloadString(url);
-                    Log.LogMessage("Successfully loaded remote build config from '{0}', recieved '{1}'", url, jsonClientConfig.Length);
+                    LogInformation("Successfully loaded remote build config from '{0}', recieved '{1}'", url, jsonClientConfig.Length);
                     LogDebug("Json data recieved\n{0}", jsonClientConfig);
                     //write to file
                     //deserialise now (extension method)
@@ -88,7 +88,7 @@ namespace Build.Client.BuildTasks
                 }
 
                 if (response.StatusCode == HttpStatusCode.NotFound){
-                    Log.LogWarning($"Tap server responded with message '{response.StatusDescription}', TheAppsPajamams cannot continue, exiting gracefully, build will continue");
+                    LogWarning($"Tap server responded with message '{response.StatusDescription}', TheAppsPajamams cannot continue, exiting gracefully, build will continue");
                     TapShouldContinue = bool.FalseString;
                     return true;
                 }

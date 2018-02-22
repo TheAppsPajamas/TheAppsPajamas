@@ -39,7 +39,8 @@ namespace Build.Client.BuildTasks
 
         public override bool Execute()
         {
-            Log.LogMessage("Set Ios Asset Cataloge Sets started");
+            var baseResult = base.Execute();
+            LogInformation("Set Ios Asset Cataloge Sets started");
 
             //turns out msbuild adds to the output array itself, so if we send the output back down, and into the same 
             //item property it will get added
@@ -229,7 +230,7 @@ namespace Build.Client.BuildTasks
 
                     if (outputImageSet == null)
                     {
-                        Log.LogWarning("Image catalogue not found for field {0}, size {1}, idiom {2}, scale {3}"
+                        LogWarning("Image catalogue not found for field {0}, size {1}, idiom {2}, scale {3}"
                                        , field.GetMetadata(MetadataType.LogicalName)
                                        , field.GetMetadata(MetadataType.Size)
                                        , field.GetMetadata(MetadataType.Idiom)
@@ -302,7 +303,7 @@ namespace Build.Client.BuildTasks
                 var mediaResourceCatalogueSetContentsPath = Path.Combine(buildConfigurationResourceDir, AssetCatalogueName.ItemSpec, catalogue, Consts.iOSContents);
                 LogDebug($"Added media-resource {catalogue} Contents.json at path {mediaResourceCatalogueSetContentsPath}");
 
-                Log.LogMessage($"Saving media-resources {catalogue} Contents.json to {mediaResourceCatalogueSetContentsPath}");
+                LogInformation($"Saving media-resources {catalogue} Contents.json to {mediaResourceCatalogueSetContentsPath}");
                 File.WriteAllText(mediaResourceCatalogueSetContentsPath, mediaResourceCatalogueSetJson);
 
                 //packagesAppIconSetContentsPath
@@ -334,15 +335,15 @@ namespace Build.Client.BuildTasks
 
                 }
 
-                Log.LogMessage($"Saving project {catalogue} Contents.json to {projectOutputCatalogueSetContentsPath}");
+                LogInformation($"Saving project {catalogue} Contents.json to {projectOutputCatalogueSetContentsPath}");
                 File.WriteAllText(projectOutputCatalogueSetContentsPath, outputCatalogueSetJson);
                 File.WriteAllText(packagesCatalogueSetContentsPath, outputCatalogueSetJson);
 
             }
 
 
-            Log.LogMessage("Asset Catalogue Sets wants to add {0} files to the build project", filesToAddToModifiedProject.Count());
-            Log.LogMessage("Asset Catalogue Sets wants to show {0} media-resources files in the final project", filesToAddToModifiedProject.Count());
+            LogInformation("Asset Catalogue Sets wants to add {0} files to the build project", filesToAddToModifiedProject.Count());
+            LogInformation("Asset Catalogue Sets wants to show {0} media-resources files in the final project", filesToAddToModifiedProject.Count());
 
             FilesToAddToProject = filesToAddToModifiedProject.ToArray();
 

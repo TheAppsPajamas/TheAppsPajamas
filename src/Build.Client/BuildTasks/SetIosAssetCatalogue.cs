@@ -37,7 +37,8 @@ namespace Build.Client.BuildTasks
 
         public override bool Execute()
         {
-            Log.LogMessage("Set Ios Asset Catalogue started");
+            var baseResult = base.Execute();
+            LogInformation("Set Ios Asset Catalogue started");
 
             var filesToAddToModifiedProject = new List<ITaskItem>();
 
@@ -135,7 +136,7 @@ namespace Build.Client.BuildTasks
                     LogDebug("Adding {0} to add to project list as it is not in current project", projectAssetCatalogueContentsPath);
                 }
 
-                Log.LogMessage("SetAssetCatalogues wants to add {0} files to the build project", filesToAddToModifiedProject.Count());
+                LogInformation("SetAssetCatalogues wants to add {0} files to the build project", filesToAddToModifiedProject.Count());
                
                 FilesToAddToProject = filesToAddToModifiedProject.ToArray();
 

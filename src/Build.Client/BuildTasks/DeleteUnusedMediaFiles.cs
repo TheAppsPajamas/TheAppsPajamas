@@ -37,7 +37,8 @@ namespace Build.Client.BuildTasks
 
         public override bool Execute()
         {
-            Log.LogMessage("Deleting unused media files");
+            var baseResult = base.Execute();
+            LogInformation("Deleting unused media files");
             var allMediaFields = this.CombineMediaFields(AppIconFields, SplashFields);
 
             //get directory or create
@@ -48,7 +49,7 @@ namespace Build.Client.BuildTasks
             var iosImageAssetsToRemoveFromProject = new List<ITaskItem>();
             var iosItunesArtworkToRemoveFromProject = new List<ITaskItem>();
 
-            Log.LogMessage("Found {0} existing media files", existingFiles.Count());
+            LogInformation("Found {0} existing media files", existingFiles.Count());
 
             var droidResources = new List<ITaskItem>();
             var iosImageAssets = new List<ITaskItem>();
@@ -79,7 +80,7 @@ namespace Build.Client.BuildTasks
                 if (field == null || field.IsDisabled())
                 {
                     if (field != null && field.IsDisabled()){
-                        Log.LogMessage($"File {file.GetPathRelativeToProject(ProjectDir)} exists, but has been disabled, adding to deletion list");
+                        LogInformation($"File {file.GetPathRelativeToProject(ProjectDir)} exists, but has been disabled, adding to deletion list");
                     }
 
                     ITaskItem existingAsset = null;
@@ -110,13 +111,13 @@ namespace Build.Client.BuildTasks
 
                     if (existingAsset == null)
                     {
-                        Log.LogMessage($"Existing project asset to delete {file.GetPathRelativeToProject(ProjectDir)} doesn't exist in project, deletion will still occur, but csproj file might be confused");
+                        LogInformation($"Existing project asset to delete {file.GetPathRelativeToProject(ProjectDir)} doesn't exist in project, deletion will still occur, but csproj file might be confused");
                     }
                     else
                     {
                         LogDebug($"Existing asset to delete found in project {existingAsset.ItemSpec}");
                     }
-                    Log.LogMessage($"File {fileInfo.Name} no longer required, adding to deletion list");
+                    LogInformation($"File {fileInfo.Name} no longer required, adding to deletion list");
 
 
                     var fileToDelete = new TaskItem(file);
@@ -127,7 +128,7 @@ namespace Build.Client.BuildTasks
                 else
                 {
 
-                    Log.LogMessage("File {0} still required, skipping", fileInfo.Name);
+                    LogInformation("File {0} still required, skipping", fileInfo.Name);
                 }
             }
 

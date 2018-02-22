@@ -1,21 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Project>
-<!--    <Import Project="$(MSBuildThisFileDirectory)Xamarin.iOS.Common.targets"
-            Condition="Exists('$(MSBuildThisFileDirectory)Xamarin.iOS.Common.targets') And '$(IsTheAppPajamaClientProject)' != 'true' " />
-
-    <Import Project="$(MSBuildThisFileDirectory)Xamarin.iOS.WatchApp.Common.targets"
-            Condition="Exists('$(MSBuildThisFileDirectory)Xamarin.iOS.WatchApp.Common.targets') And '$(IsTheAppPajamaClientProject)' != 'true' " />
-
-    
-    <Import Project="$(MSBuildThisFileDirectory)Microsoft.Common.targets"
-            Condition="Exists('$(MSBuildThisFileDirectory)Microsoft.Common.targets') And '$(IsTheAppPajamaClientProject)' != 'true' " />-->
-
-
-   <!--     <Import Project="$(MSBuildThisFileDirectory)Xamarin.iOS.Common.targets"/>-->
-
-    <PropertyGroup>
-        <BuildDebug>true</BuildDebug>
-    </PropertyGroup>
 
  
 
@@ -30,16 +14,21 @@
     <Target Name="CleanAssetCatalogues" 
         AfterTargets="Clean" 
         Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' ">
-        <CleanAssetCatalogues Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" TargetsDir="$(MSBuildThisFileDirectory)">
+        <CleanAssetCatalogues 
+            PackagesDir="$(PackagesDir)" 
+            ProjectDir="$(MSBuildProjectDirectory)" 
+            TargetsDir="$(MSBuildThisFileDirectory)">
+
+            <Output TaskParameter="TapConfigOutput" ItemName="TapConfig"/>
         </CleanAssetCatalogues>
     </Target>
 
-    <Target Name="BuildPath" 
+<!--    <Target Name="BuildPath" 
         AfterTargets="LoadLocalBuildConfig" 
         Condition="'$(BuildDebug)' == 'True' ">
             <Message Text="MSBuildBinPath: $(MSBuildBinPath)" />
             <Message Text="MSBuildExtensionsPath: $(MSBuildExtensionsPath)" />
-        </Target>
+        </Target>-->
 
     <!-- no longer using this, we're running load remote evetyime to see what happens -->
 <!--   <Target Name="LoadLocalBuildConfig" 
@@ -65,7 +54,7 @@
     <Target Name="LoadRemoteBuildConfig" 
         AfterTargets="_GetReferenceAssemblyPaths;_BeforeCoreCompileInterfaceDefinitions" >
         <LoadRemoteBuildConfig 
-            Debug="$(BuildDebug)" 
+            TapConfig="@(TapConfig)"
             ProjectName="$(MSBuildProjectName)" 
             BuildConfiguration="$(Configuration)" 
             PackagesDir="$(PackagesDir)" 
@@ -89,13 +78,15 @@
                 <Output TaskParameter="TapResourceDirRelative" PropertyName="TapResourceDirRelative" />
 
                 <Output TaskParameter="TapShouldContinue" PropertyName="TapShouldContinue" />
+            <Output TaskParameter="TapConfigOutput" ItemName="TapConfig"/>
         </LoadRemoteBuildConfig>
     </Target>
     
     <Target Name="DeleteUnusedMediaFiles" 
         AfterTargets="LoadRemoteBuildConfig"
         Condition=" '$(TapShouldContinue)' == 'True' ">
-        <DeleteUnusedMediaFiles Debug="$(BuildDebug)" 
+        <DeleteUnusedMediaFiles 
+            TapConfig="@(TapConfig)"
             ProjectDir="$(MSBuildProjectDirectory)" 
             PackagesDir="$(PackagesDir)" 
             AppIconFields="@(AppIconFields)" 
@@ -109,6 +100,7 @@
             <Output TaskParameter="IosImageAssetsToRemoveFromProject" ItemName="IosImageAssetsToRemoveFromProject" />
             <Output TaskParameter="IosItunesArtworkToRemoveFromProject" ItemName="IosItunesArtworkToRemoveFromProject" />
 
+            <Output TaskParameter="TapConfigOutput" ItemName="TapConfig"/>
    
             
         </DeleteUnusedMediaFiles>
@@ -128,7 +120,7 @@
         AfterTargets="DeleteUnusedMediaFiles"
         Condition=" '$(TapShouldContinue)' == 'True' ">
         <DownloadMediaFiles 
-            Debug="$(BuildDebug)" 
+            TapConfig="@(TapConfig)"
             BuildAppId="$(BuildAppId)" 
             ProjectDir="$(MSBuildProjectDirectory)" 
             Token="$(BuildAccessToken)" 
@@ -137,6 +129,7 @@
             SplashFields="@(SplashFields)" 
             BuildConfiguration="$(Configuration)"
             FilesToDeleteFromProject="@(FilesToDeleteFromProject)">
+            <Output TaskParameter="TapConfigOutput" ItemName="TapConfig"/>
         </DownloadMediaFiles>
     </Target>
     
@@ -144,18 +137,20 @@
         AfterTargets="DownloadMediaFiles" 
         Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid' And '$(TapShouldContinue)' == 'True' ">
         <SetDroidManifest 
-            Debug="$(BuildDebug)" 
+            TapConfig="@(TapConfig)"
             ProjectDir="$(MSBuildProjectDirectory)" 
             PackagingFields="@(PackagingFields)" 
             PackagingHolder="@(PackagingHolder)"
             AndroidManifest="$(AndroidManifest)">
+            <Output TaskParameter="TapConfigOutput" ItemName="TapConfig"/>
         </SetDroidManifest>
     </Target>
     
     <Target Name="SetDroidMedia" 
         AfterTargets="SetDroidManifest" 
         Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid' And '$(TapShouldContinue)' == 'True' ">
-        <SetDroidMedia Debug="$(BuildDebug)" 
+        <SetDroidMedia 
+            TapConfig="@(TapConfig)"
             BuildConfiguration="$(Configuration)" 
             PackagesDir="$(PackagesDir)" 
             ProjectDir="$(MSBuildProjectDirectory)" 
@@ -166,6 +161,7 @@
             ExistingAndroidResources="@(AndroidResource)">
             <Output TaskParameter="OutputAndroidAssets" ItemName="AndroidAppIcons" />    
             <Output TaskParameter="FilesToAddToProject" ItemName="FilesToAddToProject" />
+            <Output TaskParameter="TapConfigOutput" ItemName="TapConfig"/>
         </SetDroidMedia>
 
 
@@ -180,12 +176,14 @@
     <Target Name="SetIosPlist" 
         AfterTargets="SetDroidMedia" 
         Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' And '$(TapShouldContinue)' == 'True' ">
-        <SetIosPlist Debug="$(BuildDebug)" 
+        <SetIosPlist 
+            TapConfig="@(TapConfig)"
             PackagesDir="$(PackagesDir)" 
             ProjectDir="$(MSBuildProjectDirectory)" 
             PackagingFields="@(PackagingFields)" 
             PackagingHolder="$(PackagingHolder)"
             IosPlist="$(_AppManifest)">
+            <Output TaskParameter="TapConfigOutput" ItemName="TapConfig"/>
             </SetIosPlist>
 
     </Target>
@@ -194,7 +192,8 @@
     <Target Name="SetIosAssetCatalogue" 
         AfterTargets="SetIosPlist" 
         Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' And '$(TapShouldContinue)' == 'True' ">
-        <SetIosAssetCatalogue Debug="$(BuildDebug)" 
+        <SetIosAssetCatalogue 
+            TapConfig="@(TapConfig)" 
             BuildConfiguration="$(Configuration)" 
             PackagesDir="$(PackagesDir)" 
             ProjectDir="$(MSBuildProjectDirectory)" 
@@ -207,6 +206,7 @@
             <Output TaskParameter="OutputImageAssets" ItemName="IosImageAssets" />           
 
             <Output TaskParameter="FilesToAddToProject" ItemName="FilesToAddToProject" />
+            <Output TaskParameter="TapConfigOutput" ItemName="TapConfig"/>
         </SetIosAssetCatalogue>
 
         <!-- TODO pass IosImageAssets into next target -->
@@ -220,7 +220,8 @@
     <Target Name="SetIosAssetCatalogueSets" 
         AfterTargets="SetIosAssetCatalogue" 
         Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' And '$(TapShouldContinue)' == 'True' ">
-        <SetIosAssetCatalogueSets Debug="$(BuildDebug)" 
+        <SetIosAssetCatalogueSets 
+            TapConfig="@(TapConfig)"
             BuildConfiguration="$(Configuration)" 
             PackagesDir="$(PackagesDir)" 
             ProjectDir="$(MSBuildProjectDirectory)" 
@@ -235,6 +236,7 @@
 
             
             <Output TaskParameter="FilesToAddToProject" ItemName="FilesToAddToProject" />
+            <Output TaskParameter="TapConfigOutput" ItemName="TapConfig"/>
         </SetIosAssetCatalogueSets>
         
 
@@ -290,7 +292,8 @@
     <Target Name="ModifyProject" 
         AfterTargets="RemoveTapResources"
         Condition=" '$(TapShouldContinue)' == 'True' ">
-           <ModifyProject Debug="$(BuildDebug)" 
+           <ModifyProject 
+            TapConfig="@(TapConfig)" 
             PackagesDir="$(PackagesDir)" 
             ProjectDir="$(MSBuildProjectDirectory)"             
             ProjectFileLoad="$(MSBuildProjectFullPath)"
@@ -300,6 +303,7 @@
 
             <Output TaskParameter="ProjectShouldModifyOriginal" PropertyName="ProjectShouldModifyOriginal"/>
 
+            <Output TaskParameter="TapConfigOutput" ItemName="TapConfig"/>
         </ModifyProject>
 
     </Target>
@@ -329,10 +333,14 @@
     <Target Name="SaveModifiedProjectBackToProject" 
         AfterTargets="ModifyProject"
         Condition=" $(ProjectShouldModifyOriginal) == 'True' And '$(TapShouldContinue)' == 'True' ">
-        <SaveModifiedProjectBackToProject Debug="$(BuildDebug)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" 
+        <SaveModifiedProjectBackToProject 
+            TapConfig="@(TapConfig)"
+            PackagesDir="$(PackagesDir)" 
+            ProjectDir="$(MSBuildProjectDirectory)" 
             ProjectFileOriginalName="$(MSBuildProjectFullPath)"
             ProjectFileModifiedName="$(ModifiedProjectFullPath)">
 
+            <Output TaskParameter="TapConfigOutput" ItemName="TapConfig"/>
         </SaveModifiedProjectBackToProject>
     </Target>   
 

@@ -10,7 +10,7 @@ namespace Build.Client.Extensions
         public static void SetDisabledMetadata(this ITaskItem taskItem, BaseTask baseTask, bool disabled, string description){
             if (disabled)
             {
-                baseTask.Log.LogWarning($"{description} is disabled");
+                baseTask.LogWarning($"{description} is disabled");
                 taskItem.SetMetadata(MetadataType.Disabled, bool.TrueString);
             }
             else

@@ -16,13 +16,14 @@ namespace Build.Client.BuildTasks
 
         public override bool Execute()
         {
+            var baseResult = base.Execute();
             try
             {
-                Log.LogMessage("Saving modified project {0} to {1}", ProjectFileModifiedName, ProjectFileOriginalName);
+                LogInformation("Saving modified project {0} to {1}", ProjectFileModifiedName, ProjectFileOriginalName);
 
                 File.Copy(ProjectFileModifiedName, ProjectFileOriginalName, true);
 
-                Log.LogMessage("Modified project saved back to original, Reload project now required");
+                LogInformation("Modified project saved back to original, Reload project now required");
                 //collection.un
 
             } catch (Exception ex){

@@ -19,17 +19,18 @@ namespace Build.Client.BuildTasks
 
         public override bool Execute()
         {
-            Log.LogMessage("Setting Droid manifest file");
+            var baseResult = base.Execute();
+            LogInformation("Setting Droid manifest file");
 
             if (PackagingHolder.IsDisabled())
             {
-                Log.LogMessage($"Packaging is disabled in this configuration, Android Manifest will not be set");
+                LogInformation($"Packaging is disabled in this configuration, Android Manifest will not be set");
                 return true;
             }
 
             if (String.IsNullOrEmpty(AndroidManifest))
             {
-                Log.LogMessage("Android manifest file name empty, aborting SetDroidManifest as ran successful");
+                LogInformation("Android manifest file name empty, aborting SetDroidManifest as ran successful");
                 return true;
             }
 
@@ -64,7 +65,7 @@ namespace Build.Client.BuildTasks
                 }
                 else
                 {
-                    Log.LogWarning("Android Manifest Application node not found");
+                    LogWarning("Android Manifest Application node not found");
                 }
 
                 touched = BundleIdentifier(xml, touched);
@@ -75,12 +76,12 @@ namespace Build.Client.BuildTasks
 
                 if (touched)
                 {
-                    Log.LogMessage("Manifest touched, saving");
+                    LogInformation("Manifest touched, saving");
                     xml.Save(AndroidManifest);
                 }
                 else
                 {
-                    Log.LogMessage("Manifest untouched, skipping");
+                    LogInformation("Manifest untouched, skipping");
                 }
 
                 return true;
@@ -113,11 +114,11 @@ namespace Build.Client.BuildTasks
             }
             else if (packageVersionCodeField != null && packageVersionCodeField.IsDisabled())
             {
-                Log.LogWarning("Package version code is disabled, it will not be set in Android Manifest");
+                LogWarning("Package version code is disabled, it will not be set in Android Manifest");
             }
             else
             {
-                Log.LogWarning("Package version code not found in packaging fields");
+                LogWarning("Package version code not found in packaging fields");
             }
 
             return touched;
@@ -144,11 +145,11 @@ namespace Build.Client.BuildTasks
             }
             else if (packageVersionNameField != null && packageVersionNameField.IsDisabled())
             {
-                Log.LogWarning("Package version name is disabled, it will not be set in Android Manifest");
+                LogWarning("Package version name is disabled, it will not be set in Android Manifest");
             }
             else
             {
-                Log.LogWarning("Package version name not found in packaging fields");
+                LogWarning("Package version name not found in packaging fields");
             }
 
             return touched;
@@ -175,11 +176,11 @@ namespace Build.Client.BuildTasks
             }
             else if (packageIdentifierField != null && packageIdentifierField.IsDisabled())
             {
-                Log.LogWarning("Package identifier is disabled, it will not be set in Android Manifest");
+                LogWarning("Package identifier is disabled, it will not be set in Android Manifest");
             }
             else
             {
-                Log.LogWarning("Package identifier not found in packaging fields");
+                LogWarning("Package identifier not found in packaging fields");
             }
 
             return touched;
@@ -210,16 +211,16 @@ namespace Build.Client.BuildTasks
                 }
                 else
                 {
-                    Log.LogWarning("Package app icon attribute not found in Android Manifest");
+                    LogWarning("Package app icon attribute not found in Android Manifest");
                 }
             }
             else if (iconNameField != null && iconNameField.IsDisabled())
             {
-                Log.LogWarning("Package app icon is disabled, it will not be set in Android Manifest");
+                LogWarning("Package app icon is disabled, it will not be set in Android Manifest");
             }
             else
             {
-                Log.LogWarning("Package app icon not found in packaging fields");
+                LogWarning("Package app icon not found in packaging fields");
             }
 
             return touched;
@@ -250,16 +251,16 @@ namespace Build.Client.BuildTasks
                 }
                 else
                 {
-                    Log.LogWarning("Package label attribute not found in Android Manifest");
+                    LogWarning("Package label attribute not found in Android Manifest");
                 }
             }
             else if (packageNameField != null && packageNameField.IsDisabled())
             {
-                Log.LogWarning("Package name is disabled, it will not be set in Android Manifest");
+                LogWarning("Package name is disabled, it will not be set in Android Manifest");
             }
             else
             {
-                Log.LogWarning("Package name not found in packaging fields");
+                LogWarning("Package name not found in packaging fields");
             }
 
             return touched;

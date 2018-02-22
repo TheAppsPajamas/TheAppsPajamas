@@ -4,6 +4,22 @@ namespace Build.Client.Constants
     public static class MetadataType
     {
         /// <summary>
+        /// The tap config ItemSepc
+        /// </summary>
+        public const string TapConfig = "TapConfig";
+
+        /// <summary>
+        /// The Tap LogLevel, defaults to Information if not specified
+        /// </summary>
+        public const string TapLogLevel = "TapLogLevel";
+
+        /// <summary>
+        /// The Tap endpoint, defaults to Consts.Endpoint if not specified
+        /// </summary>
+        public const string TapEndpoint = "TapEndpoint";
+
+
+        /// <summary>
         /// The idiom for/from the iOS Contents.json file.
         /// </summary>
         public const string Idiom = "idiom";

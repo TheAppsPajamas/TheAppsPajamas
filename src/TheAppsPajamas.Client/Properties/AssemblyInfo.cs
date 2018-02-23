@@ -4,12 +4,12 @@ using System.Runtime.CompilerServices;
 // Information about this assembly is defined by the following attributes. 
 // Change them to the values specific to your project.
 
-[assembly: AssemblyTitle("Build.Client")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("TheAppsPajamas.Client")]
+[assembly: AssemblyDescription("TheAppsPajamas Build Client Tool")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("TheAppsPajamas")]
 [assembly: AssemblyProduct("")]
-[assembly: AssemblyCopyright("(c) Dean Marcussen")]
+[assembly: AssemblyCopyright("(c 2018) TheAppsPajamas")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

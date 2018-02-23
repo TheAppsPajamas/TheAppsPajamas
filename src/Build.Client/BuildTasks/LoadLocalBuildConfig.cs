@@ -33,7 +33,7 @@ namespace Build.Client.BuildTasks
             TapResourceDir = this.GetTapResourcesDir();
             if (String.IsNullOrEmpty(TapResourceDir)){
                 NeedsLoadRemote = true;
-                Log.LogMessage($"{Consts.TapResourcesDir} folder not found, forcing remote load");
+                LogInformation($"{Consts.TapResourcesDir} folder not found, forcing remote load");
                 return true;
             }
 
@@ -44,7 +44,7 @@ namespace Build.Client.BuildTasks
             var projectConfig = projectConfigs.Projects.FirstOrDefault(x => x.BuildConfiguration == BuildConfiguration);
 
             if (projectConfig == null || projectConfig.ClientConfig == null){
-                Log.LogMessage($"{BuildConfiguration} configuration not found for project {ProjectName} in {Consts.ProjectsConfig}, forcing remote load");
+                LogInformation($"{BuildConfiguration} configuration not found for project {ProjectName} in {Consts.ProjectsConfig}, forcing remote load");
                 NeedsLoadRemote = true;
                 return true;
             }
@@ -53,11 +53,11 @@ namespace Build.Client.BuildTasks
 
             AssetCatalogueName = this.GetAssetCatalogueName(projectConfig.ClientConfig, TargetFrameworkIdentifier);
 
-            AppIconOutput = this.GetMediaOutput(projectConfig.ClientConfig.AppIcon.Fields, AssetCatalogueName, projectConfig.ClientConfig);
+            AppIconFieldOutput = this.GetMediaFieldOutput(projectConfig.ClientConfig.AppIcon.Fields, AssetCatalogueName, projectConfig.ClientConfig);
 
-            SplashOutput = this.GetMediaOutput(projectConfig.ClientConfig.Splash.Fields, AssetCatalogueName, projectConfig.ClientConfig);
+            SplashFieldOutput = this.GetMediaFieldOutput(projectConfig.ClientConfig.Splash.Fields, AssetCatalogueName, projectConfig.ClientConfig);
 
-            PackagingOutput = this.GetFieldTypeOutput(projectConfig.ClientConfig.Packaging.Fields);
+            PackagingFieldOutput = this.GetStringFieldOutput(projectConfig.ClientConfig.Packaging.Fields);
 
             return true;
         }

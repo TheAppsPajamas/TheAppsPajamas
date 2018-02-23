@@ -108,6 +108,11 @@
     <Compile Include="Models\AppIconClientDto.cs" />
     <Compile Include="Models\SplashClientDto.cs" />
     <Compile Include="Models\PackagingClientDto.cs" />
+    <Compile Include="Models\BuildConfigClientDto.cs" />
+    <Compile Include="Extensions\TaskItemExtensions.cs" />
+    <Compile Include="Models\TapConfig.cs" />
+    <Compile Include="Constants\TapLogLevel.cs" />
+    <Compile Include="Extensions\LogExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />

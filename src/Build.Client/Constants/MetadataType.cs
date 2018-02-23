@@ -4,6 +4,22 @@ namespace Build.Client.Constants
     public static class MetadataType
     {
         /// <summary>
+        /// The tap config ItemSepc
+        /// </summary>
+        public const string TapConfig = "TapConfig";
+
+        /// <summary>
+        /// The Tap LogLevel, defaults to Information if not specified
+        /// </summary>
+        public const string TapLogLevel = "TapLogLevel";
+
+        /// <summary>
+        /// The Tap endpoint, defaults to Consts.Endpoint if not specified
+        /// </summary>
+        public const string TapEndpoint = "TapEndpoint";
+
+
+        /// <summary>
         /// The idiom for/from the iOS Contents.json file.
         /// </summary>
         public const string Idiom = "idiom";
@@ -56,7 +72,7 @@ namespace Build.Client.Constants
         /// <summary>
         /// If the field is actually disabled.
         /// </summary>
-        public const string Disabled = "Disabled";
+        public const string Disabled = "TapDisabled";
 
         /// <summary>
         /// The path of the file to be deleted from the project.
@@ -120,5 +136,10 @@ namespace Build.Client.Constants
         /// The catalogue packaging (for landscape / portrait image sets, id)
         /// </summary>
         public const string CataloguePackagingFieldId = "CataloguePackagingFieldId";
+
+        /// <summary>
+        /// The field holder, stored as itemspec.
+        /// </summary>
+        public const string FieldHolder = "FieldHolder";
     }
 }

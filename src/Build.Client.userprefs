@@ -1,9 +1,28 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/NugetContent/build/Build.Client.targets">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Build.Client/BuildTasks/SetDroidMedia.cs">
     <Files>
-      <File FileName="Build.Client/NugetContent/build/Build.Client.targets" Line="63" Column="58" />
-      <File FileName="Build.Client/BuildTasks/BaseLoadTask.cs" Line="36" Column="48" />
-      <File FileName="Build.Client/BuildTasks/LoadRemoteBuildConfig.cs" Line="98" Column="14" />
+      <File FileName="Build.Client/NugetContent/build/Build.Client.targets" Line="3" Column="1" />
+      <File FileName="Build.Client/BuildTasks/BaseTask.cs" Line="8" Column="27" />
+      <File FileName="Build.Client/Extensions/LogExtensions.cs" Line="72" Column="29" />
+      <File FileName="Build.Client/Extensions/MediaExtensions.cs" Line="30" Column="34" />
+      <File FileName="Build.Client/Extensions/ConfigExtensions.cs" Line="225" Column="72" />
+      <File FileName="Build.Client/Models/TapConfig.cs" Line="1" Column="1" />
+      <File FileName="Build.Client/BuildTasks/BaseLoadTask.cs" Line="97" Column="17" />
+      <File FileName="Build.Client/BuildTasks/CleanAssetCatalogues.cs" Line="33" Column="36" />
+      <File FileName="Build.Client/BuildTasks/CleanProjectsConfig.cs" Line="18" Column="16" />
+      <File FileName="Build.Client/NugetContent/build/Build.Client.props" Line="15" Column="110" />
+      <File FileName="Build.Client/BuildTasks/DeleteUnusedMediaFiles.cs" Line="131" Column="35" />
+      <File FileName="Build.Client/BuildTasks/DownloadMediaFiles.cs" Line="104" Column="39" />
+      <File FileName="Build.Client/Extensions/LoadExtensions.cs" Line="53" Column="106" />
+      <File FileName="Build.Client/BuildTasks/LoadLocalBuildConfig.cs" Line="47" Column="31" />
+      <File FileName="Build.Client/BuildTasks/LoadRemoteBuildConfig.cs" Line="91" Column="31" />
+      <File FileName="Build.Client/BuildTasks/SaveModifiedProjectBackToProject.cs" Line="26" Column="31" />
+      <File FileName="Build.Client/BuildTasks/SetDroidManifest.cs" Line="263" Column="17" />
+      <File FileName="Build.Client/BuildTasks/SetDroidMedia.cs" Line="56" Column="13" />
+      <File FileName="Build.Client/BuildTasks/SetIosAssetCatalogue.cs" Line="139" Column="31" />
+      <File FileName="Build.Client/BuildTasks/SetIosAssetCatalogueSets.cs" Line="346" Column="27" />
+      <File FileName="Build.Client/BuildTasks/SetIosPlist.cs" Line="453" Column="27" />
+      <File FileName="Build.Client/Extensions/TaskItemExtensions.cs" Line="12" Column="14" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

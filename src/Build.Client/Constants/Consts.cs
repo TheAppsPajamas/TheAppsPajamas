@@ -10,6 +10,7 @@ namespace Build.Client.Constants
 
         public const string TapResourcesConfig = "TapResources.config";
         public const string TapSecurityConfig = "TapSecurity.config";
+        public const string TapConfig = "Tap.config";
 
         public const string ModifiedProjectNameExtra = ".Tap";
 

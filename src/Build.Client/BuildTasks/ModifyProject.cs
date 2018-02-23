@@ -28,6 +28,7 @@ namespace Build.Client.BuildTasks
 
         public override bool Execute()
         {
+            var baseResult = base.Execute();
             //try
             //{
                 //List<ILogger> loggers = new List<ILogger>();

@@ -15,11 +15,11 @@ namespace Build.Client.Extensions
             try
             {
                 var files = Directory.EnumerateFiles(buildConfigResourceDir, "*.png", SearchOption.AllDirectories);
-                if (baseTask.Debug)
+                if (baseTask.IsVerbose())
                 {
                     if (files.Any())
                     {
-                        baseTask.Log.LogMessage("{0} png files found in resources folder {1}", files.Count(), buildConfigResourceDir);
+                        baseTask.LogVerbose("{0} png files found in resources folder {1}", files.Count(), buildConfigResourceDir);
                         foreach (var file in files)
                         {
                             baseTask.LogDebug("Media file found {0}", file);
@@ -27,7 +27,7 @@ namespace Build.Client.Extensions
                     }
                     else
                     {
-                        baseTask.Log.LogMessage("No files found in resources folder {0}", buildConfigResourceDir);
+                        baseTask.LogVerbose("No files found in resources folder {0}", buildConfigResourceDir);
                     }
                 }
                 return files;

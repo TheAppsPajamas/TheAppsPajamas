@@ -16,6 +16,50 @@ namespace Build.Client.Extensions
 {
     public static class ConfigExtensions
     {
+        public static ITaskItem GetTapConfig(this BaseTask baseTask)
+        {
+            //baseTask.Log.LogMessage($"Loading {Consts.TapConfig} file");
+
+            try
+            {
+                var tapConfigPath = Path.Combine(baseTask.PackagesDir, Consts.TapConfig);
+                if (!File.Exists(tapConfigPath))
+                {
+                    var tapConfigTaskItem = new TaskItem(MetadataType.TapConfig);
+
+                    tapConfigTaskItem.SetMetadata(MetadataType.TapEndpoint, Consts.ClientEndpoint);
+                    tapConfigTaskItem.SetMetadata(MetadataType.TapLogLevel, TapLogLevel.Information);
+     
+
+                    //baseTask.Log.LogMessage($"Tap log level set to {tapConfigTaskItem.GetMetadata(MetadataType.TapLogLevel)}");
+                    return tapConfigTaskItem;
+                }
+                else
+                {
+                    var json = File.ReadAllText(tapConfigPath);
+                    var tapConfig = JsonConvert.DeserializeObject<TapConfig>(json);
+
+                    var tapConfigTaskItem = new TaskItem(MetadataType.TapConfig);
+
+                    tapConfigTaskItem.SetMetadata(MetadataType.TapEndpoint, tapConfig.Endpoint);
+                    tapConfigTaskItem.SetMetadata(MetadataType.TapLogLevel, tapConfig.TapLogLevel);
+
+                    baseTask.LogInformation($"Tap log level set to {tapConfigTaskItem.GetMetadata(MetadataType.TapLogLevel)}");
+                    return tapConfigTaskItem;
+                }
+            }
+            catch (Exception ex)
+            {
+                var tapConfigTaskItem = new TaskItem(MetadataType.TapConfig);
+
+                tapConfigTaskItem.SetMetadata(MetadataType.TapEndpoint, Consts.ClientEndpoint);
+                tapConfigTaskItem.SetMetadata(MetadataType.TapLogLevel, TapLogLevel.Information);
+                baseTask.Log.LogWarning($"Error trying to read {Consts.TapConfig}, returning defaults");
+                baseTask.LogInformation($"Tap log level set to {tapConfigTaskItem.GetMetadata(MetadataType.TapLogLevel)}");
+                return tapConfigTaskItem;
+            }
+        }
+
         public static BuildResourcesConfig GetResourceConfig(this BaseLoadTask baseTask)
         {
             baseTask.Log.LogMessage($"Loading {Consts.TapResourcesConfig} file");
@@ -59,7 +103,7 @@ namespace Build.Client.Extensions
 
         public static void SaveResourceConfig(this BaseLoadTask baseTask, BuildResourcesConfig buildResourcesConfig)
         {
-            baseTask.Log.LogMessage($"Saving {Consts.TapResourcesConfig} file");
+            baseTask.LogInformation($"Saving {Consts.TapResourcesConfig} file");
 
             try
             {
@@ -121,19 +165,19 @@ namespace Build.Client.Extensions
 
         public static ClientConfigDto GetClientConfig(this BaseLoadTask baseTask, string json)
         {
-            try
-            {
+   //         //try
+            //{
                 baseTask.LogDebug("Deserializing ClientConfigDto, length '{0}'", json.Length);
                 var clientConfigDto = JsonConvert.DeserializeObject<ClientConfigDto>(json);
                 baseTask.LogDebug("Deserialized ClientConfigDto, packagingFields: '{0}', appIconFields: '{1}', splashFields: '{2}'"
                                   , clientConfigDto.Packaging.Fields.Count, clientConfigDto.AppIcon.Fields.Count, clientConfigDto.Splash.Fields.Count);
                 return clientConfigDto;
-            }
-            catch (Exception ex)
-            {
-                baseTask.Log.LogErrorFromException(ex);
-            }
-            return null;
+            //}
+            //catch (Exception ex)
+            //{
+            //    baseTask.Log.LogErrorFromException(ex);
+            //}
+            //return null;
         }
 
         public static ITaskItem[] GetPackagingOutput(this BaseLoadTask baseTask, ClientConfigDto clientConfigDto)
@@ -148,29 +192,42 @@ namespace Build.Client.Extensions
                 output.Add(new TaskItem(field.FieldId.ToString(), itemMetadata));
             }
 
-            baseTask.Log.LogMessage("Generated {0} Packaging TaskItems", output.Count);
+            baseTask.LogInformation("Generated {0} Packaging TaskItems", output.Count);
             return output.ToArray();
         }
 
-        public static ITaskItem[] GetFieldTypeOutput<TFieldClientDto>(this BaseLoadTask baseTask, IList<TFieldClientDto> fieldsDto)
+        public static ITaskItem GetHolderOutput(this BaseLoadTask baseTask, IBaseHolderClientDto holder, string description)
+        {
+            baseTask.LogDebug($"Generating Holder Output for {description}");
+
+            var taskItem = new TaskItem(MetadataType.FieldHolder);
+            taskItem.SetDisabledMetadata(baseTask, holder.Disabled, description);
+            return taskItem;
+        }
+        
+        public static ITaskItem[] GetStringFieldOutput<TFieldClientDto>(this BaseLoadTask baseTask, IList<TFieldClientDto> fieldsDto)
             where TFieldClientDto : BaseFieldClientDto
         {
-            baseTask.LogDebug("Generating Field Output TaskItems");
+            baseTask.LogDebug("Generating String Field Output TaskItems");
 
             var output = new List<ITaskItem>();
             foreach (var field in fieldsDto)
             {
                 var itemMetadata = new Dictionary<string, string>();
                 itemMetadata.Add(MetadataType.Value, field.Value);
-                output.Add(new TaskItem(field.FieldId.ToString(), itemMetadata));
+                var taskItem = new TaskItem(field.FieldId.ToString(), itemMetadata);
+
+                var fieldType = FieldType.GetAll().FirstOrDefault(x => x.Value == field.FieldId);
+                taskItem.SetDisabledMetadata(baseTask, field.Disabled, fieldType.DisplayName);
+                output.Add(taskItem);
             }
 
-            baseTask.Log.LogMessage("Generated {0} Field Output TaskItems", output.Count);
+            baseTask.LogInformation($"Generated {output.Count} Field Output TaskItems");
             return output.ToArray();
         }
 
 
-        public static ITaskItem[] GetMediaOutput<TFieldClientDto>(this BaseLoadTask baseTask
+        public static ITaskItem[] GetMediaFieldOutput<TFieldClientDto>(this BaseLoadTask baseTask
                                                                   , IList<TFieldClientDto> fieldsDto
                                                                   , ITaskItem assetCatalogueName
                                                                   , ClientConfigDto clientConfigDto)
@@ -274,15 +331,16 @@ namespace Build.Client.Extensions
                     }
                 }
                 itemMetadata.Add(MetadataType.MediaFileId, field.Value);
-                itemMetadata.Add(MetadataType.Disabled, field.Disabled.ToString());
                 itemMetadata.Add(MetadataType.FieldDescription, fieldType.DisplayName);
 
                 var taskItem = new TaskItem(field.FieldId.ToString(), itemMetadata);
+                taskItem.SetDisabledMetadata(baseTask, field.Disabled, fieldType.DisplayName);
+
                 baseTask.LogDebug(GetDebugStringFromTaskItem(taskItem, itemMetadata));
                 output.Add(taskItem);
             }
 
-            baseTask.Log.LogMessage("Generated {0} Media Field TaskItems", output.Count);
+            baseTask.LogInformation("Generated {0} Media Field TaskItems", output.Count);
             return output.ToArray();
         }
 

@@ -24,12 +24,13 @@ namespace Build.Client.BuildTasks
 
         public override bool Execute()
         {
-            Log.LogMessage("Downloading media files");
+            var baseResult = base.Execute();
+            LogInformation("Downloading media files");
 
             var allMediaFields = this.CombineMediaFields(AppIconFields, SplashFields);
 
             var existingFiles = this.GetExistingMediaFiles(BuildConfiguration).Select(x => new FileHolder(x));
-            Log.LogMessage("{0} media files required, {1} media files already available", allMediaFields.Count(), existingFiles.Count());
+            LogInformation("{0} media files required, {1} media files already available", allMediaFields.Count(), existingFiles.Count());
 
             if (Token == null || String.IsNullOrEmpty(Token.ItemSpec)){
                 var securityConfig = this.GetSecurityConfig();
@@ -60,7 +61,7 @@ namespace Build.Client.BuildTasks
                     var exists = existingFiles.Any(x => x.FileNoExt == field.GetMetadata(MetadataType.MediaName));
                     if (!exists)
                     {
-                        if (field.GetMetadata(MetadataType.Disabled) == bool.TrueString)
+                        if (field.IsDisabled() == true)
                         {
                             Log.LogMessage("Media field {0} is disabled, not downloading", field.GetMetadata(MetadataType.FieldDescription));
                             continue;
@@ -81,24 +82,26 @@ namespace Build.Client.BuildTasks
                                 Directory.CreateDirectory(directory);
                             }
                             var fileName = Path.Combine(buildConfigResourceDir, field.GetMetadata(MetadataType.Path), field.GetMetadata(MetadataType.MediaName).ApplyPngExt());
-                            Log.LogMessage("Downloading media file {0}, from url {1}", fileName, url);
+                            LogInformation("Downloading media file {0}, from url {1}", fileName, url);
                             client.DownloadFile(url, fileName);
                         }
-                    }
-                    else if (field.GetMetadata(MetadataType.Disabled) == bool.TrueString)
-                    {
-                        //Think this takes care of deleting. not sure about old files tho?
-                        Log.LogMessage("Media file {0} exists, but is now disabled, deleting", field.GetMetadata(MetadataType.FieldDescription));
-                        var fileInfo = existingFiles.FirstOrDefault(x => x.FileNoExt == field.GetMetadata(MetadataType.MediaName));
-                        fileInfo.FileInfo.Delete();
+                    
+                        //doing this in deleteunusedfiles, so should be alright
+                        //}
+                    //else if (field.IsDisabled() == true)
+                    //{
+                        ////Think this takes care of deleting. not sure about old files tho?
+                        //Log.LogMessage("Media file {0} exists, but is now disabled, deleting", field.GetMetadata(MetadataType.FieldDescription));
+                        //var fileInfo = existingFiles.FirstOrDefault(x => x.FileNoExt == field.GetMetadata(MetadataType.MediaName));
+                        //fileInfo.FileInfo.Delete();
 
-                        var fileToDelete = new TaskItem(field.GetMetadata(MetadataType.MSBuildItemType), new Dictionary<string, string>{
-                            { MetadataType.DeletePath, fileInfo.FileInfo.FullName }
-                        });
-                        filesToDeleteFromProject.Add(fileToDelete);    
+                        //var fileToDelete = new TaskItem(field.GetMetadata(MetadataType.MSBuildItemType), new Dictionary<string, string>{
+                        //    { MetadataType.DeletePath, fileInfo.FileInfo.FullName }
+                        //});
+                        //filesToDeleteFromProject.Add(fileToDelete);    
 
                     } else {
-                        Log.LogMessage("Media file {0} exists, skipping", field.GetMetadata(MetadataType.LogicalName));
+                        LogInformation("Media file {0} exists, skipping", field.GetMetadata(MetadataType.LogicalName));
                     }
                 }
                 FilesToDeleteFromProject = filesToDeleteFromProject.ToArray();

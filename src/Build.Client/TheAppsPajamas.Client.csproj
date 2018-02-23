@@ -55,32 +55,32 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="BuildTasks\LoadLocalBuildConfig.cs" />
-    <Compile Include="BuildTasks\LoadRemoteBuildConfig.cs" />
+    <Compile Include="Tasks\LoadLocalBuildConfig.cs" />
+    <Compile Include="Tasks\LoadRemoteBuildConfig.cs" />
     <Compile Include="Models\BuildResourcesConfig.cs" />
     <Compile Include="Models\SecurityConfig.cs" />
     <Compile Include="Extensions\ConfigExtensions.cs" />
-    <Compile Include="BuildTasks\BaseLoadTask.cs" />
+    <Compile Include="Tasks\BaseLoadTask.cs" />
     <Compile Include="Models\ClientConfigDto.cs" />
     <Compile Include="Models\BaseFieldClientDto.cs" />
     <Compile Include="Models\StringFieldClientDto.cs" />
     <Compile Include="Models\MediaFieldClientDto.cs" />
-    <Compile Include="BuildTasks\BaseTask.cs" />
-    <Compile Include="BuildTasks\SetDroidManifest.cs" />
+    <Compile Include="Tasks\BaseTask.cs" />
+    <Compile Include="Tasks\SetDroidManifest.cs" />
     <Compile Include="Models\ProjectConfig.cs" />
     <Compile Include="Models\ProjectsConfig.cs" />
     <Compile Include="Extensions\LoadExtensions.cs" />
     <Compile Include="Constants\Consts.cs" />
-    <Compile Include="BuildTasks\CleanProjectsConfig.cs" />
-    <Compile Include="BuildTasks\DeleteUnusedMediaFiles.cs" />
+    <Compile Include="Tasks\CleanProjectsConfig.cs" />
+    <Compile Include="Tasks\DeleteUnusedMediaFiles.cs" />
     <Compile Include="Extensions\MediaExtensions.cs" />
-    <Compile Include="BuildTasks\DownloadMediaFiles.cs" />
-    <Compile Include="BuildTasks\SetDroidMedia.cs" />
+    <Compile Include="Tasks\DownloadMediaFiles.cs" />
+    <Compile Include="Tasks\SetDroidMedia.cs" />
     <Compile Include="Helpers\Plist.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Models\MediaAssetCatalogue.cs" />
-    <Compile Include="BuildTasks\CleanAssetCatalogues.cs" />
-    <Compile Include="BuildTasks\SetIosPlist.cs" />
+    <Compile Include="Tasks\CleanAssetCatalogues.cs" />
+    <Compile Include="Tasks\SetIosPlist.cs" />
     <Compile Include="Shared\Types\AppIconFieldType.cs" />
     <Compile Include="Shared\Types\Enumeration.cs" />
     <Compile Include="Shared\Types\FieldHolderType.cs" />
@@ -96,13 +96,13 @@
     <Compile Include="Extensions\AuthenticationExtensions.cs" />
     <Compile Include="Shared\Types\BuildConfigRecordSetFieldType.cs" />
     <Compile Include="Shared\Types\MediaOrientationType.cs" />
-    <Compile Include="BuildTasks\ModifyProject.cs" />
-    <Compile Include="BuildTasks\SaveModifiedProjectBackToProject.cs" />
-    <Compile Include="BuildTasks\AddResourceBackIntoModifedProject.cs" />
+    <Compile Include="Tasks\ModifyProject.cs" />
+    <Compile Include="Tasks\SaveModifiedProjectBackToProject.cs" />
+    <Compile Include="Tasks\AddResourceBackIntoModifedProject.cs" />
     <Compile Include="Constants\MetadataType.cs" />
     <Compile Include="Constants\MSBuildItemName.cs" />
-    <Compile Include="BuildTasks\SetIosAssetCatalogue.cs" />
-    <Compile Include="BuildTasks\SetIosAssetCatalogueSets.cs" />
+    <Compile Include="Tasks\SetIosAssetCatalogue.cs" />
+    <Compile Include="Tasks\SetIosAssetCatalogueSets.cs" />
     <Compile Include="Models\BuildConfig.cs" />
     <Compile Include="Models\BaseHolderClientDto.cs" />
     <Compile Include="Models\AppIconClientDto.cs" />
@@ -116,7 +116,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
-    <Folder Include="BuildTasks\" />
+    <Folder Include="Tasks\" />
     <Folder Include="Extensions\" />
     <Folder Include="Constants\" />
     <Folder Include="Helpers\" />
@@ -129,13 +129,8 @@
   <ItemGroup>
 
  <!--   <Content Include="build\*" PackagePath="build\" />-->
-    <Content Include="NugetContent\build\Build.Client.props" PackagePath="build\Build.Client.props" />
-    <Content Include="NugetContent\build\Build.Client.targets" PackagePath="build\Build.Client.targets" />
-
-    <Content Include="NugetContent\build\Xamarin.iOS.Common.targets" PackagePath="build\Xamarin.iOS.Common.targets" />
-
-    <Content Include="NugetContent\build\Xamarin.iOS.WatchApp.Common.targets" PackagePath="build\Xamarin.iOS.WatchApp.Common.targets" />
-    <Content Include="NugetContent\build\Microsoft.Common.targets" PackagePath="build\Microsoft.Common.targets" />
+    <Content Include="Content\build\TheAppsPajamas.Client.props" PackagePath="build\Build.Client.props" />
+    <Content Include="Content\build\TheAppsPajamas.Client.targets" PackagePath="build\Build.Client.targets" />
 
     <!--<Content Include="NugetContent\Ios\theappspajamas.xcassets\**" PackagePath="content\Xamarin.iOS10\theappspajamas.xcassets\**" />
 -->  </ItemGroup>

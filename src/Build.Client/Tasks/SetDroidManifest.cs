@@ -2,10 +2,10 @@
 using System.Linq;
 using Microsoft.Build.Framework;
 using System.Xml;
-using Build.Shared.Types;
-using Build.Client.Extensions;
+using TheAppsPajamas.Shared.Types;
+using TheAppsPajamas.Client.Extensions;
 
-namespace Build.Client.BuildTasks
+namespace TheAppsPajamas.Client.Tasks
 {
     public class SetDroidManifest : BaseTask
     {

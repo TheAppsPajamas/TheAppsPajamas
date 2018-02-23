@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Build.Client.Models
+namespace TheAppsPajamas.Client.Models
 {
     public class ClientConfigDto
     {

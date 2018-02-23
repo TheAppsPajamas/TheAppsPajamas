@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Build.Client.Models
+namespace TheAppsPajamas.Client.Models
 {
     public class MediaAssetCatalogue
     {

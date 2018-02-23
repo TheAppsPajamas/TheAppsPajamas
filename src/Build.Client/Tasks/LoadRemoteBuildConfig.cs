@@ -1,18 +1,18 @@
 ﻿using System;
 using System.IO;
 using System.Net;
-using Build.Client.Models;
+using TheAppsPajamas.Client.Models;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using Newtonsoft.Json;
-using Build.Client.Extensions;
+using TheAppsPajamas.Client.Extensions;
 using System.Linq;
-using Build.Client.Constants;
+using TheAppsPajamas.Client.Constants;
 using System.Text;
-using Build.Shared.Types;
+using TheAppsPajamas.Shared.Types;
 using System.Collections.Generic;
 
-namespace Build.Client.BuildTasks
+namespace TheAppsPajamas.Client.Tasks
 {
     public class LoadRemoteBuildConfig : BaseLoadTask
     {

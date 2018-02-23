@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Build.Client.Constants;
+using TheAppsPajamas.Client.Constants;
 using Microsoft.Build.Evaluation;
 using Microsoft.Build.Framework;
 
-namespace Build.Client.BuildTasks
+namespace TheAppsPajamas.Client.Tasks
 {
     public class SaveModifiedProjectBackToProject : BaseTask
     {

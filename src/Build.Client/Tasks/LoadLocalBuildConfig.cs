@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Build.Client.Constants;
-using Build.Client.Extensions;
-using Build.Client.Models;
-using Build.Shared.Types;
+using TheAppsPajamas.Client.Constants;
+using TheAppsPajamas.Client.Extensions;
+using TheAppsPajamas.Client.Models;
+using TheAppsPajamas.Shared.Types;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
-namespace Build.Client.BuildTasks
+namespace TheAppsPajamas.Client.Tasks
 {
     public class LoadLocalBuildConfig : BaseLoadTask
     {

@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Build.Client.BuildTasks;
-using Build.Client.Constants;
+using TheAppsPajamas.Client.Tasks;
+using TheAppsPajamas.Client.Constants;
 using Microsoft.Build.Framework;
 
-namespace Build.Client.Extensions
+namespace TheAppsPajamas.Client.Extensions
 {
     public static class MediaExtensions
     {

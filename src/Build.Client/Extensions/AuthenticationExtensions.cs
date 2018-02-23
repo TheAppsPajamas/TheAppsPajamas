@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Net;
 using System.Text;
-using Build.Client.BuildTasks;
-using Build.Client.Constants;
-using Build.Client.Models;
+using TheAppsPajamas.Client.Tasks;
+using TheAppsPajamas.Client.Constants;
+using TheAppsPajamas.Client.Models;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using Newtonsoft.Json;
 
-namespace Build.Client.Extensions
+namespace TheAppsPajamas.Client.Extensions
 {
     public static class AuthenticationExtensions
     {

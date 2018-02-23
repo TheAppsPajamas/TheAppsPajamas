@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Build.Client.Models
+namespace TheAppsPajamas.Client.Models
 {
     public class BuildConfig
     {

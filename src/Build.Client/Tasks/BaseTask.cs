@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-using Build.Client.Extensions;
+using TheAppsPajamas.Client.Extensions;
 
-namespace Build.Client.BuildTasks
+namespace TheAppsPajamas.Client.Tasks
 {
     public abstract class BaseTask : Task
     {

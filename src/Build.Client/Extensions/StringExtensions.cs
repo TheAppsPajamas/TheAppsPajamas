@@ -1,9 +1,9 @@
 ﻿using System;
-using Build.Client.Constants;
-using Build.Client.Models;
+using TheAppsPajamas.Client.Constants;
+using TheAppsPajamas.Client.Models;
 using Microsoft.Build.Framework;
 
-namespace Build.Client.Extensions
+namespace TheAppsPajamas.Client.Extensions
 {
     public static class StringExtensions
     {

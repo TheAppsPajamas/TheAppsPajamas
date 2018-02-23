@@ -1,7 +1,7 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Build.Client", "Build.Client\Build.Client.csproj", "{581F6236-3249-4B42-B9B4-94883A83E00B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheAppsPajamas.Client", "Build.Client\TheAppsPajamas.Client.csproj", "{581F6236-3249-4B42-B9B4-94883A83E00B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

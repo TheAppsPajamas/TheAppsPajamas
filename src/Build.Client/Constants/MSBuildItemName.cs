@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Build.Client.Constants
+namespace TheAppsPajamas.Client.Constants
 {
     public static class MSBuildItemName
     {

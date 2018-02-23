@@ -1,10 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using Build.Client.Constants;
-using Build.Client.Extensions;
+using TheAppsPajamas.Client.Constants;
+using TheAppsPajamas.Client.Extensions;
 
-namespace Build.Client.BuildTasks
+namespace TheAppsPajamas.Client.Tasks
 {
     public class CleanAssetCatalogues : BaseTask
     {

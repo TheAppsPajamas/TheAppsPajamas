@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Build.Client.Constants;
-using Build.Client.Extensions;
+using TheAppsPajamas.Client.Constants;
+using TheAppsPajamas.Client.Extensions;
 using Microsoft.Build.Evaluation;
 using Microsoft.Build.Framework;
 
-namespace Build.Client.BuildTasks
+namespace TheAppsPajamas.Client.Tasks
 {
     public class ModifyProject : BaseTask
     {

@@ -1,8 +1,8 @@
 ﻿using System;
-using Build.Client.BuildTasks;
-using Build.Client.Constants;
+using TheAppsPajamas.Client.Tasks;
+using TheAppsPajamas.Client.Constants;
 
-namespace Build.Client.Extensions
+namespace TheAppsPajamas.Client.Extensions
 {
     public static class LogExtensions
     {

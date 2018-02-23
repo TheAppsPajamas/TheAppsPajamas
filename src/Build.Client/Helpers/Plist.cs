@@ -32,7 +32,7 @@ using System.IO;
 using System.Text;
 using System.Xml;
 
-namespace Build.Client.Helpers
+namespace TheAppsPajamas.Client.Helpers
 {
     public static class Plist
     {

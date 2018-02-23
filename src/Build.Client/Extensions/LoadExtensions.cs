@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Build.Client.BuildTasks;
-using Build.Client.Constants;
-using Build.Client.Models;
-using Build.Shared.Types;
+using TheAppsPajamas.Client.Tasks;
+using TheAppsPajamas.Client.Constants;
+using TheAppsPajamas.Client.Models;
+using TheAppsPajamas.Shared.Types;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using Newtonsoft.Json;
 
-namespace Build.Client.Extensions
+namespace TheAppsPajamas.Client.Extensions
 {
     public static class LoadExtensions
     {

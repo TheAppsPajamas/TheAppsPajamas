@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Build.Client.Constants;
-using Build.Client.Extensions;
-using Build.Client.Models;
+using TheAppsPajamas.Client.Constants;
+using TheAppsPajamas.Client.Extensions;
+using TheAppsPajamas.Client.Models;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using Newtonsoft.Json;
 
-namespace Build.Client.BuildTasks
+namespace TheAppsPajamas.Client.Tasks
 {
     public class SetIosAssetCatalogueSets : BaseTask
     {

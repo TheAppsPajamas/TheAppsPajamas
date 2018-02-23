@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Build.Client.Extensions;
-using Build.Client.Helpers;
-using Build.Shared.Types;
+using TheAppsPajamas.Client.Extensions;
+using TheAppsPajamas.Client.Helpers;
+using TheAppsPajamas.Shared.Types;
 using Microsoft.Build.Framework;
 
-namespace Build.Client.BuildTasks
+namespace TheAppsPajamas.Client.Tasks
 {
     public class SetIosPlist : BaseTask
     {

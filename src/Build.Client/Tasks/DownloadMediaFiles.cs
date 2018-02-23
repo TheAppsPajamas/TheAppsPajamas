@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using Build.Client.Constants;
-using Build.Client.Extensions;
+using TheAppsPajamas.Client.Constants;
+using TheAppsPajamas.Client.Extensions;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
-namespace Build.Client.BuildTasks
+namespace TheAppsPajamas.Client.Tasks
 {
     public class DownloadMediaFiles : BaseTask
     {

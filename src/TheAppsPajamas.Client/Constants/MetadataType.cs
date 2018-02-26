@@ -75,6 +75,11 @@ namespace TheAppsPajamas.Client.Constants
         public const string Disabled = "TapDisabled";
 
         /// <summary>
+        /// If the field holder is actually disabled.
+        /// </summary>
+        public const string FieldHolderDisabled = "TapFieldHolderDisabled";
+
+        /// <summary>
         /// The path of the file to be deleted from the project.
         /// </summary>
         public const string DeletePath = "DeletePath";

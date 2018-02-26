@@ -27,6 +27,24 @@ namespace TheAppsPajamas.Client.Extensions
             return false;
         }
 
+        public static bool HolderIsDisabled(this ITaskItem taskItem)
+        {
+            if (taskItem.GetMetadata(MetadataType.FieldHolderDisabled) == bool.TrueString)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public static bool HolderIsEnabled(this ITaskItem taskItem)
+        {
+            if (taskItem.GetMetadata(MetadataType.FieldHolderDisabled) == bool.TrueString)
+            {
+                return false;
+            }
+            return true;
+        }
+
         public static bool IsEnabled(this ITaskItem taskItem)
         {
             if (taskItem.GetMetadata(MetadataType.Disabled) == bool.TrueString)

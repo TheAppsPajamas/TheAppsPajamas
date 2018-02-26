@@ -84,7 +84,11 @@ namespace TheAppsPajamas.Client.Tasks
 
             foreach(var field in allMediaFields){
                 if (field.IsDisabled()){
-                    Log.LogWarning($"{field.GetMetadata(MetadataType.FieldDescription)} is disabled in this configuration");
+                    if (field.HolderIsEnabled())
+                    {
+                        Log.LogMessage($"{field.GetMetadata(MetadataType.FieldDescription)} is disabled in this configuration");
+                    }
+                    //always continue 
                     continue;
                 }
 

@@ -230,7 +230,8 @@ namespace TheAppsPajamas.Client.Extensions
         public static ITaskItem[] GetMediaFieldOutput<TFieldClientDto>(this BaseLoadTask baseTask
                                                                   , IList<TFieldClientDto> fieldsDto
                                                                   , ITaskItem assetCatalogueName
-                                                                  , ClientConfigDto clientConfigDto)
+                                                                  , ClientConfigDto clientConfigDto
+                                                                      , ITaskItem holder)
             where TFieldClientDto : BaseFieldClientDto
         {
             baseTask.LogDebug("Generating Media Field TaskItems");
@@ -246,6 +247,9 @@ namespace TheAppsPajamas.Client.Extensions
                 {
                     throw new Exception($"Missing field type {field.FieldId}");
                 }
+
+                itemMetadata.Add(MetadataType.FieldHolderDisabled, holder.GetMetadata(MetadataType.Disabled));
+
                 if (fieldType.ProjectType == ProjectType.Droid)
                 {
                     StringFieldClientDto droidNameField = null;

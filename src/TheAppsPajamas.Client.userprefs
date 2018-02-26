@@ -1,7 +1,8 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workbench ActiveDocument="TheAppsPajamas.Client/Shared/Types/AppIconFieldType.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="TheAppsPajamas.Client/Tasks/SetIosAssetCatalogue.cs">
     <Files>
-      <File FileName="TheAppsPajamas.Client/Shared/Types/AppIconFieldType.cs" Line="1" Column="1" />
+      <File FileName="TheAppsPajamas.Client/Tasks/DownloadMediaFiles.cs" Line="1" Column="1" />
+      <File FileName="TheAppsPajamas.Client/Tasks/SetIosAssetCatalogue.cs" Line="74" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

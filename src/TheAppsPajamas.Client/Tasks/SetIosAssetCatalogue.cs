@@ -72,7 +72,6 @@ namespace TheAppsPajamas.Client.Tasks
 
                 LogDebug("Asset catalogue name {0}", AssetCatalogueName.ItemSpec);
 
-
                 LogDebug("Packages Output Folder {0}", PackagesOutputDir);
 
                 //create packages asset catalogue folder etc

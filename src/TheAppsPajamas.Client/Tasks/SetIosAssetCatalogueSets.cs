@@ -65,9 +65,12 @@ namespace TheAppsPajamas.Client.Tasks
                 LogDebug("No existing image assets found in project");
             }
 
-            foreach (var taskItem in existingAssets)
+            if (this.IsVerbose())
             {
-                LogDebug("Existing asset in project {0}", taskItem.ItemSpec);
+                foreach (var taskItem in existingAssets)
+                {
+                    LogVerbose("Existing asset in project {0}", taskItem.ItemSpec);
+                }
             }
 
             //try
@@ -101,10 +104,12 @@ namespace TheAppsPajamas.Client.Tasks
 
             cataloguesToSet = cataloguesToSet.Where(x => !String.IsNullOrEmpty(x)).ToList();
 
-            foreach (var catalogue in cataloguesToSet)
+            if (this.IsDebug())
             {
-
-                LogDebug("Asset Catalogue set found in metadata {0}", catalogue);
+                foreach (var catalogue in cataloguesToSet)
+                {
+                    LogDebug("Asset Catalogue set found in metadata {0}", catalogue);
+                }
             }
 
             //for temp testing jsut make it do app icons - till we've got the other contents.json stuff in

@@ -164,8 +164,6 @@
             <Output TaskParameter="TapConfigOutput" ItemName="TapConfig"/>
         </SetDroidMedia>
 
-
-
        <ItemGroup>
             <AndroidResource Include="%(AndroidAppIcons.Identity)"/>
         </ItemGroup>
@@ -181,7 +179,7 @@
             PackagesDir="$(PackagesDir)" 
             ProjectDir="$(MSBuildProjectDirectory)" 
             PackagingFields="@(PackagingFields)" 
-            PackagingHolder="$(PackagingHolder)"
+            PackagingHolder="@(PackagingHolder)"
             IosPlist="$(_AppManifest)">
             <Output TaskParameter="TapConfigOutput" ItemName="TapConfig"/>
             </SetIosPlist>
@@ -200,8 +198,8 @@
             AppIconFields="@(AppIconFields)" 
             AssetCatalogueName="$(AssetCatalogueName)" 
             ExistingImageAssets="@(ImageAsset)"
-            AppIconHolder="$(AppIconHolder)"
-            SplashHolder="$(SplashHolder)"
+            AppIconHolder="@(AppIconHolder)"
+            SplashHolder="@(SplashHolder)"
             PackagesOutputDir="$(MSBuildThisFileDirectory)">
             <Output TaskParameter="OutputImageAssets" ItemName="IosImageAssets" />           
 
@@ -243,7 +241,7 @@
         <ItemGroup>
             <ImageAsset Remove="$(AssetCatalogueName)/**"/>
        <!--     <ImageAsset Remove="$(TapResourceDirRelative)/**"/>-->
-<!--            <ITunesArtwork Remove="**"/>-->
+
         </ItemGroup>
         
        <ItemGroup>
@@ -253,7 +251,37 @@
 
     </Target>
 
+    <Target Name="SetIosItunesArtwork" 
+        AfterTargets="SetIosAssetCatalogueSets" 
+        Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' And '$(TapShouldContinue)' == 'True' ">
+        <SetIosItunesArtwork 
+            TapConfig="@(TapConfig)" 
+            BuildConfiguration="$(Configuration)" 
+            PackagesDir="$(PackagesDir)" 
 
+            ProjectDir="$(MSBuildProjectDirectory)" 
+            AppIconHolder="@(AppIconHolder)"
+            AppIconFields="@(AppIconFields)" 
+
+            ExistingItunesArtwork="@(iTunesArtwork)"
+            ExistingFilesToAddToProject="@(FilesToAddToProject)"
+         
+
+            >
+            <Output TaskParameter="OutputItunesArtwork" ItemName="IosItunesArtwork" />           
+
+            <Output TaskParameter="FilesToAddToProject" ItemName="FilesToAddToProject" />
+            <Output TaskParameter="TapConfigOutput" ItemName="TapConfig"/>
+        </SetIosItunesArtwork>
+
+       <ItemGroup>           
+            <ITunesArtwork Remove="**"/>
+            <ITunesArtwork Include="%(IosItunesArtwork.Identity)"/>
+        </ItemGroup>
+
+    </Target>
+
+    
     
     <Target Name="RemoveTapResources"
         AfterTargets="SetIosAssetCatalogueSets">

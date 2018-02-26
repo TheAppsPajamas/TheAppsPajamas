@@ -54,6 +54,9 @@
         </PackageReference>
     <!-- Marks all packages as 'local only' so they don't end up in the nuspec. -->
     <PackageReference Update="@(PackageReference)" PrivateAssets="All" />
+    <PackageReference Include="NuGet.Build.Packaging">
+      <Version>0.2.2</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -115,6 +118,7 @@
     <Compile Include="Models\TapConfig.cs" />
     <Compile Include="Constants\TapLogLevel.cs" />
     <Compile Include="Extensions\LogExtensions.cs" />
+    <Compile Include="Tasks\SetIosItunesArtwork.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />

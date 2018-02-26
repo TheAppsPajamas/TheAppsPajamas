@@ -20,6 +20,7 @@
   <UsingTask TaskName="TheAppsPajamas.Client.Tasks.SetIosAssetCatalogueSets" AssemblyFile="$(TapClientToolAssembly)" />
 
   <UsingTask TaskName="TheAppsPajamas.Client.Tasks.SetIosAssetCatalogue" AssemblyFile="$(TapClientToolAssembly)" />
+  <UsingTask TaskName="TheAppsPajamas.Client.Tasks.SetIosItunesArtwork" AssemblyFile="$(TapClientToolAssembly)" />
   <UsingTask TaskName="TheAppsPajamas.Client.Tasks.SetIosPlist" AssemblyFile="$(TapClientToolAssembly)" />
 
   <UsingTask TaskName="TheAppsPajamas.Client.Tasks.DebugDump" AssemblyFile="$(TapClientToolAssembly)" />

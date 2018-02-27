@@ -1,8 +1,9 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workbench ActiveDocument="TheAppsPajamas.Client/Tasks/SetIosAssetCatalogue.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="TheAppsPajamas.Client/Content/build/TheAppsPajamas.Client.targets">
     <Files>
-      <File FileName="TheAppsPajamas.Client/Tasks/DownloadMediaFiles.cs" Line="1" Column="1" />
-      <File FileName="TheAppsPajamas.Client/Tasks/SetIosAssetCatalogue.cs" Line="74" Column="1" />
+      <File FileName="TheAppsPajamas.Client/Tasks/SetIosAssetCatalogueSets.cs" Line="180" Column="25" />
+      <File FileName="TheAppsPajamas.Client/Tasks/SetIosItunesArtwork.cs" Line="99" Column="36" />
+      <File FileName="TheAppsPajamas.Client/Content/build/TheAppsPajamas.Client.targets" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

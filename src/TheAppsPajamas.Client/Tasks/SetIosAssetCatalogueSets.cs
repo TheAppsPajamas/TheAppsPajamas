@@ -177,31 +177,6 @@ namespace TheAppsPajamas.Client.Tasks
                     //skip itunes artwork first, something else will do that
                     if (String.IsNullOrEmpty(field.GetMetadata(MetadataType.Idiom)))
                     {
-
-                        //var existingFilePath = Path.Combine(mediaResourcesBuildConfigDir, Consts.iTunesArtworkDir, field.GetMetadata(MetadataType.MediaName).ApplyPngExt());
-                        //var packagesOutputFilePath = Path.Combine(PackagesOutputDir, field.GetMetadata(MetadataType.LogicalName));
-
-                        //var projectOutputFilePath = Path.Combine(base.ProjectDir, field.GetMetadata(MetadataType.LogicalName));
-
-                        //if (existingAssets.FirstOrDefault(x => x.ItemSpec == existingFilePath.GetPathRelativeToProject(ProjectDir)) == null)
-                        //{
-                        //    LogDebug("Adding {0} to add to project list as it is not in current project", existingFilePath);
-                        //    filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.iTunesArtwork, new Dictionary<string, string> { { MetadataType.IncludePath, existingFilePath } }));
-                        //}
-
-                        //if (existingAssets.FirstOrDefault(x => x.ItemSpec == projectOutputFilePath.GetPathRelativeToProject(ProjectDir)) == null)
-                        //{
-                        //    LogDebug("Adding {0} to add to project list as it is not in current project", projectOutputFilePath);
-                        //    filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.iTunesArtwork, new Dictionary<string, string> { { MetadataType.IncludePath, projectOutputFilePath } }));
-                        //}
-
-                        //File.Copy(existingFilePath, projectOutputFilePath, true);
-                        //File.Copy(existingFilePath, packagesOutputFilePath, true);
-                        //outputITunesArtwork.Add(new TaskItem(packagesOutputFilePath));
-                        //var artworkTaskItem = new TaskItem(field.GetMetadata(MetadataType.LogicalName));
-
-                        //LogDebug("Added {2} from {0} to {1}", existingFilePath, projectOutputFilePath, MSBuildItemName.iTunesArtwork);
-
                         continue;
                     }
 

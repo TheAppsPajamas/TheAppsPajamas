@@ -22,6 +22,9 @@ namespace TheAppsPajamas.Client.Tasks
         public ITaskItem AssetCatalogueName { get; set; }
 
 
+        public ITaskItem AppIconHolder { get; set; }
+        public ITaskItem SplashHolder { get; set; }
+
         public string PackagesOutputDir { get; set; }
 
 
@@ -41,6 +44,20 @@ namespace TheAppsPajamas.Client.Tasks
         {
             var baseResult = base.Execute();
             LogInformation("Set Ios Asset Cataloge Sets started");
+
+
+            //TODO probably still need to clean files out of project (debug/asset catalogue/appiconsset etc (maybe just the contents.json?)
+            if (AssetCatalogueName.IsDisabled()){
+                LogInformation("Asset catalogue is disabled, returning from task");
+                return true;
+            }
+
+            if (AppIconHolder.IsDisabled() && SplashHolder.IsDisabled())
+            {
+                LogInformation("App icons and splash images are disabled, not creating asset catalogue");
+                return true;
+            }
+
 
             //turns out msbuild adds to the output array itself, so if we send the output back down, and into the same 
             //item property it will get added
@@ -115,6 +132,19 @@ namespace TheAppsPajamas.Client.Tasks
             //for temp testing jsut make it do app icons - till we've got the other contents.json stuff in
             foreach (var catalogue in cataloguesToSet)
             {
+                var enabledFields = allFields.Where(x => x.GetMetadata(MetadataType.CatalogueSetName) == catalogue
+                                                    && x.IsEnabled());
+
+                //TODO will still have to delete catalogue
+                if (!enabledFields.Any()){
+                    LogInformation($"Catalogue {catalogue} has no enabled fields, not creating");
+                    continue;
+                }
+
+                //if all fields are disabled in this catalogue set
+                //continue
+
+
                 LogDebug("Asset Catalogue set required {0}", catalogue);
                 //create catalogue set folder, and contents.json
                 var packagesCatalogueSetDir = Path.Combine(PackagesOutputDir, AssetCatalogueName.ItemSpec, catalogue);
@@ -174,6 +204,17 @@ namespace TheAppsPajamas.Client.Tasks
 
                 foreach (var field in allFields.Where(x => x.GetMetadata(MetadataType.CatalogueSetName) == catalogue))
                 {
+                    //TODO might still have to remove from catalog
+                    if (field.IsDisabled())
+                    {
+                        if (field.HolderIsEnabled())
+                        {
+                            Log.LogMessage($"{field.GetMetadata(MetadataType.FieldDescription)} is disabled in this configuration");
+                        }
+                        //always continue 
+                        continue;
+                    }
+
                     //skip itunes artwork first, something else will do that
                     if (String.IsNullOrEmpty(field.GetMetadata(MetadataType.Idiom)))
                     {

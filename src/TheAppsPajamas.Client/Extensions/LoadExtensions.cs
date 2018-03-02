@@ -92,46 +92,25 @@ namespace TheAppsPajamas.Client.Extensions
             return true;
         }
 
-        //TODO this needs a disabled on it
         public static ITaskItem GetAssetCatalogueName(this BaseLoadTask baseTask, ClientConfigDto clientConfigDto, string TargetFrameworkIdentifier)
         {
             if (TargetFrameworkIdentifier == "Xamarin.iOS")
             {
-                var assetCatalogueField = clientConfigDto.Packaging.Fields.FirstOrDefault(x => x.FieldId == FieldType.PackagingIosAssetCatalogueName.Value);
-                if (assetCatalogueField == null || String.IsNullOrEmpty(assetCatalogueField.Value))
+                var field = clientConfigDto.Packaging.Fields.FirstOrDefault(x => x.FieldId == FieldType.PackagingIosAssetCatalogueName.Value);
+                if (field == null || String.IsNullOrEmpty(field.Value))
                 {
                     baseTask.Log.LogError("Asset catalogue undefined");
                 }
 
-                baseTask.LogInformation("AssetCatalogue name {0}", assetCatalogueField.Value.ApplyXcAssetsExt());
-                return new TaskItem(assetCatalogueField.Value.ApplyXcAssetsExt());
+                baseTask.LogInformation("AssetCatalogue name {0}", field.Value.ApplyXcAssetsExt());
+                var taskItem = new TaskItem(field.Value.ApplyXcAssetsExt());
+
+                var fieldType = FieldType.GetAll().FirstOrDefault(x => x.Value == field.FieldId);
+                taskItem.SetDisabledMetadata(baseTask, field.Disabled, fieldType.DisplayName);
+                return taskItem;
             } else {
                 return null;
             }
         }
-
-        //public static ITaskItem GetAppIconCatalogueSetName(this BaseLoadTask baseTask, ClientConfigDto clientConfigDto)
-        //{
-
-        //    var appIconNameField = clientConfigDto.Packaging.Fields.FirstOrDefault(x => x.FieldId == FieldType.PackagingIosAppIconXcAssetsName.Value);
-        //    if (appIconNameField == null || String.IsNullOrEmpty(appIconNameField.Value))
-        //    {
-        //        baseTask.Log.LogError("AppIconSet catalogue name undefined");
-        //    }
-        //    baseTask.Log.LogMessage("AppIconCatalogue name {0}", appIconNameField.Value.ApplyAppiconsetExt());
-        //    return new TaskItem(appIconNameField.Value.ApplyAppiconsetExt());
-        //}
-
-        //public static ITaskItem GetSplashCatalogueSetName(this BaseLoadTask baseTask, ClientConfigDto clientConfigDto)
-        //{
-
-        //    var launchImageCatalogueSetName = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingIosLaunchImageXcAssetsName.Value);
-        //    if (launchImageCatalogueSetName == null || String.IsNullOrEmpty(launchImageCatalogueSetName.Value))
-        //    {
-        //        baseTask.Log.LogError("LaunchImageCatalogueSet catalogue name undefined");
-        //    }
-        //    baseTask.Log.LogMessage("LaunchImageCatalogueSet name {0}", launchImageCatalogueSetName.Value.ApplyLaunchimageExt());
-        //    return new TaskItem(launchImageCatalogueSetName.Value.ApplyLaunchimageExt());
-        //}
     }
 }

@@ -77,7 +77,16 @@ namespace TheAppsPajamas.Client.Tasks
 
             foreach (var field in allFields.Where(x => x.GetMetadata(MetadataType.MSBuildItemType) == MSBuildItemName.iTunesArtwork))
             {
-                //skip itunes artwork first, something else will do that
+                if (field.IsDisabled())
+                {
+                    if (field.HolderIsEnabled())
+                    {
+                        Log.LogMessage($"{field.GetMetadata(MetadataType.FieldDescription)} is disabled in this configuration");
+                    }
+                    //always continue 
+                    continue;
+                }
+             
                 if (String.IsNullOrEmpty(field.GetMetadata(MetadataType.Idiom)))
                 {
 

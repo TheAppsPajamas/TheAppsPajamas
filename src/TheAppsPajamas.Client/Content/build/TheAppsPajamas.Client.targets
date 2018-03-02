@@ -70,7 +70,7 @@
                 <Output TaskParameter="AppIconHolderOutput" ItemName="AppIconHolder" />
                 <Output TaskParameter="SplashHolderOutput" ItemName="SplashHolder" />
             
-                <Output TaskParameter="AssetCatalogueName" PropertyName="AssetCatalogueName"/>
+                <Output TaskParameter="AssetCatalogueName" ItemName="AssetCatalogueName"/>
                 <Output TaskParameter="Token" PropertyName="BuildAccessToken"/>
                 <Output TaskParameter="BuildAppId" PropertyName="BuildAppId" />
 
@@ -196,7 +196,7 @@
             PackagesDir="$(PackagesDir)" 
             ProjectDir="$(MSBuildProjectDirectory)" 
             AppIconFields="@(AppIconFields)" 
-            AssetCatalogueName="$(AssetCatalogueName)" 
+            AssetCatalogueName="@(AssetCatalogueName)" 
             ExistingImageAssets="@(ImageAsset)"
             AppIconHolder="@(AppIconHolder)"
             SplashHolder="@(SplashHolder)"
@@ -225,7 +225,9 @@
             ProjectDir="$(MSBuildProjectDirectory)" 
             AppIconFields="@(AppIconFields)" 
             SplashFields="@(SplashFields)" 
-            AssetCatalogueName="$(AssetCatalogueName)" 
+            AssetCatalogueName="@(AssetCatalogueName)"             
+            AppIconHolder="@(AppIconHolder)"
+            SplashHolder="@(SplashHolder)"
             ExistingImageAssets="@(ImageAsset)"
             ExistingFilesToAddToProject="@(FilesToAddToProject)"
             ExistingOutputImageAssets="@(IosImageAssets)"
@@ -239,7 +241,7 @@
         
 
         <ItemGroup>
-            <ImageAsset Remove="$(AssetCatalogueName)/**"/>
+            <ImageAsset Remove="@(AssetCatalogueName)/**"/>
        <!--     <ImageAsset Remove="$(TapResourceDirRelative)/**"/>-->
 
         </ItemGroup>

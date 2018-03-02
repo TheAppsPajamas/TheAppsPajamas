@@ -32,13 +32,22 @@ namespace TheAppsPajamas.Client.Tasks
         [Output]
         public ITaskItem[] OutputImageAssets { get; set; }
 
-
-
-
         public override bool Execute()
         {
             var baseResult = base.Execute();
             LogInformation("Set Ios Asset Catalogue started");
+
+            //TODO probably still need to clean files out of project (debug/asset catalogue)
+            if (AssetCatalogueName.IsDisabled())
+            {
+                LogInformation("Asset catalogue is disabled, returning from task");
+                return true;
+            }
+
+            if (AppIconHolder.IsDisabled() && SplashHolder.IsDisabled()){
+                LogInformation("App icons and splash images are disabled, not creating asset catalogue");
+                return true;
+            }
 
             var filesToAddToModifiedProject = new List<ITaskItem>();
 
@@ -69,6 +78,12 @@ namespace TheAppsPajamas.Client.Tasks
                 //{
                 //    Log.LogError("App Icon Field set malformed");
                 //}
+
+                //if holder.disabled, bomb out - done prior
+                //if packaginfield.disabled bomb out done
+                //or if all fields disabled bomb out
+
+
 
                 LogDebug("Asset catalogue name {0}", AssetCatalogueName.ItemSpec);
 

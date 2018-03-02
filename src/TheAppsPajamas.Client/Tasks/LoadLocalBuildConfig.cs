@@ -57,7 +57,7 @@ namespace TheAppsPajamas.Client.Tasks
 
             //SplashFieldOutput = this.GetMediaFieldOutput(projectConfig.ClientConfig.Splash.Fields, AssetCatalogueName, projectConfig.ClientConfig);
 
-            PackagingFieldOutput = this.GetStringFieldOutput(projectConfig.ClientConfig.Packaging.Fields);
+            PackagingFieldOutput = this.GetStringFieldOutput(projectConfig.ClientConfig.Packaging.Fields, PackagingHolderOutput);
 
             return true;
         }

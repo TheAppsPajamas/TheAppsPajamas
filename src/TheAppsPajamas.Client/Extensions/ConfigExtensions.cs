@@ -205,7 +205,9 @@ namespace TheAppsPajamas.Client.Extensions
             return taskItem;
         }
         
-        public static ITaskItem[] GetStringFieldOutput<TFieldClientDto>(this BaseLoadTask baseTask, IList<TFieldClientDto> fieldsDto)
+        public static ITaskItem[] GetStringFieldOutput<TFieldClientDto>(this BaseLoadTask baseTask
+                                                                        , IList<TFieldClientDto> fieldsDto
+                                                                        , ITaskItem holder)
             where TFieldClientDto : BaseFieldClientDto
         {
             baseTask.LogDebug("Generating String Field Output TaskItems");
@@ -215,6 +217,10 @@ namespace TheAppsPajamas.Client.Extensions
             {
                 var itemMetadata = new Dictionary<string, string>();
                 itemMetadata.Add(MetadataType.Value, field.Value);
+
+                //TODO deal with this in setmanifest
+                itemMetadata.Add(MetadataType.FieldHolderDisabled, holder.GetMetadata(MetadataType.Disabled));
+
                 var taskItem = new TaskItem(field.FieldId.ToString(), itemMetadata);
 
                 var fieldType = FieldType.GetAll().FirstOrDefault(x => x.Value == field.FieldId);

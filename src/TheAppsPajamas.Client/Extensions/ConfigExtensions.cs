@@ -275,7 +275,8 @@ namespace TheAppsPajamas.Client.Extensions
                     }
                     //these ones are required for both
                     itemMetadata.Add(MetadataType.LogicalName, droidNameField.Value.ApplyPngExt());
-                    itemMetadata.Add(MetadataType.Path, Path.Combine(Consts.DroidResources, fieldType.GetMetadata(MetadataType.Folder)));
+                    itemMetadata.Add(MetadataType.TapAssetPath, Path.Combine(Consts.DroidTapAssets, fieldType.GetMetadata(MetadataType.Folder)));
+                    itemMetadata.Add(MetadataType.ProjectAssetPath, Path.Combine(Consts.DroidResources, fieldType.GetMetadata(MetadataType.Folder)));
                     itemMetadata.Add(MetadataType.MediaName, droidNameField.Value.ApplyFieldId(field));
 
                     itemMetadata.Add(MetadataType.MSBuildItemType, MSBuildItemName.TapAsset);
@@ -285,7 +286,8 @@ namespace TheAppsPajamas.Client.Extensions
                     //do iTunesArtWork
                     if (String.IsNullOrEmpty(fieldType.GetMetadata(MetadataType.Idiom)))
                     {
-                        itemMetadata.Add(MetadataType.Path, Consts.iTunesArtworkDir);
+                        itemMetadata.Add(MetadataType.TapAssetPath, Consts.iTunesArtworkDir);
+                        itemMetadata.Add(MetadataType.ProjectAssetPath, Consts.iTunesArtworkDir);
                         itemMetadata.Add(MetadataType.MediaName, fieldType.GetMetadata(MetadataType.FileName).RemovePngExt().ApplyFieldId(field));
                         itemMetadata.Add(MetadataType.LogicalName, fieldType.GetMetadata(MetadataType.FileName).RemovePngExt());
 
@@ -320,7 +322,8 @@ namespace TheAppsPajamas.Client.Extensions
 
 
 
-                        itemMetadata.Add(MetadataType.Path, Path.Combine(assetCatalogueName.ItemSpec, catalogueSetName));
+                        itemMetadata.Add(MetadataType.TapAssetPath, Path.Combine(assetCatalogueName.ItemSpec, catalogueSetName));
+                        itemMetadata.Add(MetadataType.ProjectAssetPath, Path.Combine(assetCatalogueName.ItemSpec, catalogueSetName));
                         itemMetadata.Add(MetadataType.LogicalName, fieldType.GetMetadata(MetadataType.FileName));
                         itemMetadata.Add(MetadataType.MediaName, fieldType.GetMetadata(MetadataType.FileName).RemovePngExt().ApplyFieldId(field));
 

@@ -92,9 +92,9 @@ namespace TheAppsPajamas.Client.Tasks
                     continue;
                 }
 
-                var existingFilePath = Path.Combine(buildConfigAssetDir, field.GetMetadata(MetadataType.Path), field.GetMetadata(MetadataType.MediaName).ApplyPngExt());
+                var existingFilePath = Path.Combine(buildConfigAssetDir, field.GetMetadata(MetadataType.TapAssetPath), field.GetMetadata(MetadataType.MediaName).ApplyPngExt());
 
-                var outputDir = Path.Combine(ProjectDir, field.GetMetadata(MetadataType.Path));
+                var outputDir = Path.Combine(ProjectDir, field.GetMetadata(MetadataType.ProjectAssetPath));
 
                 if (!Directory.Exists(outputDir)){
                     Directory.CreateDirectory(outputDir);
@@ -107,7 +107,7 @@ namespace TheAppsPajamas.Client.Tasks
                     filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.TapAsset, new Dictionary<string, string> { { MetadataType.IncludePath, existingFilePath } }));
                 }
 
-                var outputFilePath = Path.Combine(ProjectDir, field.GetMetadata(MetadataType.Path), field.GetMetadata(MetadataType.LogicalName));
+                var outputFilePath = Path.Combine(ProjectDir, field.GetMetadata(MetadataType.ProjectAssetPath), field.GetMetadata(MetadataType.LogicalName));
 
                 if (existingAssets.FirstOrDefault(x => x.ItemSpec == outputFilePath.GetPathRelativeToProject(ProjectDir)) == null)
                 {

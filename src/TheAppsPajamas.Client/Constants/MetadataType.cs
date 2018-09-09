@@ -92,7 +92,12 @@ namespace TheAppsPajamas.Client.Constants
         /// <summary>
         /// The relative path (without file name) of the appspajamas media file.
         /// </summary>
-        public const string Path = "Path";
+        public const string TapAssetPath = "TapAssetPath";
+
+        /// <summary>
+        /// The relative path (without file name) of the intended destination for the appspajamas media file.
+        /// </summary>
+        public const string ProjectAssetPath = "ProjectAssetPath";
 
         /// <summary>
         /// The include path for files that are going to be added to the project.

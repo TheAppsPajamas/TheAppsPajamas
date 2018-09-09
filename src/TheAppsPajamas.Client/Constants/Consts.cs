@@ -17,6 +17,9 @@ namespace TheAppsPajamas.Client.Constants
         public const string ProjectsConfig = "project.config";
 
         public const string DroidResources = "Resources";
+
+        public const string DroidTapAssets = "TapAssets";
+
         public const string UrlBase = "http://buildapidebug.me";
 
         public const string ClientEndpoint = "/api/client";

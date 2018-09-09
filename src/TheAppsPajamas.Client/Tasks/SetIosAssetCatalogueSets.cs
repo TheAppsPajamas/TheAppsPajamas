@@ -279,13 +279,13 @@ namespace TheAppsPajamas.Client.Tasks
                         }
 
                         var existingFilePath = Path.Combine(buildConfigAssetDir
-                                                            , field.GetMetadata(MetadataType.Path)
+                                                            , field.GetMetadata(MetadataType.TapAssetPath)
                                                             , field.GetMetadata(MetadataType.MediaName).ApplyPngExt());
 
-                        var packagingOutputFilePath = Path.Combine(PackagesOutputDir, field.GetMetadata(MetadataType.Path)
+                        var packagingOutputFilePath = Path.Combine(PackagesOutputDir, field.GetMetadata(MetadataType.ProjectAssetPath)
                                                           , field.GetMetadata(MetadataType.LogicalName));
 
-                        var projectOutputFilePath = Path.Combine(ProjectDir, field.GetMetadata(MetadataType.Path)
+                        var projectOutputFilePath = Path.Combine(ProjectDir, field.GetMetadata(MetadataType.ProjectAssetPath)
                                                           , field.GetMetadata(MetadataType.LogicalName));
 
                         //we want a list of existing imageassets, and itunesartwork to work of, rather than a test of file existence

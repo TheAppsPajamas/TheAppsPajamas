@@ -92,7 +92,7 @@ namespace TheAppsPajamas.Client.Tasks
 
             //try
             //{
-            var buildConfigurationResourceDir = this.GetBuildConfigurationResourceDir(BuildConfiguration);
+            var buildConfigAssetDir = this.GetBuildConfigurationAssetDir(BuildConfiguration);
 
             //could handle disbled here
             var firstField = AppIconFields.FirstOrDefault();
@@ -278,7 +278,7 @@ namespace TheAppsPajamas.Client.Tasks
                             LogDebug("Set second asset catalogue set filename to {0}", outputImageCatalogue2.filename);
                         }
 
-                        var existingFilePath = Path.Combine(buildConfigurationResourceDir
+                        var existingFilePath = Path.Combine(buildConfigAssetDir
                                                             , field.GetMetadata(MetadataType.Path)
                                                             , field.GetMetadata(MetadataType.MediaName).ApplyPngExt());
 
@@ -321,7 +321,7 @@ namespace TheAppsPajamas.Client.Tasks
                         NullValueHandling = NullValueHandling.Ignore
                     });
 
-                var mediaResourceCatalogueSetContentsPath = Path.Combine(buildConfigurationResourceDir, AssetCatalogueName.ItemSpec, catalogue, Consts.iOSContents);
+                var mediaResourceCatalogueSetContentsPath = Path.Combine(buildConfigAssetDir, AssetCatalogueName.ItemSpec, catalogue, Consts.iOSContents);
                 LogDebug($"Added media-resource {catalogue} Contents.json at path {mediaResourceCatalogueSetContentsPath}");
 
                 LogInformation($"Saving media-resources {catalogue} Contents.json to {mediaResourceCatalogueSetContentsPath}");

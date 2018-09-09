@@ -34,14 +34,14 @@
 <!--   <Target Name="LoadLocalBuildConfig" 
         BeforeTargets="_GetReferenceAssemblyPaths;_BeforeCoreCompileInterfaceDefinitions" >
         <LoadLocalBuildConfig Debug="$(BuildDebug)" ProjectName="$(MSBuildProjectName)" BuildConfiguration="$(Configuration)" PackagesDir="$(PackagesDir)" ProjectDir="$(MSBuildProjectDirectory)" TargetFrameworkIdentifier='$(TargetFrameworkIdentifier)'>
-            <Output TaskParameter="TapResourceDir" PropertyName="TapResourceDir" />
+            <Output TaskParameter="TapAssetDir" PropertyName="TapAssetDir" />
             <Output TaskParameter="PackagingOutput" ItemName="PackagingFields" />
             <Output TaskParameter="AppIconOutput" ItemName="AppIconFields" />
             <Output TaskParameter="AssetCatalogueName" PropertyName="AssetCatalogueName"/>
             <Output TaskParameter="SplashOutput" ItemName="SplashFields" />
             <Output TaskParameter="NeedsLoadRemote" PropertyName="NeedsLoadRemote" />
 
-            <Output TaskParameter="TapResourceDirRelative" PropertyName="TapResourceDirRelative" />
+            <Output TaskParameter="TapAssetDirRelative" PropertyName="TapAssetDirRelative" />
 
             <Output TaskParameter="TapShouldContinue" PropertyName="TapShouldContinue" />
         </LoadLocalBuildConfig>
@@ -60,7 +60,7 @@
             PackagesDir="$(PackagesDir)" 
             ProjectDir="$(MSBuildProjectDirectory)" 
             TargetFrameworkIdentifier='$(TargetFrameworkIdentifier)'>
-                <Output TaskParameter="TapResourceDir" PropertyName="TapResourceDir" />
+                <Output TaskParameter="TapAssetDir" PropertyName="TapAssetDir" />
                 <Output TaskParameter="PackagingFieldOutput" ItemName="PackagingFields" />
                 <Output TaskParameter="AppIconFieldOutput" ItemName="AppIconFields" />
                 <Output TaskParameter="SplashFieldOutput" ItemName="SplashFields" />
@@ -75,7 +75,7 @@
                 <Output TaskParameter="BuildAppId" PropertyName="BuildAppId" />
 
 
-                <Output TaskParameter="TapResourceDirRelative" PropertyName="TapResourceDirRelative" />
+                <Output TaskParameter="TapAssetDirRelative" PropertyName="TapAssetDirRelative" />
 
                 <Output TaskParameter="TapShouldContinue" PropertyName="TapShouldContinue" />
             <Output TaskParameter="TapConfigOutput" ItemName="TapConfig"/>
@@ -91,12 +91,12 @@
             PackagesDir="$(PackagesDir)" 
             AppIconFields="@(AppIconFields)" 
             SplashFields="@(SplashFields)" 
-            DroidResources="@(AndroidResource)"
+            TapAssets="@(TapAsset)"
             IosImageAssets="@(ImageAsset)"
             IosItunesArtwork="@(iTunesArtwork)"
             BuildConfiguration="$(Configuration)">
             <Output TaskParameter="FilesToDeleteFromProject" ItemName="FilesToDeleteFromProject" />
-            <Output TaskParameter="DroidResourcesToRemoveFromProject" ItemName="DroidResourceToRemoveFromProject" />
+            <Output TaskParameter="TapAssetsToRemoveFromProject" ItemName="TapAssetsToRemoveFromProject" />
             <Output TaskParameter="IosImageAssetsToRemoveFromProject" ItemName="IosImageAssetsToRemoveFromProject" />
             <Output TaskParameter="IosItunesArtworkToRemoveFromProject" ItemName="IosItunesArtworkToRemoveFromProject" />
 
@@ -106,7 +106,7 @@
         </DeleteUnusedMediaFiles>
 
         <ItemGroup>
-            <AndroidResource Remove="@(DroidResourceToRemoveFromProject)"/>
+            <TapAsset Remove="@(TapAssetsToRemoveFromProject)"/>
         </ItemGroup>
         <ItemGroup>
             <ImageAsset Remove="@(IosImageAssetsToRemoveFromProject)"/>
@@ -159,7 +159,7 @@
             AppIconHolder="@(AppIconHolder)"
             SplashHolder="@(SplashHolder)"
             ExistingAndroidResources="@(AndroidResource)">
-            <Output TaskParameter="OutputAndroidAssets" ItemName="AndroidAppIcons" />    
+            <Output TaskParameter="OutputAndroidResources" ItemName="AndroidAppIcons" />    
             <Output TaskParameter="FilesToAddToProject" ItemName="FilesToAddToProject" />
             <Output TaskParameter="TapConfigOutput" ItemName="TapConfig"/>
         </SetDroidMedia>
@@ -242,7 +242,7 @@
 
         <ItemGroup>
             <ImageAsset Remove="@(AssetCatalogueName)/**"/>
-       <!--     <ImageAsset Remove="$(TapResourceDirRelative)/**"/>-->
+       <!--     <ImageAsset Remove="$(TapAssetDirRelative)/**"/>-->
 
         </ItemGroup>
         
@@ -287,19 +287,19 @@
     
     <Target Name="RemoveTapResources"
         AfterTargets="SetIosAssetCatalogueSets">
-        <Message Text="Removing Tap Resources from project, TapResource folder $(TapResourceDirRelative)"/>
+        <Message Text="Removing Tap Assets from project, TapAsset folder $(TapAssetDirRelative)"/>
 
         <ItemGroup>
-            <ImageAsset Remove="$(TapResourceDirRelative)/**"/>
+            <ImageAsset Remove="$(TapAssetDirRelative)/**"/>
         </ItemGroup>
 
 <!--        <ItemGroup>
-            <ImageAsset Remove="@(ImageAsset)" Condition=" '@(ImageAsset->Contains('$(TapResourceDirRelative)'))' == 'True'  "/>
+            <ImageAsset Remove="@(ImageAsset)" Condition=" '@(ImageAsset->Contains('$(TapAssetDirRelative)'))' == 'True'  "/>
 
         </ItemGroup>-->
 
         <ItemGroup>
-            <AndroidResource Remove="$(TapResourceDirRelative)/**"/>
+            <AndroidResource Remove="$(TapAssetDirRelative)/**"/>
         </ItemGroup>
 
         <Message Text="Tap Resources removed from project"/>

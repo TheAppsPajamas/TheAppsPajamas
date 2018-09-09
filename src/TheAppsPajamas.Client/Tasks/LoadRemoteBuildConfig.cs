@@ -34,10 +34,10 @@ namespace TheAppsPajamas.Client.Tasks
                 return false;
             }
 
-            TapResourceDir = this.GetTapResourcesDir();
-            if (String.IsNullOrEmpty(TapResourceDir))
+            TapAssetDir = this.GetAssetDir();
+            if (String.IsNullOrEmpty(TapAssetDir))
             {
-                Log.LogError($"{Consts.TapResourcesDir} folder not found, exiting");
+                Log.LogError($"{Consts.TapAssetsDir} folder not found, exiting");
                 return false;
             }
 

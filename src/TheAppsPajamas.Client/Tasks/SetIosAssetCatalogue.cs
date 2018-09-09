@@ -70,7 +70,7 @@ namespace TheAppsPajamas.Client.Tasks
 
             try
             {
-                var buildConfigurationResourceDir = this.GetBuildConfigurationResourceDir(BuildConfiguration);
+                var buildConfigAssetDir = this.GetBuildConfigurationAssetDir(BuildConfiguration);
 
                 ////could handle disbled here
                 //var firstField = AppIconFields.FirstOrDefault();
@@ -123,7 +123,7 @@ namespace TheAppsPajamas.Client.Tasks
                     LogDebug("Created {0} folder at {1}", AssetCatalogueName, projectAssetCatalogueDir);
                 } 
 
-                var mediaResourceAssetCatalogueContentsPath = Path.Combine(buildConfigurationResourceDir, AssetCatalogueName.ItemSpec, Consts.iOSContents);
+                var mediaResourceAssetCatalogueContentsPath = Path.Combine(buildConfigAssetDir, AssetCatalogueName.ItemSpec, Consts.iOSContents);
                 if (!File.Exists(mediaResourceAssetCatalogueContentsPath))
                 {
                     LogDebug("Creating Asset catalogue Contents.json at {0}", mediaResourceAssetCatalogueContentsPath);

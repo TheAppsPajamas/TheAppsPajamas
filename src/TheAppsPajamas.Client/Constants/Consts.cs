@@ -3,12 +3,12 @@ namespace TheAppsPajamas.Client.Constants
 {
     public static class Consts
     {
-        public const string TapResourcesDir = "TapResources";
+        public const string TapAssetsDir = "TapAssets";
         public const string MediaResourcesDir = "media-resources";
         public const string AssetCatalogueOutputDir = "asset-catalogue-output";
         public const string iTunesArtworkDir = "iTunesArtwork";
 
-        public const string TapResourcesConfig = "TapResources.config";
+        public const string TapAssetsConfig = "TapAssets.config";
         public const string TapSecurityConfig = "TapSecurity.config";
         public const string TapConfig = "Tap.config";
 

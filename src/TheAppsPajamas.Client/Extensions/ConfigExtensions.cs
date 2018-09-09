@@ -62,19 +62,19 @@ namespace TheAppsPajamas.Client.Extensions
 
         public static BuildResourcesConfig GetResourceConfig(this BaseLoadTask baseTask)
         {
-            baseTask.Log.LogMessage($"Loading {Consts.TapResourcesConfig} file");
+            baseTask.Log.LogMessage($"Loading {Consts.TapAssetsConfig} file");
 
             try
             {
-                var buildResourcesConfigPath = Path.Combine(baseTask.PackagesDir, Consts.TapResourcesConfig);
+                var buildResourcesConfigPath = Path.Combine(baseTask.PackagesDir, Consts.TapAssetsConfig);
                 BuildResourcesConfig buildResourcesConfig = null;
                 if (!File.Exists(buildResourcesConfigPath))
                 {
-                    baseTask.LogDebug($"Creating blank {Consts.TapResourcesConfig} at {buildResourcesConfigPath}");
+                    baseTask.LogDebug($"Creating blank {Consts.TapAssetsConfig} at {buildResourcesConfigPath}");
                     buildResourcesConfig = new BuildResourcesConfig();
                     var json = JsonConvert.SerializeObject(buildResourcesConfig, Formatting.Indented);
                     File.WriteAllText(buildResourcesConfigPath, json);
-                    baseTask.Log.LogError($"{Consts.TapResourcesConfig} file not found, created at solution root. Please complete TapAppId and restart build process");
+                    baseTask.Log.LogError($"{Consts.TapAssetsConfig} file not found, created at solution root. Please complete TapAppId and restart build process");
                     return null;
                 }
                 else
@@ -84,12 +84,12 @@ namespace TheAppsPajamas.Client.Extensions
 
                     if (buildResourcesConfig.TapAppId == 0)
                     {
-                        baseTask.Log.LogError($"{Consts.TapResourcesConfig} TapAppId is 0, please complete TapAppId and restart build process");
+                        baseTask.Log.LogError($"{Consts.TapAssetsConfig} TapAppId is 0, please complete TapAppId and restart build process");
                         return null;
                     }
                     else
                     {
-                        baseTask.LogDebug($"{Consts.TapResourcesConfig} file read, TapAppId '{ buildResourcesConfig.TapAppId}");
+                        baseTask.LogDebug($"{Consts.TapAssetsConfig} file read, TapAppId '{ buildResourcesConfig.TapAppId}");
                         return buildResourcesConfig;
                     }
                 }
@@ -103,15 +103,15 @@ namespace TheAppsPajamas.Client.Extensions
 
         public static void SaveResourceConfig(this BaseLoadTask baseTask, BuildResourcesConfig buildResourcesConfig)
         {
-            baseTask.LogInformation($"Saving {Consts.TapResourcesConfig} file");
+            baseTask.LogInformation($"Saving {Consts.TapAssetsConfig} file");
 
             try
             {
-                var buildResourcesConfigPath = Path.Combine(baseTask.PackagesDir, Consts.TapResourcesConfig);
+                var buildResourcesConfigPath = Path.Combine(baseTask.PackagesDir, Consts.TapAssetsConfig);
 
                 var json = JsonConvert.SerializeObject(buildResourcesConfig, Formatting.Indented);
                 File.WriteAllText(buildResourcesConfigPath, json);
-                baseTask.LogDebug($"{Consts.TapResourcesConfig} file saved");
+                baseTask.LogDebug($"{Consts.TapAssetsConfig} file saved");
 
             }
             catch (Exception ex)
@@ -278,7 +278,7 @@ namespace TheAppsPajamas.Client.Extensions
                     itemMetadata.Add(MetadataType.Path, Path.Combine(Consts.DroidResources, fieldType.GetMetadata(MetadataType.Folder)));
                     itemMetadata.Add(MetadataType.MediaName, droidNameField.Value.ApplyFieldId(field));
 
-                    itemMetadata.Add(MetadataType.MSBuildItemType, MSBuildItemName.AndroidResource);
+                    itemMetadata.Add(MetadataType.MSBuildItemType, MSBuildItemName.TapAsset);
                 }
                 else if (fieldType.ProjectType == ProjectType.Ios)
                 {

@@ -24,7 +24,7 @@ namespace TheAppsPajamas.Client.Tasks
         public ITaskItem[] FilesToAddToProject { get; set; }
 
         [Output]
-        public ITaskItem[] OutputAndroidAssets { get; set; }
+        public ITaskItem[] OutputAndroidResources { get; set; }
 
         public string BuildConfiguration { get; set; }
         public override bool Execute()
@@ -33,7 +33,7 @@ namespace TheAppsPajamas.Client.Tasks
             LogInformation("Set Droid Media started");
 
             var filesToAddToModifiedProject = new List<ITaskItem>();
-            var outputAndroidAssets = new List<ITaskItem>();
+            var outputAndroidResources = new List<ITaskItem>();
 
             var existingAssets = new List<ITaskItem>();
 
@@ -80,7 +80,7 @@ namespace TheAppsPajamas.Client.Tasks
                 return true;
             }
 
-            var buildConfigurationResourceDir = this.GetBuildConfigurationResourceDir(BuildConfiguration);
+            var buildConfigAssetDir = this.GetBuildConfigurationAssetDir(BuildConfiguration);
 
             foreach(var field in allMediaFields){
                 if (field.IsDisabled()){
@@ -92,37 +92,37 @@ namespace TheAppsPajamas.Client.Tasks
                     continue;
                 }
 
-                var existingFilePath = Path.Combine(buildConfigurationResourceDir, field.GetMetadata(MetadataType.Path), field.GetMetadata(MetadataType.MediaName).ApplyPngExt());
+                var existingFilePath = Path.Combine(buildConfigAssetDir, field.GetMetadata(MetadataType.Path), field.GetMetadata(MetadataType.MediaName).ApplyPngExt());
 
                 var outputDir = Path.Combine(ProjectDir, field.GetMetadata(MetadataType.Path));
 
                 if (!Directory.Exists(outputDir)){
                     Directory.CreateDirectory(outputDir);
-                    LogDebug("Create resource folder at {0}", outputDir);
+                    LogDebug("Create asset folder at {0}", outputDir);
                 }
                                              
                 if (existingAssets.FirstOrDefault(x => x.ItemSpec == existingFilePath.GetPathRelativeToProject(ProjectDir)) == null)
                 {
-                    LogDebug("Adding {0} to add to project list as it is not in current project", existingFilePath);
-                    filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.AndroidResource, new Dictionary<string, string> { { MetadataType.IncludePath, existingFilePath } }));
+                    LogDebug($"Adding {existingFilePath} as a {MSBuildItemName.TapAsset} to add to project list as it is not in current project");
+                    filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.TapAsset, new Dictionary<string, string> { { MetadataType.IncludePath, existingFilePath } }));
                 }
 
                 var outputFilePath = Path.Combine(ProjectDir, field.GetMetadata(MetadataType.Path), field.GetMetadata(MetadataType.LogicalName));
 
                 if (existingAssets.FirstOrDefault(x => x.ItemSpec == outputFilePath.GetPathRelativeToProject(ProjectDir)) == null)
                 {
-                    LogDebug("Adding {0} to add to project list as it is not in current project", outputFilePath);
+                    LogDebug($"Adding {outputFilePath} as a {MSBuildItemName.AndroidResource} to add to project list as it is not in current project");
                     filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.AndroidResource, new Dictionary<string, string> { { MetadataType.IncludePath, outputFilePath } }));
                 }
 
                 File.Copy(existingFilePath, outputFilePath, true);
 
-                LogDebug("Added {2} from {0} to {1}", existingFilePath, outputFilePath, MSBuildItemName.AndroidResource);
-                outputAndroidAssets.Add(new TaskItem(outputFilePath));
+                LogDebug($"Added {MSBuildItemName.TapAsset} from {existingFilePath} to {outputFilePath} as {MSBuildItemName.AndroidResource}");
+                outputAndroidResources.Add(new TaskItem(outputFilePath));
             }
 
             FilesToAddToProject = filesToAddToModifiedProject.ToArray();
-            OutputAndroidAssets = outputAndroidAssets.ToArray();
+            OutputAndroidResources = outputAndroidResources.ToArray();
             return true;
         }
     }

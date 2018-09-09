@@ -18,7 +18,7 @@ namespace TheAppsPajamas.Client.Tasks
         public string _appId;
 
         [Output]
-        public string TapResourceDir { get; set; }
+        public string TapAssetDir { get; set; }
 
         [Output]
         public ITaskItem[] PackagingFieldOutput { get; set; }
@@ -47,7 +47,7 @@ namespace TheAppsPajamas.Client.Tasks
 
 
         [Output]
-        public ITaskItem TapResourceDirRelative { get; set; }
+        public ITaskItem TapAssetDirRelative { get; set; }
 
         [Output]
         public string TapShouldContinue { get; set; }
@@ -64,7 +64,7 @@ namespace TheAppsPajamas.Client.Tasks
             LogDebug($"Project name {ProjectName}");
             LogDebug($"Build configuration {BuildConfiguration}");
 
-            TapResourceDirRelative = new TaskItem(Consts.TapResourcesDir);
+            TapAssetDirRelative = new TaskItem(Consts.TapAssetsDir);
             TapShouldContinue = bool.TrueString;
 
             _tapResourcesConfig = this.GetResourceConfig();
@@ -72,7 +72,7 @@ namespace TheAppsPajamas.Client.Tasks
             if (_tapResourcesConfig == null)
             {
                 //Change to warning, and return TapShouldContinue = false
-                Log.LogError($"{Consts.TapResourcesConfig} file not set, please see solution root and complete");
+                Log.LogError($"{Consts.TapAssetsConfig} file not set, please see solution root and complete");
                 return false;
             }
 
@@ -88,13 +88,13 @@ namespace TheAppsPajamas.Client.Tasks
 
             if (thisBuildConfig == null)
             {
-                LogInformation($"Project {ProjectName} Build configuration {BuildConfiguration} not found, so adding to {Consts.TapResourcesConfig}");
+                LogInformation($"Project {ProjectName} Build configuration {BuildConfiguration} not found, so adding to {Consts.TapAssetsConfig}");
                 _tapResourcesConfig.BuildConfigs.Add(new BuildConfig(ProjectName, BuildConfiguration));
                 this.SaveResourceConfig(_tapResourcesConfig);
             }
             else if (thisBuildConfig.Disabled == true)
             {
-                LogInformation($"The Apps Pajamas is disabled in {Consts.TapResourcesConfig} for Project {ProjectName} in configuration {BuildConfiguration}], exiting");
+                LogInformation($"The Apps Pajamas is disabled in {Consts.TapAssetsConfig} for Project {ProjectName} in configuration {BuildConfiguration}], exiting");
                 TapShouldContinue = bool.FalseString;
                 return true;
             }

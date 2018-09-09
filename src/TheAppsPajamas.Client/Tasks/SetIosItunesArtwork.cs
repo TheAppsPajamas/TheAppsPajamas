@@ -61,7 +61,7 @@ namespace TheAppsPajamas.Client.Tasks
                 }
             }
 
-            var buildConfigurationResourceDir = this.GetBuildConfigurationResourceDir(BuildConfiguration);
+            var buildConfigAssetDir = this.GetBuildConfigurationAssetDir(BuildConfiguration);
 
             //could handle disbled here
             var firstField = AppIconFields.FirstOrDefault();
@@ -90,7 +90,7 @@ namespace TheAppsPajamas.Client.Tasks
                 if (String.IsNullOrEmpty(field.GetMetadata(MetadataType.Idiom)))
                 {
 
-                    var existingFilePath = Path.Combine(buildConfigurationResourceDir, Consts.iTunesArtworkDir, field.GetMetadata(MetadataType.MediaName).ApplyPngExt());
+                    var existingFilePath = Path.Combine(buildConfigAssetDir, Consts.iTunesArtworkDir, field.GetMetadata(MetadataType.MediaName).ApplyPngExt());
 
                     var projectOutputFilePath = Path.Combine(base.ProjectDir, field.GetMetadata(MetadataType.LogicalName));
 

@@ -30,10 +30,10 @@ namespace TheAppsPajamas.Client.Tasks
             }
 
 
-            TapResourceDir = this.GetTapResourcesDir();
-            if (String.IsNullOrEmpty(TapResourceDir)){
+            TapAssetDir = this.GetAssetDir();
+            if (String.IsNullOrEmpty(TapAssetDir)){
                 NeedsLoadRemote = true;
-                LogInformation($"{Consts.TapResourcesDir} folder not found, forcing remote load");
+                LogInformation($"{Consts.TapAssetsDir} folder not found, forcing remote load");
                 return true;
             }
 

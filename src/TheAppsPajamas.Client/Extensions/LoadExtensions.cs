@@ -14,23 +14,23 @@ namespace TheAppsPajamas.Client.Extensions
 {
     public static class LoadExtensions
     {
-        public static string GetTapResourcesDir(this BaseTask baseTask)
+        public static string GetAssetDir(this BaseTask baseTask)
         {
             baseTask.LogDebug("ProjectDir located at {0}", baseTask.ProjectDir);
 
             try
             {
-                var tapResourceDir = Path.Combine(baseTask.ProjectDir, Consts.TapResourcesDir);
-                if (!Directory.Exists(tapResourceDir))
+                var tapAssetDir = Path.Combine(baseTask.ProjectDir, Consts.TapAssetsDir);
+                if (!Directory.Exists(tapAssetDir))
                 {
-                    baseTask.LogDebug($"Created {Consts.TapResourcesDir} folder at {tapResourceDir}");
-                    Directory.CreateDirectory(tapResourceDir);
+                    baseTask.LogDebug($"Created {Consts.TapAssetsDir} folder at {tapAssetDir}");
+                    Directory.CreateDirectory(tapAssetDir);
                 }
                 else
                 {
-                    baseTask.LogDebug($"{Consts.TapResourcesDir} folder location {tapResourceDir}");
+                    baseTask.LogDebug($"{Consts.TapAssetsDir} folder location {tapAssetDir}");
                 }
-                var directoryInfo = new DirectoryInfo(tapResourceDir);
+                var directoryInfo = new DirectoryInfo(tapAssetDir);
                 return directoryInfo.FullName;
             }
             catch (Exception ex)
@@ -46,7 +46,7 @@ namespace TheAppsPajamas.Client.Extensions
 
             try
             {
-                var projectsConfigPath = Path.Combine(baseTask.TapResourceDir, Consts.ProjectsConfig);
+                var projectsConfigPath = Path.Combine(baseTask.TapAssetDir, Consts.ProjectsConfig);
                 ProjectsConfig projectConfigs = null;
                 if (!File.Exists(projectsConfigPath))
                 {
@@ -78,7 +78,7 @@ namespace TheAppsPajamas.Client.Extensions
 
             try
             {
-                var projectsConfigPath = Path.Combine(baseTask.TapResourceDir, Consts.ProjectsConfig);
+                var projectsConfigPath = Path.Combine(baseTask.TapAssetDir, Consts.ProjectsConfig);
 
                 baseTask.LogInformation($"Saving {Consts.ProjectsConfig} at {projectsConfigPath}");
                 var json = JsonConvert.SerializeObject(projectsConfig, Formatting.Indented);

@@ -6,5 +6,7 @@ namespace TheAppsPajamas.Client.Constants
         public const string iTunesArtwork = "iTunesArtwork";
         public const string ImageAsset = "ImageAsset";
         public const string AndroidResource = "AndroidResource";
+
+        public const string TapAsset = "TapAsset";
     }
 }

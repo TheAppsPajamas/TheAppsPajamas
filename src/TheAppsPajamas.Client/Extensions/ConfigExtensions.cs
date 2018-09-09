@@ -48,7 +48,7 @@ namespace TheAppsPajamas.Client.Extensions
                     return tapConfigTaskItem;
                 }
             }
-            catch (Exception ex)
+            catch 
             {
                 var tapConfigTaskItem = new TaskItem(MetadataType.TapConfig);
 

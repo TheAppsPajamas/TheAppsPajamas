@@ -11,15 +11,15 @@ namespace TheAppsPajamas.Client.Extensions
     public static class MediaExtensions
     {
         public static IEnumerable<string> GetExistingMediaFiles(this BaseTask baseTask, string buildConfiguration){
-            var buildConfigResourceDir = baseTask.GetBuildConfigurationResourceDir(buildConfiguration);
+            var buildConfigAssetDir = baseTask.GetBuildConfigurationAssetDir(buildConfiguration);
             try
             {
-                var files = Directory.EnumerateFiles(buildConfigResourceDir, "*.png", SearchOption.AllDirectories);
+                var files = Directory.EnumerateFiles(buildConfigAssetDir, "*.png", SearchOption.AllDirectories);
                 if (baseTask.IsVerbose())
                 {
                     if (files.Any())
                     {
-                        baseTask.LogVerbose("{0} png files found in resources folder {1}", files.Count(), buildConfigResourceDir);
+                        baseTask.LogVerbose("{0} png files found in resources folder {1}", files.Count(), buildConfigAssetDir);
                         foreach (var file in files)
                         {
                             baseTask.LogDebug("Media file found {0}", file);
@@ -27,7 +27,7 @@ namespace TheAppsPajamas.Client.Extensions
                     }
                     else
                     {
-                        baseTask.LogVerbose("No files found in resources folder {0}", buildConfigResourceDir);
+                        baseTask.LogVerbose("No files found in resources folder {0}", buildConfigAssetDir);
                     }
                 }
                 return files;
@@ -40,25 +40,25 @@ namespace TheAppsPajamas.Client.Extensions
 
         }
 
-        public static string GetBuildConfigurationResourceDir(this BaseTask baseTask, string buildConfiguration)
+        public static string GetBuildConfigurationAssetDir(this BaseTask baseTask, string buildConfiguration)
         {
-            var buildResourceDir = baseTask.GetTapResourcesDir();
-            baseTask.LogDebug($"{Consts.TapResourcesDir} located at {buildResourceDir}", buildResourceDir);
+            var tapAssetDir = baseTask.GetAssetDir();
+            baseTask.LogDebug($"{Consts.TapAssetsDir} located at {tapAssetDir}", tapAssetDir);
             baseTask.LogDebug("BuildConfiguration {0}", buildConfiguration);
 
             try
             {
-                var mediaResourceDir = Path.Combine(buildResourceDir, buildConfiguration);
-                if (!Directory.Exists(mediaResourceDir))
+                var mediaAssetDir = Path.Combine(tapAssetDir, buildConfiguration);
+                if (!Directory.Exists(mediaAssetDir))
                 {
-                    baseTask.LogDebug("Created resource folder at '{0}'", mediaResourceDir);
-                    Directory.CreateDirectory(mediaResourceDir);
+                    baseTask.LogDebug("Created asset folder at '{0}'", mediaAssetDir);
+                    Directory.CreateDirectory(mediaAssetDir);
                 }
                 else
                 {
-                    baseTask.LogDebug("Resource folder location '{0}'", mediaResourceDir);
+                    baseTask.LogDebug("Asset folder location '{0}'", mediaAssetDir);
                 }
-                var directoryInfo = new DirectoryInfo(mediaResourceDir);
+                var directoryInfo = new DirectoryInfo(mediaAssetDir);
                 return directoryInfo.FullName;
             }
             catch (Exception ex)

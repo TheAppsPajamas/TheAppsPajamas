@@ -7,6 +7,7 @@ using TheAppsPajamas.Client.Models;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using Newtonsoft.Json;
+using TheAppsPajamas.Client.JsonDtos;
 
 namespace TheAppsPajamas.Client.Extensions
 {
@@ -17,7 +18,7 @@ namespace TheAppsPajamas.Client.Extensions
         /// </summary>
         /// <returns>The login.</returns>
         /// <param name="baseTask">Base task.</param>
-        public static ITaskItem Login(this BaseTask baseTask, SecurityConfig securityConfig)
+        public static ITaskItem Login(this BaseTask baseTask, TapSecurityJson tapSecurity)
         {
             LoginResponseDto token;
             //authenticate
@@ -25,26 +26,25 @@ namespace TheAppsPajamas.Client.Extensions
             {
                 using (WebClient client = new WebClient())
                 {
-                    var tokenUrl = String.Concat(Consts.UrlBase, Consts.TokenEndpoint);
+                    var tokenUrl = String.Concat(baseTask.TapSettings.GetMetadata(MetadataType.TapEndpoint), Consts.TokenEndpoint);
 
                     System.Collections.Specialized.NameValueCollection postData =
                         new System.Collections.Specialized.NameValueCollection()
                        {
-                        { "username", securityConfig.UserName },
-                        { "password", securityConfig.Password },
+                        { "username", tapSecurity.Username },
+                        { "password", tapSecurity.Password },
                         { "grant_type", "password" },
                         { "scope", "openid email plantype profile offline_access roles"},
                         { "resource", "loadremotebuildconfig"}
 
                        };
 
-
                     var tokenResult = Encoding.UTF8.GetString(client.UploadValues(tokenUrl, postData));
 
                     token = JsonConvert.DeserializeObject<LoginResponseDto>(tokenResult);
                     //client.Credentials = new NetworkCredential(securityConfig.UserName, securityConfig.Password);
                     //var tokenResult = client.DownloadString(tokenUrl);
-                    baseTask.LogDebug("Token result recieved\n{0}", token.access_token);
+                    baseTask.LogDebug("Token result recieved <-- value removed from log -->", token.access_token);
                     return new TaskItem(token.access_token);
                 }
             }

@@ -16,7 +16,7 @@ namespace TheAppsPajamas.Client.Tasks
         public ITaskItem[] SplashFields { get; set; }
         public string BuildConfiguration { get; set; }
 
-        public ITaskItem[] DroidResources { get; set; }
+        public ITaskItem[] TapAssets { get; set; }
         public ITaskItem[] IosImageAssets { get; set; }
         public ITaskItem[] IosItunesArtwork { get; set; }
 
@@ -25,7 +25,7 @@ namespace TheAppsPajamas.Client.Tasks
 
 
         [Output]
-        public ITaskItem[] DroidResourcesToRemoveFromProject { get; set; }
+        public ITaskItem[] TapAssetsToRemoveFromProject { get; set; }
 
 
         [Output]
@@ -45,20 +45,20 @@ namespace TheAppsPajamas.Client.Tasks
             var existingFiles = this.GetExistingMediaFiles(BuildConfiguration);
 
             var filesToDeleteFromProject = new List<ITaskItem>();
-            var droidResourcesToRemoveFromProject = new List<ITaskItem>();
+            var tapAssetsToRemoveFromProject = new List<ITaskItem>();
             var iosImageAssetsToRemoveFromProject = new List<ITaskItem>();
             var iosItunesArtworkToRemoveFromProject = new List<ITaskItem>();
 
             LogInformation("Found {0} existing media files", existingFiles.Count());
 
-            var droidResources = new List<ITaskItem>();
+            var tapAssets = new List<ITaskItem>();
             var iosImageAssets = new List<ITaskItem>();
             var iosItunesArtwork = new List<ITaskItem>();
 
       
-            if (DroidResources != null && DroidResources.Any())
+            if (TapAssets != null && TapAssets.Any())
             {
-                droidResources.AddRange(DroidResources);
+                tapAssets.AddRange(TapAssets);
             }
 
             if (IosImageAssets != null && IosImageAssets.Any())
@@ -85,9 +85,9 @@ namespace TheAppsPajamas.Client.Tasks
 
                     ITaskItem existingAsset = null;
                     string existingAssetItemGroup = String.Empty;
-                    existingAsset = droidResources.FirstOrDefault(x => x.ItemSpec == file.GetPathRelativeToProject(ProjectDir));
+                    existingAsset = tapAssets.FirstOrDefault(x => x.ItemSpec == file.GetPathRelativeToProject(ProjectDir));
                     if (existingAsset != null){
-                        droidResourcesToRemoveFromProject.Add(new TaskItem(file.GetPathRelativeToProject(ProjectDir)));
+                        tapAssetsToRemoveFromProject.Add(new TaskItem(file.GetPathRelativeToProject(ProjectDir)));
                     }
                     if (existingAsset == null)
                     {
@@ -133,7 +133,7 @@ namespace TheAppsPajamas.Client.Tasks
             }
 
             FilesToDeleteFromProject = filesToDeleteFromProject.ToArray();
-            DroidResourcesToRemoveFromProject = droidResourcesToRemoveFromProject.ToArray();
+            TapAssetsToRemoveFromProject = tapAssetsToRemoveFromProject.ToArray();
             IosImageAssetsToRemoveFromProject = iosImageAssetsToRemoveFromProject.ToArray();
             IosImageAssetsToRemoveFromProject = iosItunesArtworkToRemoveFromProject.ToArray();
 

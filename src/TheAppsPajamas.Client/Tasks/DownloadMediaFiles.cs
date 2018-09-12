@@ -17,7 +17,7 @@ namespace TheAppsPajamas.Client.Tasks
         public ITaskItem[] SplashFields { get; set; }
         public string BuildConfiguration { get; set; }
         public ITaskItem Token { get; set; }
-        public ITaskItem BuildAppId { get; set; }
+        public ITaskItem TapAppId { get; set; }
 
         [Output]
         public ITaskItem[] FilesToDeleteFromProject { get; set; }
@@ -33,7 +33,7 @@ namespace TheAppsPajamas.Client.Tasks
             LogInformation("{0} media files required, {1} media files already available", allMediaFields.Count(), existingFiles.Count());
 
             if (Token == null || String.IsNullOrEmpty(Token.ItemSpec)){
-                var securityConfig = this.GetSecurityConfig();
+                var securityConfig = this.GetSecurity();
 
                 if (securityConfig == null)
                     return false;
@@ -54,7 +54,7 @@ namespace TheAppsPajamas.Client.Tasks
                 filesToDeleteFromProject.AddRange(FilesToDeleteFromProject);
             }
 
-            var buildConfigResourceDir = this.GetBuildConfigurationResourceDir(BuildConfiguration);
+            var buildConfigurationAssetDir = this.GetBuildConfigurationAssetDir(BuildConfiguration);
             try
             {
                 foreach(var field in allMediaFields){
@@ -71,17 +71,17 @@ namespace TheAppsPajamas.Client.Tasks
                         {
                             LogDebug("Media file exists, getting setup for download");
                             client.SetWebClientHeaders(Token);
-                            LogDebug("Generating url for mediaId {0}, {1}", field.GetMetadata(MetadataType.MediaFileId), BuildAppId.ItemSpec);
-                            var url = String.Concat(Consts.UrlBase, Consts.MediaEndpoint, "/", BuildAppId.ItemSpec, "/", field.GetMetadata(MetadataType.MediaFileId));
+                            LogDebug("Generating url for mediaId {0}, {1}", field.GetMetadata(MetadataType.MediaFileId), TapAppId.ItemSpec);
+                            var url = String.Concat(TapSettings.GetMetadata(MetadataType.TapEndpoint), Consts.MediaEndpoint, "/", TapAppId.ItemSpec, "/", field.GetMetadata(MetadataType.MediaFileId));
                             LogDebug("Finding directory");
-                            var directory = Path.Combine(buildConfigResourceDir, field.GetMetadata(MetadataType.Path));
+                            var directory = Path.Combine(buildConfigurationAssetDir, field.GetMetadata(MetadataType.TapAssetPath));
                             LogDebug("Checking directory existance {0}", directory);
                             if (!Directory.Exists(directory))
                             {
                                 LogDebug("Created folder {0}", directory);
                                 Directory.CreateDirectory(directory);
                             }
-                            var fileName = Path.Combine(buildConfigResourceDir, field.GetMetadata(MetadataType.Path), field.GetMetadata(MetadataType.MediaName).ApplyPngExt());
+                            var fileName = Path.Combine(buildConfigurationAssetDir, field.GetMetadata(MetadataType.TapAssetPath), field.GetMetadata(MetadataType.MediaName).ApplyPngExt());
                             LogInformation("Downloading media file {0}, from url {1}", fileName, url);
                             client.DownloadFile(url, fileName);
                         }

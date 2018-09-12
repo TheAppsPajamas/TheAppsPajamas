@@ -3,23 +3,24 @@ namespace TheAppsPajamas.Client.Constants
 {
     public static class Consts
     {
-        public const string TapResourcesDir = "TapResources";
+        public const string TapAssetsDir = "TapAssets";
         public const string MediaResourcesDir = "media-resources";
         public const string AssetCatalogueOutputDir = "asset-catalogue-output";
         public const string iTunesArtworkDir = "iTunesArtwork";
 
-        public const string TapResourcesConfig = "TapResources.config";
-        public const string TapSecurityConfig = "TapSecurity.config";
-        public const string TapConfig = "Tap.config";
+        public const string TapSettingFile = "tapsettings.json";
+        public const string TapSecurityFile = "tapsecurity.json";
+        public const string ProjectsFile = "project.json";
 
         public const string ModifiedProjectNameExtra = ".Tap";
 
-        public const string ProjectsConfig = "project.config";
-
         public const string DroidResources = "Resources";
-        public const string UrlBase = "http://buildapidebug.me";
 
-        public const string ClientEndpoint = "/api/client";
+        public const string DroidTapAssets = "TapAssets";
+
+        public const string TapEndpoint = "https://api.theappspajamas.com";
+
+        public const string TapClientEndpoint = "/api/tapclient";
         public const string TokenEndpoint = "/connect/token";
 
         public const string MediaEndpoint = "/api/media";

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using TheAppsPajamas.Client.Models;
 
-namespace TheAppsPajamas.Client.Models
+namespace TheAppsPajamas.Client.JsonDtos
 {
-    public class ProjectConfig
+    public class ProjectJson
     {
         //public string ProjectName { get; set; }
         public string BuildConfiguration { get; set; }

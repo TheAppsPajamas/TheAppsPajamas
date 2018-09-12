@@ -5,6 +5,7 @@ using System.Linq;
 using TheAppsPajamas.Client.Tasks;
 using TheAppsPajamas.Client.Constants;
 using TheAppsPajamas.Client.Models;
+using TheAppsPajamas.Client.JsonDtos;
 using TheAppsPajamas.Shared.Types;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
@@ -14,23 +15,23 @@ namespace TheAppsPajamas.Client.Extensions
 {
     public static class LoadExtensions
     {
-        public static string GetTapResourcesDir(this BaseTask baseTask)
+        public static string GetAssetDir(this BaseTask baseTask)
         {
             baseTask.LogDebug("ProjectDir located at {0}", baseTask.ProjectDir);
 
             try
             {
-                var tapResourceDir = Path.Combine(baseTask.ProjectDir, Consts.TapResourcesDir);
-                if (!Directory.Exists(tapResourceDir))
+                var tapAssetDir = Path.Combine(baseTask.ProjectDir, Consts.TapAssetsDir);
+                if (!Directory.Exists(tapAssetDir))
                 {
-                    baseTask.LogDebug($"Created {Consts.TapResourcesDir} folder at {tapResourceDir}");
-                    Directory.CreateDirectory(tapResourceDir);
+                    baseTask.LogDebug($"Created {Consts.TapAssetsDir} folder at {tapAssetDir}");
+                    Directory.CreateDirectory(tapAssetDir);
                 }
                 else
                 {
-                    baseTask.LogDebug($"{Consts.TapResourcesDir} folder location {tapResourceDir}");
+                    baseTask.LogDebug($"{Consts.TapAssetsDir} folder location {tapAssetDir}");
                 }
-                var directoryInfo = new DirectoryInfo(tapResourceDir);
+                var directoryInfo = new DirectoryInfo(tapAssetDir);
                 return directoryInfo.FullName;
             }
             catch (Exception ex)
@@ -40,18 +41,18 @@ namespace TheAppsPajamas.Client.Extensions
             return null;
         }
 
-        public static ProjectsConfig GetProjectsConfig(this BaseLoadTask baseTask)
+        public static ProjectsJson GetProjectsConfig(this BaseLoadTask baseTask)
         {
-            baseTask.LogDebug($"Loading {Consts.ProjectsConfig} file");
+            baseTask.LogDebug($"Loading {Consts.ProjectsFile} file");
 
             try
             {
-                var projectsConfigPath = Path.Combine(baseTask.TapResourceDir, Consts.ProjectsConfig);
-                ProjectsConfig projectConfigs = null;
+                var projectsConfigPath = Path.Combine(baseTask.TapAssetDir, Consts.ProjectsFile);
+                ProjectsJson projectConfigs = null;
                 if (!File.Exists(projectsConfigPath))
                 {
-                    baseTask.LogInformation($"{Consts.ProjectsConfig} file file not found, created at {projectsConfigPath}");
-                    projectConfigs = new ProjectsConfig();
+                    baseTask.LogInformation($"{Consts.ProjectsFile} file file not found, created at {projectsConfigPath}");
+                    projectConfigs = new ProjectsJson();
                     var json = JsonConvert.SerializeObject(projectConfigs, Formatting.Indented);
                     File.WriteAllText(projectsConfigPath, json);
                     return projectConfigs;
@@ -59,7 +60,7 @@ namespace TheAppsPajamas.Client.Extensions
                 else
                 {
                     var json = File.ReadAllText(projectsConfigPath);
-                    projectConfigs = JsonConvert.DeserializeObject<ProjectsConfig>(json);
+                    projectConfigs = JsonConvert.DeserializeObject<ProjectsJson>(json);
                     return projectConfigs;
 
                 }
@@ -72,15 +73,15 @@ namespace TheAppsPajamas.Client.Extensions
         }
 
 
-        public static bool SaveProjects(this BaseLoadTask baseTask, ProjectsConfig projectsConfig)
+        public static bool SaveProjects(this BaseLoadTask baseTask, ProjectsJson projectsConfig)
         {
-            baseTask.LogDebug($"Saving {Consts.ProjectsConfig} file");
+            baseTask.LogDebug($"Saving {Consts.ProjectsFile} file");
 
             try
             {
-                var projectsConfigPath = Path.Combine(baseTask.TapResourceDir, Consts.ProjectsConfig);
+                var projectsConfigPath = Path.Combine(baseTask.TapAssetDir, Consts.ProjectsFile);
 
-                baseTask.LogInformation($"Saving {Consts.ProjectsConfig} at {projectsConfigPath}");
+                baseTask.LogInformation($"Saving {Consts.ProjectsFile} at {projectsConfigPath}");
                 var json = JsonConvert.SerializeObject(projectsConfig, Formatting.Indented);
                 File.WriteAllText(projectsConfigPath, json);
 
@@ -92,46 +93,25 @@ namespace TheAppsPajamas.Client.Extensions
             return true;
         }
 
-        //TODO this needs a disabled on it
         public static ITaskItem GetAssetCatalogueName(this BaseLoadTask baseTask, ClientConfigDto clientConfigDto, string TargetFrameworkIdentifier)
         {
             if (TargetFrameworkIdentifier == "Xamarin.iOS")
             {
-                var assetCatalogueField = clientConfigDto.Packaging.Fields.FirstOrDefault(x => x.FieldId == FieldType.PackagingIosAssetCatalogueName.Value);
-                if (assetCatalogueField == null || String.IsNullOrEmpty(assetCatalogueField.Value))
+                var field = clientConfigDto.Packaging.Fields.FirstOrDefault(x => x.FieldId == FieldType.PackagingIosAssetCatalogueName.Value);
+                if (field == null || String.IsNullOrEmpty(field.Value))
                 {
                     baseTask.Log.LogError("Asset catalogue undefined");
                 }
 
-                baseTask.LogInformation("AssetCatalogue name {0}", assetCatalogueField.Value.ApplyXcAssetsExt());
-                return new TaskItem(assetCatalogueField.Value.ApplyXcAssetsExt());
+                baseTask.LogInformation("AssetCatalogue name {0}", field.Value.ApplyXcAssetsExt());
+                var taskItem = new TaskItem(field.Value.ApplyXcAssetsExt());
+
+                var fieldType = FieldType.GetAll().FirstOrDefault(x => x.Value == field.FieldId);
+                taskItem.SetDisabledMetadata(baseTask, field.Disabled, fieldType.DisplayName);
+                return taskItem;
             } else {
                 return null;
             }
         }
-
-        //public static ITaskItem GetAppIconCatalogueSetName(this BaseLoadTask baseTask, ClientConfigDto clientConfigDto)
-        //{
-
-        //    var appIconNameField = clientConfigDto.Packaging.Fields.FirstOrDefault(x => x.FieldId == FieldType.PackagingIosAppIconXcAssetsName.Value);
-        //    if (appIconNameField == null || String.IsNullOrEmpty(appIconNameField.Value))
-        //    {
-        //        baseTask.Log.LogError("AppIconSet catalogue name undefined");
-        //    }
-        //    baseTask.Log.LogMessage("AppIconCatalogue name {0}", appIconNameField.Value.ApplyAppiconsetExt());
-        //    return new TaskItem(appIconNameField.Value.ApplyAppiconsetExt());
-        //}
-
-        //public static ITaskItem GetSplashCatalogueSetName(this BaseLoadTask baseTask, ClientConfigDto clientConfigDto)
-        //{
-
-        //    var launchImageCatalogueSetName = clientConfigDto.PackagingFields.FirstOrDefault(x => x.FieldId == FieldType.PackagingIosLaunchImageXcAssetsName.Value);
-        //    if (launchImageCatalogueSetName == null || String.IsNullOrEmpty(launchImageCatalogueSetName.Value))
-        //    {
-        //        baseTask.Log.LogError("LaunchImageCatalogueSet catalogue name undefined");
-        //    }
-        //    baseTask.Log.LogMessage("LaunchImageCatalogueSet name {0}", launchImageCatalogueSetName.Value.ApplyLaunchimageExt());
-        //    return new TaskItem(launchImageCatalogueSetName.Value.ApplyLaunchimageExt());
-        //}
     }
 }

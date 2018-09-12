@@ -8,10 +8,10 @@ namespace TheAppsPajamas.Client.Extensions
     {
         public static bool IsVerbose(this BaseTask baseTask)
         {
-            if (baseTask.TapConfig == null){
+            if (baseTask.TapSettings == null){
                 return true;
             }
-            if (baseTask.TapConfig.GetMetadata(MetadataType.TapLogLevel).ToLower() == TapLogLevel.Verbose.ToLower())
+            if (baseTask.TapSettings.GetMetadata(MetadataType.TapLogLevel).ToLower() == TapLogLevel.Verbose.ToLower())
             {
                 return true;
             }
@@ -20,11 +20,11 @@ namespace TheAppsPajamas.Client.Extensions
         }
 
         public static bool IsDebug(this BaseTask baseTask){
-            if (baseTask.TapConfig == null)
+            if (baseTask.TapSettings == null)
             {
                 return true;
             }
-            if (baseTask.TapConfig.GetMetadata(MetadataType.TapLogLevel).ToLower() == TapLogLevel.Debug.ToLower())
+            if (baseTask.TapSettings.GetMetadata(MetadataType.TapLogLevel).ToLower() == TapLogLevel.Debug.ToLower())
             {
                 return true;
             }
@@ -39,12 +39,12 @@ namespace TheAppsPajamas.Client.Extensions
 
         public static bool IsInformation(this BaseTask baseTask)
         {
-            if (baseTask.TapConfig == null)
+            if (baseTask.TapSettings == null)
             {
                 return true;
             }
 
-            if (baseTask.TapConfig.GetMetadata(MetadataType.TapLogLevel).ToLower() == TapLogLevel.Information.ToLower())
+            if (baseTask.TapSettings.GetMetadata(MetadataType.TapLogLevel).ToLower() == TapLogLevel.Information.ToLower())
             {
                 return true;
             }
@@ -58,12 +58,12 @@ namespace TheAppsPajamas.Client.Extensions
 
         public static bool IsWarning(this BaseTask baseTask)
         {
-            if (baseTask.TapConfig == null)
+            if (baseTask.TapSettings == null)
             {
                 return true;
             }
 
-            if (baseTask.TapConfig.GetMetadata(MetadataType.TapLogLevel).ToLower() == TapLogLevel.Warn.ToLower())
+            if (baseTask.TapSettings.GetMetadata(MetadataType.TapLogLevel).ToLower() == TapLogLevel.Warn.ToLower())
             {
                 return true;
             }

@@ -22,6 +22,9 @@ namespace TheAppsPajamas.Client.Tasks
         public ITaskItem AssetCatalogueName { get; set; }
 
 
+        public ITaskItem AppIconHolder { get; set; }
+        public ITaskItem SplashHolder { get; set; }
+
         public string PackagesOutputDir { get; set; }
 
 
@@ -41,6 +44,20 @@ namespace TheAppsPajamas.Client.Tasks
         {
             var baseResult = base.Execute();
             LogInformation("Set Ios Asset Cataloge Sets started");
+
+
+            //TODO probably still need to clean files out of project (debug/asset catalogue/appiconsset etc (maybe just the contents.json?)
+            if (AssetCatalogueName.IsDisabled()){
+                LogInformation("Asset catalogue is disabled, returning from task");
+                return true;
+            }
+
+            if (AppIconHolder.IsDisabled() && SplashHolder.IsDisabled())
+            {
+                LogInformation("App icons and splash images are disabled, not creating asset catalogue");
+                return true;
+            }
+
 
             //turns out msbuild adds to the output array itself, so if we send the output back down, and into the same 
             //item property it will get added
@@ -75,7 +92,7 @@ namespace TheAppsPajamas.Client.Tasks
 
             //try
             //{
-            var buildConfigurationResourceDir = this.GetBuildConfigurationResourceDir(BuildConfiguration);
+            var buildConfigAssetDir = this.GetBuildConfigurationAssetDir(BuildConfiguration);
 
             //could handle disbled here
             var firstField = AppIconFields.FirstOrDefault();
@@ -115,6 +132,19 @@ namespace TheAppsPajamas.Client.Tasks
             //for temp testing jsut make it do app icons - till we've got the other contents.json stuff in
             foreach (var catalogue in cataloguesToSet)
             {
+                var enabledFields = allFields.Where(x => x.GetMetadata(MetadataType.CatalogueSetName) == catalogue
+                                                    && x.IsEnabled());
+
+                //TODO will still have to delete catalogue
+                if (!enabledFields.Any()){
+                    LogInformation($"Catalogue {catalogue} has no enabled fields, not creating");
+                    continue;
+                }
+
+                //if all fields are disabled in this catalogue set
+                //continue
+
+
                 LogDebug("Asset Catalogue set required {0}", catalogue);
                 //create catalogue set folder, and contents.json
                 var packagesCatalogueSetDir = Path.Combine(PackagesOutputDir, AssetCatalogueName.ItemSpec, catalogue);
@@ -174,34 +204,20 @@ namespace TheAppsPajamas.Client.Tasks
 
                 foreach (var field in allFields.Where(x => x.GetMetadata(MetadataType.CatalogueSetName) == catalogue))
                 {
+                    //TODO might still have to remove from catalog
+                    if (field.IsDisabled())
+                    {
+                        if (field.HolderIsEnabled())
+                        {
+                            Log.LogMessage($"{field.GetMetadata(MetadataType.FieldDescription)} is disabled in this configuration");
+                        }
+                        //always continue 
+                        continue;
+                    }
+
                     //skip itunes artwork first, something else will do that
                     if (String.IsNullOrEmpty(field.GetMetadata(MetadataType.Idiom)))
                     {
-
-                        //var existingFilePath = Path.Combine(mediaResourcesBuildConfigDir, Consts.iTunesArtworkDir, field.GetMetadata(MetadataType.MediaName).ApplyPngExt());
-                        //var packagesOutputFilePath = Path.Combine(PackagesOutputDir, field.GetMetadata(MetadataType.LogicalName));
-
-                        //var projectOutputFilePath = Path.Combine(base.ProjectDir, field.GetMetadata(MetadataType.LogicalName));
-
-                        //if (existingAssets.FirstOrDefault(x => x.ItemSpec == existingFilePath.GetPathRelativeToProject(ProjectDir)) == null)
-                        //{
-                        //    LogDebug("Adding {0} to add to project list as it is not in current project", existingFilePath);
-                        //    filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.iTunesArtwork, new Dictionary<string, string> { { MetadataType.IncludePath, existingFilePath } }));
-                        //}
-
-                        //if (existingAssets.FirstOrDefault(x => x.ItemSpec == projectOutputFilePath.GetPathRelativeToProject(ProjectDir)) == null)
-                        //{
-                        //    LogDebug("Adding {0} to add to project list as it is not in current project", projectOutputFilePath);
-                        //    filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.iTunesArtwork, new Dictionary<string, string> { { MetadataType.IncludePath, projectOutputFilePath } }));
-                        //}
-
-                        //File.Copy(existingFilePath, projectOutputFilePath, true);
-                        //File.Copy(existingFilePath, packagesOutputFilePath, true);
-                        //outputITunesArtwork.Add(new TaskItem(packagesOutputFilePath));
-                        //var artworkTaskItem = new TaskItem(field.GetMetadata(MetadataType.LogicalName));
-
-                        //LogDebug("Added {2} from {0} to {1}", existingFilePath, projectOutputFilePath, MSBuildItemName.iTunesArtwork);
-
                         continue;
                     }
 
@@ -262,14 +278,14 @@ namespace TheAppsPajamas.Client.Tasks
                             LogDebug("Set second asset catalogue set filename to {0}", outputImageCatalogue2.filename);
                         }
 
-                        var existingFilePath = Path.Combine(buildConfigurationResourceDir
-                                                            , field.GetMetadata(MetadataType.Path)
+                        var existingFilePath = Path.Combine(buildConfigAssetDir
+                                                            , field.GetMetadata(MetadataType.TapAssetPath)
                                                             , field.GetMetadata(MetadataType.MediaName).ApplyPngExt());
 
-                        var packagingOutputFilePath = Path.Combine(PackagesOutputDir, field.GetMetadata(MetadataType.Path)
+                        var packagingOutputFilePath = Path.Combine(PackagesOutputDir, field.GetMetadata(MetadataType.ProjectAssetPath)
                                                           , field.GetMetadata(MetadataType.LogicalName));
 
-                        var projectOutputFilePath = Path.Combine(ProjectDir, field.GetMetadata(MetadataType.Path)
+                        var projectOutputFilePath = Path.Combine(ProjectDir, field.GetMetadata(MetadataType.ProjectAssetPath)
                                                           , field.GetMetadata(MetadataType.LogicalName));
 
                         //we want a list of existing imageassets, and itunesartwork to work of, rather than a test of file existence
@@ -305,7 +321,7 @@ namespace TheAppsPajamas.Client.Tasks
                         NullValueHandling = NullValueHandling.Ignore
                     });
 
-                var mediaResourceCatalogueSetContentsPath = Path.Combine(buildConfigurationResourceDir, AssetCatalogueName.ItemSpec, catalogue, Consts.iOSContents);
+                var mediaResourceCatalogueSetContentsPath = Path.Combine(buildConfigAssetDir, AssetCatalogueName.ItemSpec, catalogue, Consts.iOSContents);
                 LogDebug($"Added media-resource {catalogue} Contents.json at path {mediaResourceCatalogueSetContentsPath}");
 
                 LogInformation($"Saving media-resources {catalogue} Contents.json to {mediaResourceCatalogueSetContentsPath}");

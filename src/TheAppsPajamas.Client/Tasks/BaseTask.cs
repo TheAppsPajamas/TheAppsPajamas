@@ -7,19 +7,19 @@ namespace TheAppsPajamas.Client.Tasks
 {
     public abstract class BaseTask : Task
     {
-        public ITaskItem TapConfig { get; set; }
+        public ITaskItem TapSettings { get; set; }
 
         public string PackagesDir { get; set; }
         public string ProjectDir { get; set; }
 
         [Output]
-        public ITaskItem TapConfigOutput { get; set; }
+        public ITaskItem TapSettingsOutput { get; set; }
 
         public override bool Execute()
         {
-            if (TapConfig == null){
-                TapConfig = this.GetTapConfig();
-                TapConfigOutput = TapConfig;
+            if (TapSettings == null){
+                TapSettings = this.GetTapSettings();
+                TapSettingsOutput = TapSettings;
             }
             return true;
         }

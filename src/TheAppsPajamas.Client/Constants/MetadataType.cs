@@ -75,6 +75,11 @@ namespace TheAppsPajamas.Client.Constants
         public const string Disabled = "TapDisabled";
 
         /// <summary>
+        /// If the field holder is actually disabled.
+        /// </summary>
+        public const string FieldHolderDisabled = "TapFieldHolderDisabled";
+
+        /// <summary>
         /// The path of the file to be deleted from the project.
         /// </summary>
         public const string DeletePath = "DeletePath";
@@ -87,7 +92,12 @@ namespace TheAppsPajamas.Client.Constants
         /// <summary>
         /// The relative path (without file name) of the appspajamas media file.
         /// </summary>
-        public const string Path = "Path";
+        public const string TapAssetPath = "TapAssetPath";
+
+        /// <summary>
+        /// The relative path (without file name) of the intended destination for the appspajamas media file.
+        /// </summary>
+        public const string ProjectAssetPath = "ProjectAssetPath";
 
         /// <summary>
         /// The include path for files that are going to be added to the project.

@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Project>
+  
+<!-- Get our Build Action to show up in VS -->
+<ItemGroup>
+  <AvailableItemName Include="TapAsset" />
+</ItemGroup>    
+    
+<!-- Useful debug information / properties -->    
+   
+   <!-- 
+<Target Name="_TapSetupDesignTimeBuildForBuild"  AfterTargets="_UpdateAndroidResources">
+    <PropertyGroup>
+        <IsUpdatingAndroidResources>True</IsUpdatingAndroidResources>
+    </PropertyGroup>        
+        <Message Text="DesignTimeBuild after updateandroidresource$(DesignTimeBuild)"/>
+        <Message Text="BuildingInsideVisualStudio after updateandroidresource$(BuildingInsideVisualStudio)"/>
+</Target>
+    
+    <Target Name="_TapSetupDesignTimeBuildForBuild2"  AfterTargets="_GetReferenceAssemblyPaths">
+    <PropertyGroup>
+        <IsUpdatingAndroidResources>True</IsUpdatingAndroidResources>
+    </PropertyGroup>        
+        <Message Text="DesignTimeBuild after _GetReferenceAssemblyPaths$(DesignTimeBuild)"/>
+        <Message Text="BuildingInsideVisualStudio after _GetReferenceAssemblyPaths$(BuildingInsideVisualStudio)"/>
+</Target>
+  -->
+  
+    
+    <!-- this cleans the packages folder can't clean the others without modifying the project - painful-->
+    <Target Name="CleanAssetCatalogues" 
+        AfterTargets="Clean" 
+        Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' ">
+        <CleanAssetCatalogues 
+            PackagesDir="$(PackagesDir)" 
+            ProjectDir="$(MSBuildProjectDirectory)" 
+            TargetsDir="$(MSBuildThisFileDirectory)">
+
+            <Output TaskParameter="TapSettingsOutput" ItemName="TapSettings"/>
+        </CleanAssetCatalogues>
+    </Target>
+    
+    <Target Name="LoadTapBuildConfig" 
+        AfterTargets="_GetReferenceAssemblyPaths;_BeforeCoreCompileInterfaceDefinitions"
+        Condition="'$(DesignTimeBuild)' != 'true' ">
+        <LoadTapBuildConfig 
+            TapSettings="@(TapSettings)"
+            ProjectName="$(MSBuildProjectName)" 
+            BuildConfiguration="$(Configuration)" 
+            PackagesDir="$(PackagesDir)" 
+            ProjectDir="$(MSBuildProjectDirectory)" 
+            TargetFrameworkIdentifier='$(TargetFrameworkIdentifier)'>
+                <Output TaskParameter="TapAssetDir" PropertyName="TapAssetDir" />
+                <Output TaskParameter="PackagingFieldOutput" ItemName="PackagingFields" />
+                <Output TaskParameter="AppIconFieldOutput" ItemName="AppIconFields" />
+                <Output TaskParameter="SplashFieldOutput" ItemName="SplashFields" />
+
+                <Output TaskParameter="BuildConfigHolderOutput" ItemName="BuildConfigHolder" />
+                <Output TaskParameter="PackagingHolderOutput" ItemName="PackagingHolder" />
+                <Output TaskParameter="AppIconHolderOutput" ItemName="AppIconHolder" />
+                <Output TaskParameter="SplashHolderOutput" ItemName="SplashHolder" />
+            
+                <Output TaskParameter="AssetCatalogueName" ItemName="AssetCatalogueName"/>
+                <Output TaskParameter="Token" PropertyName="TapAccessToken"/>
+                <Output TaskParameter="TapAppId" PropertyName="TapAppId" />
+
+
+                <Output TaskParameter="TapAssetDirRelative" PropertyName="TapAssetDirRelative" />
+
+                <Output TaskParameter="TapShouldContinue" PropertyName="TapShouldContinue" />
+            <Output TaskParameter="TapSettingsOutput" ItemName="TapSettings"/>
+        </LoadTapBuildConfig>
+    </Target>
+    
+    <Target Name="DeleteUnusedMediaFiles" 
+        AfterTargets="LoadTapBuildConfig"
+        Condition=" '$(TapShouldContinue)' == 'True' ">
+        <DeleteUnusedMediaFiles 
+            TapSettings="@(TapSettings)"
+            ProjectDir="$(MSBuildProjectDirectory)" 
+            PackagesDir="$(PackagesDir)" 
+            AppIconFields="@(AppIconFields)" 
+            SplashFields="@(SplashFields)" 
+            TapAssets="@(TapAsset)"
+            IosImageAssets="@(ImageAsset)"
+            IosItunesArtwork="@(ITunesArtwork)"
+            BuildConfiguration="$(Configuration)">
+            <Output TaskParameter="FilesToDeleteFromProject" ItemName="FilesToDeleteFromProject" />
+            <Output TaskParameter="TapAssetsToRemoveFromProject" ItemName="TapAssetsToRemoveFromProject" />
+            <Output TaskParameter="IosImageAssetsToRemoveFromProject" ItemName="IosImageAssetsToRemoveFromProject" />
+            <Output TaskParameter="IosItunesArtworkToRemoveFromProject" ItemName="IosItunesArtworkToRemoveFromProject" />
+
+            <Output TaskParameter="TapSettingsOutput" ItemName="TapSettings"/>
+   
+            
+        </DeleteUnusedMediaFiles>
+
+        <ItemGroup>
+            <TapAsset Remove="@(TapAssetsToRemoveFromProject)"/>
+        </ItemGroup>
+        <ItemGroup>
+            <ImageAsset Remove="@(IosImageAssetsToRemoveFromProject)"/>
+        </ItemGroup>
+        <ItemGroup>
+            <ITunesArtwork Remove="@(IosItunesArtworkToRemoveFromProject)"/>
+        </ItemGroup>
+    </Target>
+    
+    <Target Name="DownloadMediaFiles" 
+        AfterTargets="DeleteUnusedMediaFiles"
+        Condition=" '$(TapShouldContinue)' == 'True' ">
+        <DownloadMediaFiles 
+            TapSettings="@(TapSettings)"
+            TapAppId="$(TapAppId)" 
+            ProjectDir="$(MSBuildProjectDirectory)" 
+            Token="$(TapAccessToken)" 
+            PackagesDir="$(PackagesDir)" 
+            AppIconFields="@(AppIconFields)" 
+            SplashFields="@(SplashFields)" 
+            BuildConfiguration="$(Configuration)"
+            FilesToDeleteFromProject="@(FilesToDeleteFromProject)">
+            <Output TaskParameter="TapSettingsOutput" ItemName="TapSettings"/>
+        </DownloadMediaFiles>
+    </Target>
+    
+    <Target Name="SetDroidManifest" 
+        AfterTargets="DownloadMediaFiles" 
+        Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid' And '$(TapShouldContinue)' == 'True' ">
+        <SetDroidManifest 
+            TapSettings="@(TapSettings)"
+            ProjectDir="$(MSBuildProjectDirectory)" 
+            PackagingFields="@(PackagingFields)" 
+            PackagingHolder="@(PackagingHolder)"
+            AndroidManifest="$(AndroidManifest)">
+            <Output TaskParameter="TapSettingsOutput" ItemName="TapSettings"/>
+        </SetDroidManifest>
+    </Target>
+    
+    <Target Name="SetDroidMedia" 
+        AfterTargets="SetDroidManifest" 
+        Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid' And '$(TapShouldContinue)' == 'True' ">
+        <SetDroidMedia 
+            TapSettings="@(TapSettings)"
+            BuildConfiguration="$(Configuration)" 
+            PackagesDir="$(PackagesDir)" 
+            ProjectDir="$(MSBuildProjectDirectory)" 
+            AppIconFields="@(AppIconFields)"
+            SplashFields="@(SplashFields)"
+            AppIconHolder="@(AppIconHolder)"
+            SplashHolder="@(SplashHolder)"
+            ExistingAndroidResources="@(AndroidResource)"
+            ExistingTapAssets="@(TapAsset)">
+            <Output TaskParameter="OutputAndroidResources" ItemName="AndroidAppIcons" />    
+            <Output TaskParameter="FilesToAddToProject" ItemName="FilesToAddToProject" />
+            <Output TaskParameter="TapSettingsOutput" ItemName="TapSettings"/>
+        </SetDroidMedia>
+
+       <ItemGroup>
+            <AndroidResource Include="%(AndroidAppIcons.Identity)"/>
+        </ItemGroup>
+    </Target>
+
+ 
+
+    <Target Name="SetIosPlist" 
+        AfterTargets="SetDroidMedia" 
+        Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' And '$(TapShouldContinue)' == 'True' ">
+        <SetIosPlist 
+            TapSettings="@(TapSettings)"
+            PackagesDir="$(PackagesDir)" 
+            ProjectDir="$(MSBuildProjectDirectory)" 
+            PackagingFields="@(PackagingFields)" 
+            PackagingHolder="@(PackagingHolder)"
+            IosPlist="$(_AppManifest)">
+            <Output TaskParameter="TapSettingsOutput" ItemName="TapSettings"/>
+            </SetIosPlist>
+
+    </Target>
+
+
+    <Target Name="SetIosAssetCatalogue" 
+        AfterTargets="SetIosPlist" 
+        Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' And '$(TapShouldContinue)' == 'True' ">
+        <SetIosAssetCatalogue 
+            TapSettings="@(TapSettings)" 
+            BuildConfiguration="$(Configuration)" 
+            PackagesDir="$(PackagesDir)" 
+            ProjectDir="$(MSBuildProjectDirectory)" 
+            AppIconFields="@(AppIconFields)" 
+            AssetCatalogueName="@(AssetCatalogueName)" 
+            ExistingImageAssets="@(ImageAsset)"
+            AppIconHolder="@(AppIconHolder)"
+            SplashHolder="@(SplashHolder)"
+            PackagesOutputDir="$(MSBuildThisFileDirectory)">
+            <Output TaskParameter="OutputImageAssets" ItemName="IosImageAssets" />           
+
+            <Output TaskParameter="FilesToAddToProject" ItemName="FilesToAddToProject" />
+            <Output TaskParameter="TapSettingsOutput" ItemName="TapSettings"/>
+        </SetIosAssetCatalogue>
+
+        <!-- TODO pass IosImageAssets into next target ? Still needed ?-->
+<!--       <ItemGroup>
+            <ImageAsset Include="%(IosAppIcons.Identity)"/>
+        </ItemGroup>-->
+
+    </Target>
+
+
+    <Target Name="SetIosAssetCatalogueSets" 
+        AfterTargets="SetIosAssetCatalogue" 
+        Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' And '$(TapShouldContinue)' == 'True' ">
+        <SetIosAssetCatalogueSets 
+            TapSettings="@(TapSettings)"
+            BuildConfiguration="$(Configuration)" 
+            PackagesDir="$(PackagesDir)" 
+            ProjectDir="$(MSBuildProjectDirectory)" 
+            AppIconFields="@(AppIconFields)" 
+            SplashFields="@(SplashFields)" 
+            AssetCatalogueName="@(AssetCatalogueName)"             
+            AppIconHolder="@(AppIconHolder)"
+            SplashHolder="@(SplashHolder)"
+            ExistingImageAssets="@(ImageAsset)"
+            ExistingFilesToAddToProject="@(FilesToAddToProject)"
+            ExistingOutputImageAssets="@(IosImageAssets)"
+            PackagesOutputDir="$(MSBuildThisFileDirectory)">
+            <Output TaskParameter="OutputImageAssets" ItemName="IosImageAssets" />            
+
+            
+            <Output TaskParameter="FilesToAddToProject" ItemName="FilesToAddToProject" />
+            <Output TaskParameter="TapSettingsOutput" ItemName="TapSettings"/>
+        </SetIosAssetCatalogueSets>
+        
+
+        <ItemGroup>
+            <ImageAsset Remove="@(AssetCatalogueName)/**"/>
+       <!--     <ImageAsset Remove="$(TapAssetDirRelative)/**"/>-->
+
+        </ItemGroup>
+        
+       <ItemGroup>
+            <ImageAsset Include="%(IosImageAssets.Identity)"/>
+         <!--   <ITunesArtwork Include="%(IosITunesArtwork.Identity)" />-->
+        </ItemGroup>
+
+    </Target>
+
+    <Target Name="SetIosItunesArtwork" 
+        AfterTargets="SetIosAssetCatalogueSets" 
+        Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' And '$(TapShouldContinue)' == 'True' ">
+        <SetIosItunesArtwork 
+            TapSettings="@(TapSettings)" 
+            BuildConfiguration="$(Configuration)" 
+            PackagesDir="$(PackagesDir)" 
+
+            ProjectDir="$(MSBuildProjectDirectory)" 
+            AppIconHolder="@(AppIconHolder)"
+            AppIconFields="@(AppIconFields)" 
+
+            ExistingItunesArtwork="@(ITunesArtwork)"
+            ExistingFilesToAddToProject="@(FilesToAddToProject)">
+            
+            <Output TaskParameter="OutputItunesArtwork" ItemName="IosItunesArtwork" />           
+
+            <Output TaskParameter="FilesToAddToProject" ItemName="FilesToAddToProject" />
+            <Output TaskParameter="TapSettingsOutput" ItemName="TapSettings"/>
+        </SetIosItunesArtwork>
+
+       <ItemGroup>           
+            <ITunesArtwork Remove="**"/>
+            <ITunesArtwork Include="%(IosItunesArtwork.Identity)"/>
+        </ItemGroup>
+
+    </Target>
+
+    
+    <!-- TODO need to look into this for iOS -->
+    
+    <Target Name="RemoveTapResources"
+        AfterTargets="SetIosAssetCatalogueSets"
+        Condition=" '$(TapShouldContinue)' == 'True' ">
+        <Message Text="Removing Tap Assets from project, TapAsset folder $(TapAssetDirRelative)"/>
+
+        <ItemGroup>
+            <ImageAsset Remove="$(TapAssetDirRelative)/**"/>
+        </ItemGroup>
+
+<!--        <ItemGroup>
+            <ImageAsset Remove="@(ImageAsset)" Condition=" '@(ImageAsset->Contains('$(TapAssetDirRelative)'))' == 'True'  "/>
+
+        </ItemGroup>-->
+        
+        <!-- no longer required for Android - stored as TapAsset now -->
+  <!--      <ItemGroup>
+            <AndroidResource Remove="$(TapAssetDirRelative)/**"/>
+        </ItemGroup>-->
+
+        <Message Text="Tap Assets removed from project"/>
+    </Target>
+    
+    <Target Name="ModifyProject" 
+        AfterTargets="RemoveTapResources"
+        Condition=" '$(TapShouldContinue)' == 'True' ">
+           <ModifyProject 
+            TapSettings="@(TapSettings)" 
+            PackagesDir="$(PackagesDir)" 
+            ProjectDir="$(MSBuildProjectDirectory)"             
+            ProjectFileLoad="$(MSBuildProjectFullPath)"
+            FilesToAddToProject="@(FilesToAddToProject)"
+            FilesToDeleteFromProject="@(FilesToDeleteFromProject)">
+            <Output TaskParameter="ProjectFileSave" PropertyName="ModifiedProjectFullPath"/>
+
+            <Output TaskParameter="ProjectShouldModifyOriginal" PropertyName="ProjectShouldModifyOriginal"/>
+
+            <Output TaskParameter="TapSettingsOutput" ItemName="TapSettings"/>
+        </ModifyProject>
+
+    </Target>
+
+    
+    <!-- If project has been modified resources need to be updated during build process
+    or new AndroidResources don't come through in the resource.designer.cs - they probably still end up
+    in the compiled project, but it seems worth processing here to avoid issues -->
+    <Target Name="TapUpdateAndroidResources" 
+        AfterTargets="ModifyProject"
+        Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid' And '$(ProjectShouldModifyOriginal)' == 'True' And '$(TapShouldContinue)' == 'True' ">
+        <CallTarget Targets="_UpdateAndroidResources"/>
+    </Target>     
+    
+    
+    <!-- do this last to stop VS reloading project, running DesignTimeBuild (UpdateAndroidResources
+    and causing build to fail - probably because files have been modified.
+    Only problem this causes is if project build fails for other reasons, new assets 
+    do not appear in project - until build succeeds. 
+    User will know this has happened because .Tap.csproj file will be left in 
+    root folder - it's deleted by this task when successful -->
+    <Target Name="SaveOriginalProject" 
+        AfterTargets="Build"
+        Condition=" $(ProjectShouldModifyOriginal) == 'True' And '$(TapShouldContinue)' == 'True' ">
+        <SaveOriginalProject 
+            TapSettings="@(TapSettings)"
+            PackagesDir="$(PackagesDir)" 
+            ProjectDir="$(MSBuildProjectDirectory)" 
+            ProjectFileOriginalName="$(MSBuildProjectFullPath)"
+            ProjectFileModifiedName="$(ModifiedProjectFullPath)">
+
+            <Output TaskParameter="TapSettingsOutput" ItemName="TapSettings"/>
+        </SaveOriginalProject>
+    </Target>  
+
+    
+</Project>

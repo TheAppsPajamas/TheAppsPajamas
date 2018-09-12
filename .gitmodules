@@ -1,0 +1,3 @@
+[submodule "src/TheAppsPajamas.Client/Shared/Types"]
+	path = src/TheAppsPajamas.Client/Shared/Types
+	url = git@github.com:TheAppsPajamas/TheAppsPajamas.Shared.Types.git

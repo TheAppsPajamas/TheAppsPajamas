@@ -57,9 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tasks\LoadRemoteBuildConfig.cs" />
-    <Compile Include="Models\TapSetting.cs" />
-    <Compile Include="Models\SecurityConfig.cs" />
+    <Compile Include="Tasks\LoadTapBuildConfig.cs" />
     <Compile Include="Extensions\ConfigExtensions.cs" />
     <Compile Include="Tasks\BaseLoadTask.cs" />
     <Compile Include="Models\ClientConfigDto.cs" />
@@ -68,8 +66,6 @@
     <Compile Include="Models\MediaFieldClientDto.cs" />
     <Compile Include="Tasks\BaseTask.cs" />
     <Compile Include="Tasks\SetDroidManifest.cs" />
-    <Compile Include="Models\ProjectConfig.cs" />
-    <Compile Include="Models\ProjectsConfig.cs" />
     <Compile Include="Extensions\LoadExtensions.cs" />
     <Compile Include="Constants\Consts.cs" />
     <Compile Include="Tasks\CleanProjectsConfig.cs" />
@@ -98,12 +94,11 @@
     <Compile Include="Shared\Types\BuildConfigRecordSetFieldType.cs" />
     <Compile Include="Shared\Types\MediaOrientationType.cs" />
     <Compile Include="Tasks\ModifyProject.cs" />
-    <Compile Include="Tasks\SaveModifiedProjectBackToProject.cs" />
+    <Compile Include="Tasks\SaveOriginalProject.cs" />
     <Compile Include="Constants\MetadataType.cs" />
     <Compile Include="Constants\MSBuildItemName.cs" />
     <Compile Include="Tasks\SetIosAssetCatalogue.cs" />
     <Compile Include="Tasks\SetIosAssetCatalogueSets.cs" />
-    <Compile Include="Models\BuildConfig.cs" />
     <Compile Include="Models\BaseHolderClientDto.cs" />
     <Compile Include="Models\AppIconClientDto.cs" />
     <Compile Include="Models\SplashClientDto.cs" />
@@ -113,6 +108,11 @@
     <Compile Include="Constants\TapLogLevel.cs" />
     <Compile Include="Extensions\LogExtensions.cs" />
     <Compile Include="Tasks\SetIosItunesArtwork.cs" />
+    <Compile Include="JsonDtos\TapSettingJson.cs" />
+    <Compile Include="JsonDtos\TapSecurityJson.cs" />
+    <Compile Include="JsonDtos\BuildConfigJson.cs" />
+    <Compile Include="JsonDtos\ProjectJson.cs" />
+    <Compile Include="JsonDtos\ProjectsJson.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
@@ -121,6 +121,7 @@
     <Folder Include="Constants\" />
     <Folder Include="Helpers\" />
     <Folder Include="Shared\" />
+    <Folder Include="JsonDtos\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

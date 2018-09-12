@@ -11,6 +11,7 @@ using TheAppsPajamas.Shared.Types;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using Newtonsoft.Json;
+using TheAppsPajamas.Client.JsonDtos;
 
 namespace TheAppsPajamas.Client.Extensions
 {
@@ -21,34 +22,42 @@ namespace TheAppsPajamas.Client.Extensions
         /// </summary>
         /// <returns>The tap config.</returns>
         /// <param name="baseTask">Base task.</param>
-        public static ITaskItem GetTapConfig(this BaseTask baseTask)
+        public static ITaskItem GetTapSettings(this BaseTask baseTask)
         {
             //baseTask.Log.LogMessage($"Loading {Consts.TapConfig} file");
 
             try
             {
-                var tapConfigPath = Path.Combine(baseTask.PackagesDir, Consts.TapSettingFile);
-                if (!File.Exists(tapConfigPath))
+                var tapSettingPath = Path.Combine(baseTask.PackagesDir, Consts.TapSettingFile);
+                if (!File.Exists(tapSettingPath))
                 {
-                    var tapConfigTaskItem = new TaskItem(MetadataType.TapConfig);
+                    var tapSettingTaskItem = new TaskItem(MetadataType.TapConfig);
 
-                    tapConfigTaskItem.SetMetadata(MetadataType.TapEndpoint, Consts.ClientEndpoint);
-                    tapConfigTaskItem.SetMetadata(MetadataType.TapLogLevel, TapLogLevel.Information);
+                    tapSettingTaskItem.SetMetadata(MetadataType.TapEndpoint, Consts.TapEndpoint);
+                    tapSettingTaskItem.SetMetadata(MetadataType.TapLogLevel, TapLogLevel.Information);
      
-
                     //baseTask.Log.LogMessage($"Tap log level set to {tapConfigTaskItem.GetMetadata(MetadataType.TapLogLevel)}");
-                    return tapConfigTaskItem;
+                    return tapSettingTaskItem;
                 }
                 else
                 {
-                    var json = File.ReadAllText(tapConfigPath);
-                    var tapSetting = JsonConvert.DeserializeObject<TapSetting>(json);
+                    var json = File.ReadAllText(tapSettingPath);
+                    var tapSetting = JsonConvert.DeserializeObject<TapSettingJson>(json);
 
                     var tapSettingTaskItem = new TaskItem(MetadataType.TapConfig);
 
-                    tapSettingTaskItem.SetMetadata(MetadataType.TapEndpoint, tapSetting.Endpoint);
-                    tapSettingTaskItem.SetMetadata(MetadataType.TapLogLevel, tapSetting.TapLogLevel);
+                    if (!String.IsNullOrEmpty(tapSetting.TapLogLevel)){
+                        tapSettingTaskItem.SetMetadata(MetadataType.TapLogLevel, tapSetting.TapLogLevel);
+                    } else {
+                        tapSettingTaskItem.SetMetadata(MetadataType.TapLogLevel, TapLogLevel.Information);
+                    }
 
+                    if (!String.IsNullOrEmpty(tapSetting.Endpoint))
+                    {
+                        tapSettingTaskItem.SetMetadata(MetadataType.TapEndpoint, tapSetting.Endpoint);
+                    } else {
+                        tapSettingTaskItem.SetMetadata(MetadataType.TapEndpoint, Consts.TapEndpoint);
+                    }
                     baseTask.LogInformation($"Tap log level set to {tapSettingTaskItem.GetMetadata(MetadataType.TapLogLevel)}");
                     return tapSettingTaskItem;
                 }
@@ -57,26 +66,26 @@ namespace TheAppsPajamas.Client.Extensions
             {
                 var tapSettingTaskItem = new TaskItem(MetadataType.TapConfig);
 
-                tapSettingTaskItem.SetMetadata(MetadataType.TapEndpoint, Consts.ClientEndpoint);
+                tapSettingTaskItem.SetMetadata(MetadataType.TapEndpoint, Consts.TapClientEndpoint);
                 tapSettingTaskItem.SetMetadata(MetadataType.TapLogLevel, TapLogLevel.Information);
-                baseTask.Log.LogWarning($"Error trying to read {Consts.TapConfig}, returning defaults");
+                baseTask.Log.LogWarning($"Error trying to read {Consts.TapSettingFile}, returning defaults");
                 baseTask.LogInformation($"Tap log level set to {tapSettingTaskItem.GetMetadata(MetadataType.TapLogLevel)}");
                 return tapSettingTaskItem;
             }
         }
 
-        public static TapSetting GetTapSetting(this BaseLoadTask baseTask)
+        public static TapSettingJson GetTapSetting(this BaseLoadTask baseTask)
         {
             baseTask.Log.LogMessage($"Loading {Consts.TapSettingFile} file");
 
             try
             {
                 var tapSettingsPath = Path.Combine(baseTask.PackagesDir, Consts.TapSettingFile);
-                TapSetting tapSetting = null;
+                TapSettingJson tapSetting = null;
                 if (!File.Exists(tapSettingsPath))
                 {
                     baseTask.LogDebug($"Creating blank {Consts.TapSettingFile} at {tapSettingsPath}");
-                    tapSetting = new TapSetting();
+                    tapSetting = new TapSettingJson();
                     var json = JsonConvert.SerializeObject(tapSetting, Formatting.Indented);
                     File.WriteAllText(tapSettingsPath, json);
                     baseTask.Log.LogError($"{Consts.TapSettingFile} file not found, created at solution root. Please complete TapAppId and restart build process");
@@ -84,8 +93,10 @@ namespace TheAppsPajamas.Client.Extensions
                 }
                 else
                 {
+                    //test security file as well
+                    baseTask.GetSecurity();
                     var json = File.ReadAllText(tapSettingsPath);
-                    tapSetting = JsonConvert.DeserializeObject<TapSetting>(json);
+                    tapSetting = JsonConvert.DeserializeObject<TapSettingJson>(json);
 
                     if (tapSetting.TapAppId == 0)
                     {
@@ -106,7 +117,7 @@ namespace TheAppsPajamas.Client.Extensions
             return null;
         }
 
-        public static void SaveTapAssetConfig(this BaseLoadTask baseTask, TapSetting tapSetting)
+        public static void SaveTapAssetConfig(this BaseLoadTask baseTask, TapSettingJson tapSetting)
         {
             baseTask.LogInformation($"Saving {Consts.TapSettingFile} file");
 
@@ -126,37 +137,37 @@ namespace TheAppsPajamas.Client.Extensions
 
 
 
-        public static SecurityConfig GetSecurityConfig(this BaseTask baseTask)
+        public static TapSecurityJson GetSecurity(this BaseTask baseTask)
         {
-            baseTask.LogDebug($"Loading {Consts.TapSecurityConfig} file");
+            baseTask.LogDebug($"Loading {Consts.TapSecurityFile} file");
 
             try
             {
-                var buildSecurityConfigPath = Path.Combine(baseTask.PackagesDir, Consts.TapSecurityConfig);
-                SecurityConfig buildSecurityConfig = null;
-                if (!File.Exists(buildSecurityConfigPath))
+                var tapSecurityPath = Path.Combine(baseTask.PackagesDir, Consts.TapSecurityFile);
+                TapSecurityJson tapSecurity = null;
+                if (!File.Exists(tapSecurityPath))
                 {
-                    baseTask.LogDebug($"Creating empty {Consts.TapSecurityConfig} at {buildSecurityConfigPath}");
-                    buildSecurityConfig = new SecurityConfig();
-                    var json = JsonConvert.SerializeObject(buildSecurityConfig, Formatting.Indented);
-                    File.WriteAllText(buildSecurityConfigPath, json);
-                    baseTask.Log.LogError($"{Consts.TapSecurityConfig} file not found, created at {buildSecurityConfigPath}. Please complete username, and password and restart build process");
+                    baseTask.LogDebug($"Creating empty {Consts.TapSecurityFile} at {tapSecurityPath}");
+                    tapSecurity = new TapSecurityJson();
+                    var json = JsonConvert.SerializeObject(tapSecurity, Formatting.Indented);
+                    File.WriteAllText(tapSecurityPath, json);
+                    baseTask.Log.LogError($"{Consts.TapSecurityFile} file not found, created at {tapSecurityPath}. Please complete username, and password and restart build process");
                     return null;
                 }
                 else
                 {
-                    var json = File.ReadAllText(buildSecurityConfigPath);
-                    buildSecurityConfig = JsonConvert.DeserializeObject<SecurityConfig>(json);
+                    var json = File.ReadAllText(tapSecurityPath);
+                    tapSecurity = JsonConvert.DeserializeObject<TapSecurityJson>(json);
 
-                    if (String.IsNullOrEmpty(buildSecurityConfig.UserName) || String.IsNullOrEmpty(buildSecurityConfig.Password))
+                    if (String.IsNullOrEmpty(tapSecurity.Username) || String.IsNullOrEmpty(tapSecurity.Password))
                     {
-                        baseTask.Log.LogError($"{Consts.TapSecurityConfig} username or password is null, please complete username, and password at {buildSecurityConfigPath} and restart build process");
+                        baseTask.Log.LogError($"{Consts.TapSecurityFile} username or password is null, please complete username, and password at {tapSecurityPath} and restart build process");
                         return null;
                     }
                     else
                     {
-                        baseTask.LogDebug($"{Consts.TapSecurityConfig} file read from {buildSecurityConfigPath}Username {buildSecurityConfig.UserName}");
-                        return buildSecurityConfig;
+                        baseTask.LogDebug($"{Consts.TapSecurityFile} file read from {tapSecurityPath}, Username {tapSecurity.Username}");
+                        return tapSecurity;
                     }
                 }
             }

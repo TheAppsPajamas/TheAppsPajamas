@@ -4,7 +4,7 @@ using System.IO;
 
 namespace TheAppsPajamas.Client.Tasks
 {
-    public class SaveModifiedProjectBackToProject : BaseTask
+    public class SaveOriginalProject : BaseTask
     {
         public string ProjectFileOriginalName { get; set; }
 

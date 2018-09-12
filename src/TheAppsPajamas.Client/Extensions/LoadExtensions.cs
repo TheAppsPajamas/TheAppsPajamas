@@ -5,6 +5,7 @@ using System.Linq;
 using TheAppsPajamas.Client.Tasks;
 using TheAppsPajamas.Client.Constants;
 using TheAppsPajamas.Client.Models;
+using TheAppsPajamas.Client.JsonDtos;
 using TheAppsPajamas.Shared.Types;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
@@ -40,18 +41,18 @@ namespace TheAppsPajamas.Client.Extensions
             return null;
         }
 
-        public static ProjectsConfig GetProjectsConfig(this BaseLoadTask baseTask)
+        public static ProjectsJson GetProjectsConfig(this BaseLoadTask baseTask)
         {
-            baseTask.LogDebug($"Loading {Consts.ProjectsConfig} file");
+            baseTask.LogDebug($"Loading {Consts.ProjectsFile} file");
 
             try
             {
-                var projectsConfigPath = Path.Combine(baseTask.TapAssetDir, Consts.ProjectsConfig);
-                ProjectsConfig projectConfigs = null;
+                var projectsConfigPath = Path.Combine(baseTask.TapAssetDir, Consts.ProjectsFile);
+                ProjectsJson projectConfigs = null;
                 if (!File.Exists(projectsConfigPath))
                 {
-                    baseTask.LogInformation($"{Consts.ProjectsConfig} file file not found, created at {projectsConfigPath}");
-                    projectConfigs = new ProjectsConfig();
+                    baseTask.LogInformation($"{Consts.ProjectsFile} file file not found, created at {projectsConfigPath}");
+                    projectConfigs = new ProjectsJson();
                     var json = JsonConvert.SerializeObject(projectConfigs, Formatting.Indented);
                     File.WriteAllText(projectsConfigPath, json);
                     return projectConfigs;
@@ -59,7 +60,7 @@ namespace TheAppsPajamas.Client.Extensions
                 else
                 {
                     var json = File.ReadAllText(projectsConfigPath);
-                    projectConfigs = JsonConvert.DeserializeObject<ProjectsConfig>(json);
+                    projectConfigs = JsonConvert.DeserializeObject<ProjectsJson>(json);
                     return projectConfigs;
 
                 }
@@ -72,15 +73,15 @@ namespace TheAppsPajamas.Client.Extensions
         }
 
 
-        public static bool SaveProjects(this BaseLoadTask baseTask, ProjectsConfig projectsConfig)
+        public static bool SaveProjects(this BaseLoadTask baseTask, ProjectsJson projectsConfig)
         {
-            baseTask.LogDebug($"Saving {Consts.ProjectsConfig} file");
+            baseTask.LogDebug($"Saving {Consts.ProjectsFile} file");
 
             try
             {
-                var projectsConfigPath = Path.Combine(baseTask.TapAssetDir, Consts.ProjectsConfig);
+                var projectsConfigPath = Path.Combine(baseTask.TapAssetDir, Consts.ProjectsFile);
 
-                baseTask.LogInformation($"Saving {Consts.ProjectsConfig} at {projectsConfigPath}");
+                baseTask.LogInformation($"Saving {Consts.ProjectsFile} at {projectsConfigPath}");
                 var json = JsonConvert.SerializeObject(projectsConfig, Formatting.Indented);
                 File.WriteAllText(projectsConfigPath, json);
 

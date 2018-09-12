@@ -11,20 +11,21 @@ using TheAppsPajamas.Client.Constants;
 using System.Text;
 using TheAppsPajamas.Shared.Types;
 using System.Collections.Generic;
+using TheAppsPajamas.Client.JsonDtos;
 
 namespace TheAppsPajamas.Client.Tasks
 {
-    public class LoadRemoteBuildConfig : BaseLoadTask
+    public class LoadTapBuildConfig : BaseLoadTask
     {
         [Output]
         public ITaskItem Token { get; set; }
 
         [Output]
-        public ITaskItem BuildAppId { get; set; }
+        public ITaskItem TapAppId { get; set; }
 
-        public LoadRemoteBuildConfig()
+        public LoadTapBuildConfig()
         {
-            _taskName = "LoadRemoteBuildConfig";
+            _taskName = "LoadTapBuildConfig";
         }
 
         public override bool Execute()
@@ -42,26 +43,26 @@ namespace TheAppsPajamas.Client.Tasks
             }
 
 
-            var securityConfig = this.GetSecurityConfig();
+            var securitySettings = this.GetSecurity();
 
-            if (securityConfig == null)
+            if (securitySettings == null)
             {
-                Log.LogError($"{Consts.TapSecurityConfig} file not set, please see solution root and complete");
+                Log.LogError($"{Consts.TapSecurityFile} file not set, please see solution root and complete");
                 return false;
             }
 
-            BuildAppId = new TaskItem(_tapSetting.TapAppId.ToString());
+            TapAppId = new TaskItem(_tapSetting.TapAppId.ToString());
 
-            Token = this.Login(securityConfig);
+            Token = this.Login(securitySettings);
             if (Token == null){
                 Log.LogError("Authentication failure");
                 return false;
             }
 
             var unmodifedProjectName = ProjectName.Replace(Consts.ModifiedProjectNameExtra, String.Empty);
-            var url = String.Concat(Consts.UrlBase, Consts.ClientEndpoint, "?", "appId=", _tapSetting.TapAppId, "&projectName=", unmodifedProjectName, "&buildConfiguration=", BuildConfiguration );
+            var url = String.Concat(TapSettings.GetMetadata(MetadataType.TapEndpoint), Consts.TapClientEndpoint, "?", "tapAppId=", _tapSetting.TapAppId, "&projectName=", unmodifedProjectName, "&buildConfiguration=", BuildConfiguration );
 
-            LogInformation("Loading remote build config from '{0}'", url);
+            LogInformation("Loading tap build config from '{0}'", url);
 
             string jsonClientConfig = null;
             try
@@ -71,7 +72,7 @@ namespace TheAppsPajamas.Client.Tasks
                     client.SetWebClientHeaders(Token);
 
                     jsonClientConfig = client.DownloadString(url);
-                    LogInformation("Successfully loaded remote build config from '{0}', recieved '{1}'", url, jsonClientConfig.Length);
+                    LogInformation("Successfully loaded tap build config from '{0}', recieved '{1}'", url, jsonClientConfig.Length);
                     LogDebug("Json data recieved\n{0}", jsonClientConfig);
                     //write to file
                     //deserialise now (extension method)
@@ -113,7 +114,7 @@ namespace TheAppsPajamas.Client.Tasks
             var projectConfig = projectsConfig.Projects.FirstOrDefault(x => x.BuildConfiguration == BuildConfiguration);
 
             if (projectConfig == null){
-                projectConfig = new ProjectConfig();
+                projectConfig = new ProjectJson();
                 projectsConfig.Projects.Add(projectConfig);
             }
 

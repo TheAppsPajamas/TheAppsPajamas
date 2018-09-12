@@ -2,18 +2,18 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace TheAppsPajamas.Client.Models
+namespace TheAppsPajamas.Client.JsonDtos
 {
-    public class TapSetting
+    public class TapSettingJson
     {
         [JsonProperty(Order = 1)]
         public int TapAppId { get; set; } = 0;
 
         [JsonProperty("BuildConfigurations", Order = 2)]
-        public IList<BuildConfig> BuildConfigs = new List<BuildConfig>();
+        public IList<BuildConfigJson> BuildConfigs = new List<BuildConfigJson>();
 
         //{
-        //     "TapLogLevel": "Verbose", "Debug", "Information", "Warn"
+        //     "LogLevel": "Verbose", "Debug", "Information", "Warn"
         //     "Endpoint": "http://buildapidebug.me"
         //}
 

@@ -6,6 +6,7 @@ using TheAppsPajamas.Client.Extensions;
 using TheAppsPajamas.Client.Models;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
+using TheAppsPajamas.Client.JsonDtos;
 
 namespace TheAppsPajamas.Client.Tasks
 {
@@ -54,7 +55,7 @@ namespace TheAppsPajamas.Client.Tasks
 
 
         protected string _taskName;
-        protected TapSetting _tapSetting;
+        protected TapSettingJson _tapSetting;
 
         public override bool Execute()
         {
@@ -69,7 +70,6 @@ namespace TheAppsPajamas.Client.Tasks
 
             _tapSetting = this.GetTapSetting();
 
-            //TODO check for security here as well, so both get created
             if (_tapSetting == null)
             {
                 //Change to warning, and return TapShouldContinue = false
@@ -81,7 +81,7 @@ namespace TheAppsPajamas.Client.Tasks
             if (_tapSetting.BuildConfigs == null)
             {
                 LogDebug("Added BuildConfigs list");
-                _tapSetting.BuildConfigs = new List<BuildConfig>();
+                _tapSetting.BuildConfigs = new List<BuildConfigJson>();
             }
 
             var thisBuildConfig = _tapSetting.BuildConfigs.FirstOrDefault(x => x.BuildConfiguration == BuildConfiguration
@@ -90,7 +90,7 @@ namespace TheAppsPajamas.Client.Tasks
             if (thisBuildConfig == null)
             {
                 LogInformation($"Project {ProjectName} Build configuration {BuildConfiguration} not found, so adding to {Consts.TapSettingFile}");
-                _tapSetting.BuildConfigs.Add(new BuildConfig(ProjectName, BuildConfiguration));
+                _tapSetting.BuildConfigs.Add(new BuildConfigJson(ProjectName, BuildConfiguration));
                 this.SaveTapAssetConfig(_tapSetting);
             }
             else if (thisBuildConfig.Disabled == true)

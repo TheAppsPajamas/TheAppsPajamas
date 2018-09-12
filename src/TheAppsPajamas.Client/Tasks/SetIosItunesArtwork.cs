@@ -75,7 +75,7 @@ namespace TheAppsPajamas.Client.Tasks
             allFields.AddRange(AppIconFields);
 
 
-            foreach (var field in allFields.Where(x => x.GetMetadata(MetadataType.MSBuildItemType) == MSBuildItemName.iTunesArtwork))
+            foreach (var field in allFields.Where(x => x.GetMetadata(MetadataType.MSBuildItemType) == MSBuildItemName.ITunesArtwork))
             {
                 if (field.IsDisabled())
                 {
@@ -97,7 +97,7 @@ namespace TheAppsPajamas.Client.Tasks
                     if (existingAssets.FirstOrDefault(x => x.ItemSpec == projectOutputFilePath.GetPathRelativeToProject(ProjectDir)) == null)
                     {
                         LogDebug("Adding {0} to add to project list as it is not in current project", existingFilePath);
-                        filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.iTunesArtwork, new Dictionary<string, string> { { MetadataType.IncludePath, projectOutputFilePath } }));
+                        filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.ITunesArtwork, new Dictionary<string, string> { { MetadataType.IncludePath, projectOutputFilePath } }));
                     }
 
 
@@ -105,7 +105,7 @@ namespace TheAppsPajamas.Client.Tasks
                     //outputITunesArtwork.Add(new TaskItem(packagesOutputFilePath));
                     var artworkTaskItem = new TaskItem(field.GetMetadata(MetadataType.LogicalName));
                     outputItunesArtwork.Add(artworkTaskItem);
-                    LogDebug("Added {2} from {0} to {1}", existingFilePath, projectOutputFilePath, MSBuildItemName.iTunesArtwork);
+                    LogDebug("Added {2} from {0} to {1}", existingFilePath, projectOutputFilePath, MSBuildItemName.ITunesArtwork);
 
                     continue;
                 }

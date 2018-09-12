@@ -83,7 +83,7 @@
             SplashFields="@(SplashFields)" 
             TapAssets="@(TapAsset)"
             IosImageAssets="@(ImageAsset)"
-            IosItunesArtwork="@(iTunesArtwork)"
+            IosItunesArtwork="@(ITunesArtwork)"
             BuildConfiguration="$(Configuration)">
             <Output TaskParameter="FilesToDeleteFromProject" ItemName="FilesToDeleteFromProject" />
             <Output TaskParameter="TapAssetsToRemoveFromProject" ItemName="TapAssetsToRemoveFromProject" />
@@ -102,7 +102,7 @@
             <ImageAsset Remove="@(IosImageAssetsToRemoveFromProject)"/>
         </ItemGroup>
         <ItemGroup>
-            <iTunesArtwork Remove="@(IosItunesArtworkToRemoveFromProject)"/>
+            <ITunesArtwork Remove="@(IosItunesArtworkToRemoveFromProject)"/>
         </ItemGroup>
     </Target>
     
@@ -198,7 +198,7 @@
             <Output TaskParameter="TapConfigOutput" ItemName="TapConfig"/>
         </SetIosAssetCatalogue>
 
-        <!-- TODO pass IosImageAssets into next target -->
+        <!-- TODO pass IosImageAssets into next target ? Still needed ?-->
 <!--       <ItemGroup>
             <ImageAsset Include="%(IosAppIcons.Identity)"/>
         </ItemGroup>-->
@@ -256,7 +256,7 @@
             AppIconHolder="@(AppIconHolder)"
             AppIconFields="@(AppIconFields)" 
 
-            ExistingItunesArtwork="@(iTunesArtwork)"
+            ExistingItunesArtwork="@(ITunesArtwork)"
             ExistingFilesToAddToProject="@(FilesToAddToProject)">
             
             <Output TaskParameter="OutputItunesArtwork" ItemName="IosItunesArtwork" />           

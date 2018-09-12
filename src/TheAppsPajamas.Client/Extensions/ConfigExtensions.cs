@@ -291,7 +291,7 @@ namespace TheAppsPajamas.Client.Extensions
                         itemMetadata.Add(MetadataType.MediaName, fieldType.GetMetadata(MetadataType.FileName).RemovePngExt().ApplyFieldId(field));
                         itemMetadata.Add(MetadataType.LogicalName, fieldType.GetMetadata(MetadataType.FileName).RemovePngExt());
 
-                        itemMetadata.Add(MetadataType.MSBuildItemType, MSBuildItemName.iTunesArtwork);
+                        itemMetadata.Add(MetadataType.MSBuildItemType, MSBuildItemName.ITunesArtwork);
                     }
                     else //do asset catalogue
                     {

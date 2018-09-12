@@ -1,3 +1,0 @@
-[submodule "src/TheAppsPajamas.Client/Shared"]
-	path = src/TheAppsPajamas.Client/Shared
-	url = git@bitbucket.org:buildweaver/build.shared.git

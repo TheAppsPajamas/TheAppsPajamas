@@ -16,13 +16,18 @@ namespace TheAppsPajamas.Client.Extensions
 {
     public static class ConfigExtensions
     {
+        /// <summary>
+        /// Gets the tap config now stored in same json file as BuildConfigurations
+        /// </summary>
+        /// <returns>The tap config.</returns>
+        /// <param name="baseTask">Base task.</param>
         public static ITaskItem GetTapConfig(this BaseTask baseTask)
         {
             //baseTask.Log.LogMessage($"Loading {Consts.TapConfig} file");
 
             try
             {
-                var tapConfigPath = Path.Combine(baseTask.PackagesDir, Consts.TapConfig);
+                var tapConfigPath = Path.Combine(baseTask.PackagesDir, Consts.TapSettingFile);
                 if (!File.Exists(tapConfigPath))
                 {
                     var tapConfigTaskItem = new TaskItem(MetadataType.TapConfig);
@@ -37,60 +42,60 @@ namespace TheAppsPajamas.Client.Extensions
                 else
                 {
                     var json = File.ReadAllText(tapConfigPath);
-                    var tapConfig = JsonConvert.DeserializeObject<TapConfig>(json);
+                    var tapSetting = JsonConvert.DeserializeObject<TapSetting>(json);
 
-                    var tapConfigTaskItem = new TaskItem(MetadataType.TapConfig);
+                    var tapSettingTaskItem = new TaskItem(MetadataType.TapConfig);
 
-                    tapConfigTaskItem.SetMetadata(MetadataType.TapEndpoint, tapConfig.Endpoint);
-                    tapConfigTaskItem.SetMetadata(MetadataType.TapLogLevel, tapConfig.TapLogLevel);
+                    tapSettingTaskItem.SetMetadata(MetadataType.TapEndpoint, tapSetting.Endpoint);
+                    tapSettingTaskItem.SetMetadata(MetadataType.TapLogLevel, tapSetting.TapLogLevel);
 
-                    baseTask.LogInformation($"Tap log level set to {tapConfigTaskItem.GetMetadata(MetadataType.TapLogLevel)}");
-                    return tapConfigTaskItem;
+                    baseTask.LogInformation($"Tap log level set to {tapSettingTaskItem.GetMetadata(MetadataType.TapLogLevel)}");
+                    return tapSettingTaskItem;
                 }
             }
             catch 
             {
-                var tapConfigTaskItem = new TaskItem(MetadataType.TapConfig);
+                var tapSettingTaskItem = new TaskItem(MetadataType.TapConfig);
 
-                tapConfigTaskItem.SetMetadata(MetadataType.TapEndpoint, Consts.ClientEndpoint);
-                tapConfigTaskItem.SetMetadata(MetadataType.TapLogLevel, TapLogLevel.Information);
+                tapSettingTaskItem.SetMetadata(MetadataType.TapEndpoint, Consts.ClientEndpoint);
+                tapSettingTaskItem.SetMetadata(MetadataType.TapLogLevel, TapLogLevel.Information);
                 baseTask.Log.LogWarning($"Error trying to read {Consts.TapConfig}, returning defaults");
-                baseTask.LogInformation($"Tap log level set to {tapConfigTaskItem.GetMetadata(MetadataType.TapLogLevel)}");
-                return tapConfigTaskItem;
+                baseTask.LogInformation($"Tap log level set to {tapSettingTaskItem.GetMetadata(MetadataType.TapLogLevel)}");
+                return tapSettingTaskItem;
             }
         }
 
-        public static BuildResourcesConfig GetResourceConfig(this BaseLoadTask baseTask)
+        public static TapSetting GetTapSetting(this BaseLoadTask baseTask)
         {
-            baseTask.Log.LogMessage($"Loading {Consts.TapAssetsConfig} file");
+            baseTask.Log.LogMessage($"Loading {Consts.TapSettingFile} file");
 
             try
             {
-                var buildResourcesConfigPath = Path.Combine(baseTask.PackagesDir, Consts.TapAssetsConfig);
-                BuildResourcesConfig buildResourcesConfig = null;
-                if (!File.Exists(buildResourcesConfigPath))
+                var tapSettingsPath = Path.Combine(baseTask.PackagesDir, Consts.TapSettingFile);
+                TapSetting tapSetting = null;
+                if (!File.Exists(tapSettingsPath))
                 {
-                    baseTask.LogDebug($"Creating blank {Consts.TapAssetsConfig} at {buildResourcesConfigPath}");
-                    buildResourcesConfig = new BuildResourcesConfig();
-                    var json = JsonConvert.SerializeObject(buildResourcesConfig, Formatting.Indented);
-                    File.WriteAllText(buildResourcesConfigPath, json);
-                    baseTask.Log.LogError($"{Consts.TapAssetsConfig} file not found, created at solution root. Please complete TapAppId and restart build process");
+                    baseTask.LogDebug($"Creating blank {Consts.TapSettingFile} at {tapSettingsPath}");
+                    tapSetting = new TapSetting();
+                    var json = JsonConvert.SerializeObject(tapSetting, Formatting.Indented);
+                    File.WriteAllText(tapSettingsPath, json);
+                    baseTask.Log.LogError($"{Consts.TapSettingFile} file not found, created at solution root. Please complete TapAppId and restart build process");
                     return null;
                 }
                 else
                 {
-                    var json = File.ReadAllText(buildResourcesConfigPath);
-                    buildResourcesConfig = JsonConvert.DeserializeObject<BuildResourcesConfig>(json);
+                    var json = File.ReadAllText(tapSettingsPath);
+                    tapSetting = JsonConvert.DeserializeObject<TapSetting>(json);
 
-                    if (buildResourcesConfig.TapAppId == 0)
+                    if (tapSetting.TapAppId == 0)
                     {
-                        baseTask.Log.LogError($"{Consts.TapAssetsConfig} TapAppId is 0, please complete TapAppId and restart build process");
+                        baseTask.Log.LogError($"{Consts.TapSettingFile} TapAppId is 0, please complete TapAppId and restart build process");
                         return null;
                     }
                     else
                     {
-                        baseTask.LogDebug($"{Consts.TapAssetsConfig} file read, TapAppId '{ buildResourcesConfig.TapAppId}");
-                        return buildResourcesConfig;
+                        baseTask.LogDebug($"{Consts.TapSettingFile} file read, TapAppId '{ tapSetting.TapAppId}");
+                        return tapSetting;
                     }
                 }
             }
@@ -101,17 +106,16 @@ namespace TheAppsPajamas.Client.Extensions
             return null;
         }
 
-        public static void SaveResourceConfig(this BaseLoadTask baseTask, BuildResourcesConfig buildResourcesConfig)
+        public static void SaveTapAssetConfig(this BaseLoadTask baseTask, TapSetting tapSetting)
         {
-            baseTask.LogInformation($"Saving {Consts.TapAssetsConfig} file");
+            baseTask.LogInformation($"Saving {Consts.TapSettingFile} file");
 
             try
             {
-                var buildResourcesConfigPath = Path.Combine(baseTask.PackagesDir, Consts.TapAssetsConfig);
-
-                var json = JsonConvert.SerializeObject(buildResourcesConfig, Formatting.Indented);
-                File.WriteAllText(buildResourcesConfigPath, json);
-                baseTask.LogDebug($"{Consts.TapAssetsConfig} file saved");
+                var tapSettingsPath = Path.Combine(baseTask.PackagesDir, Consts.TapSettingFile);
+                var json = JsonConvert.SerializeObject(tapSetting, Formatting.Indented);
+                File.WriteAllText(tapSettingsPath, json);
+                baseTask.LogDebug($"{Consts.TapSettingFile} file saved");
 
             }
             catch (Exception ex)

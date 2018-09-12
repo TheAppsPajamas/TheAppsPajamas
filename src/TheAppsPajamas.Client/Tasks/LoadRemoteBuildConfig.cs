@@ -50,7 +50,7 @@ namespace TheAppsPajamas.Client.Tasks
                 return false;
             }
 
-            BuildAppId = new TaskItem(_tapResourcesConfig.TapAppId.ToString());
+            BuildAppId = new TaskItem(_tapSetting.TapAppId.ToString());
 
             Token = this.Login(securityConfig);
             if (Token == null){
@@ -59,7 +59,7 @@ namespace TheAppsPajamas.Client.Tasks
             }
 
             var unmodifedProjectName = ProjectName.Replace(Consts.ModifiedProjectNameExtra, String.Empty);
-            var url = String.Concat(Consts.UrlBase, Consts.ClientEndpoint, "?", "appId=", _tapResourcesConfig.TapAppId, "&projectName=", unmodifedProjectName, "&buildConfiguration=", BuildConfiguration );
+            var url = String.Concat(Consts.UrlBase, Consts.ClientEndpoint, "?", "appId=", _tapSetting.TapAppId, "&projectName=", unmodifedProjectName, "&buildConfiguration=", BuildConfiguration );
 
             LogInformation("Loading remote build config from '{0}'", url);
 

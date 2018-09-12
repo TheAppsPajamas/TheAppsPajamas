@@ -58,7 +58,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tasks\LoadRemoteBuildConfig.cs" />
-    <Compile Include="Models\BuildResourcesConfig.cs" />
+    <Compile Include="Models\TapSetting.cs" />
     <Compile Include="Models\SecurityConfig.cs" />
     <Compile Include="Extensions\ConfigExtensions.cs" />
     <Compile Include="Tasks\BaseLoadTask.cs" />
@@ -110,7 +110,6 @@
     <Compile Include="Models\PackagingClientDto.cs" />
     <Compile Include="Models\BuildConfigClientDto.cs" />
     <Compile Include="Extensions\TaskItemExtensions.cs" />
-    <Compile Include="Models\TapConfig.cs" />
     <Compile Include="Constants\TapLogLevel.cs" />
     <Compile Include="Extensions\LogExtensions.cs" />
     <Compile Include="Tasks\SetIosItunesArtwork.cs" />

@@ -8,9 +8,8 @@ namespace TheAppsPajamas.Client.Constants
         public const string AssetCatalogueOutputDir = "asset-catalogue-output";
         public const string iTunesArtworkDir = "iTunesArtwork";
 
-        public const string TapAssetsConfig = "TapAssets.config";
+        public const string TapSettingFile = "tapsettings.json";
         public const string TapSecurityConfig = "TapSecurity.config";
-        public const string TapConfig = "Tap.config";
 
         public const string ModifiedProjectNameExtra = ".Tap";
 

@@ -54,7 +54,7 @@ namespace TheAppsPajamas.Client.Tasks
 
 
         protected string _taskName;
-        protected BuildResourcesConfig _tapResourcesConfig;
+        protected TapSetting _tapSetting;
 
         public override bool Execute()
         {
@@ -67,34 +67,35 @@ namespace TheAppsPajamas.Client.Tasks
             TapAssetDirRelative = new TaskItem(Consts.TapAssetsDir);
             TapShouldContinue = bool.TrueString;
 
-            _tapResourcesConfig = this.GetResourceConfig();
+            _tapSetting = this.GetTapSetting();
 
-            if (_tapResourcesConfig == null)
+            //TODO check for security here as well, so both get created
+            if (_tapSetting == null)
             {
                 //Change to warning, and return TapShouldContinue = false
-                Log.LogError($"{Consts.TapAssetsConfig} file not set, please see solution root and complete");
+                Log.LogError($"{Consts.TapSettingFile} file not set, please see solution root and complete");
                 return false;
             }
 
 
-            if (_tapResourcesConfig.BuildConfigs == null)
+            if (_tapSetting.BuildConfigs == null)
             {
                 LogDebug("Added BuildConfigs list");
-                _tapResourcesConfig.BuildConfigs = new List<BuildConfig>();
+                _tapSetting.BuildConfigs = new List<BuildConfig>();
             }
 
-            var thisBuildConfig = _tapResourcesConfig.BuildConfigs.FirstOrDefault(x => x.BuildConfiguration == BuildConfiguration
+            var thisBuildConfig = _tapSetting.BuildConfigs.FirstOrDefault(x => x.BuildConfiguration == BuildConfiguration
                                                                                    && x.ProjectName == ProjectName);
 
             if (thisBuildConfig == null)
             {
-                LogInformation($"Project {ProjectName} Build configuration {BuildConfiguration} not found, so adding to {Consts.TapAssetsConfig}");
-                _tapResourcesConfig.BuildConfigs.Add(new BuildConfig(ProjectName, BuildConfiguration));
-                this.SaveResourceConfig(_tapResourcesConfig);
+                LogInformation($"Project {ProjectName} Build configuration {BuildConfiguration} not found, so adding to {Consts.TapSettingFile}");
+                _tapSetting.BuildConfigs.Add(new BuildConfig(ProjectName, BuildConfiguration));
+                this.SaveTapAssetConfig(_tapSetting);
             }
             else if (thisBuildConfig.Disabled == true)
             {
-                LogInformation($"The Apps Pajamas is disabled in {Consts.TapAssetsConfig} for Project {ProjectName} in configuration {BuildConfiguration}], exiting");
+                LogInformation($"The Apps Pajamas is disabled in {Consts.TapSettingFile} for Project {ProjectName} in configuration {BuildConfiguration}], exiting");
                 TapShouldContinue = bool.FalseString;
                 return true;
             }

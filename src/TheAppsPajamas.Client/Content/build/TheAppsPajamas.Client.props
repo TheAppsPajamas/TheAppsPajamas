@@ -11,7 +11,6 @@
   </PropertyGroup>
 
   <UsingTask TaskName="TheAppsPajamas.Client.Tasks.LoadRemoteBuildConfig" AssemblyFile="$(TapClientToolAssembly)" />
-  <UsingTask TaskName="TheAppsPajamas.Client.Tasks.LoadLocalBuildConfig" AssemblyFile="$(TapClientToolAssembly)" />
   <UsingTask TaskName="TheAppsPajamas.Client.Tasks.SetDroidManifest" AssemblyFile="$(TapClientToolAssembly)" />
   <UsingTask TaskName="TheAppsPajamas.Client.Tasks.CleanAssetCatalogues" AssemblyFile="$(TapClientToolAssembly)" />
   <UsingTask TaskName="TheAppsPajamas.Client.Tasks.DeleteUnusedMediaFiles" AssemblyFile="$(TapClientToolAssembly)" />
@@ -23,7 +22,6 @@
   <UsingTask TaskName="TheAppsPajamas.Client.Tasks.SetIosItunesArtwork" AssemblyFile="$(TapClientToolAssembly)" />
   <UsingTask TaskName="TheAppsPajamas.Client.Tasks.SetIosPlist" AssemblyFile="$(TapClientToolAssembly)" />
 
-  <UsingTask TaskName="TheAppsPajamas.Client.Tasks.DebugDump" AssemblyFile="$(TapClientToolAssembly)" />
   <UsingTask TaskName="TheAppsPajamas.Client.Tasks.ModifyProject" AssemblyFile="$(TapClientToolAssembly)" />
   <UsingTask TaskName="TheAppsPajamas.Client.Tasks.SaveModifiedProjectBackToProject" AssemblyFile="$(TapClientToolAssembly)" />
   <UsingTask TaskName="TheAppsPajamas.Client.Tasks.AddResourceBackIntoModifedProject" AssemblyFile="$(TapClientToolAssembly)" />

@@ -16,6 +16,7 @@ namespace TheAppsPajamas.Client.Tasks
         public ITaskItem[] SplashFields { get; set; }
 
         public ITaskItem[] ExistingAndroidResources { get; set; }
+        public ITaskItem[] ExistingTapAssets { get; set; }
 
         public ITaskItem AppIconHolder { get; set; }
         public ITaskItem SplashHolder { get; set; }
@@ -44,6 +45,15 @@ namespace TheAppsPajamas.Client.Tasks
             else if (ExistingAndroidResources == null || ExistingAndroidResources.Length == 0)
             {
                 LogDebug("No existing android resource assets found in project");
+            }
+
+            if (ExistingTapAssets != null && ExistingTapAssets.Length != 0)
+            {
+                existingAssets.AddRange(ExistingTapAssets);
+            }
+            else if (ExistingTapAssets == null || ExistingTapAssets.Length == 0)
+            {
+                LogDebug("No existing tap assets found in project");
             }
 
             if (this.IsVerbose())
@@ -117,7 +127,7 @@ namespace TheAppsPajamas.Client.Tasks
 
                 File.Copy(existingFilePath, outputFilePath, true);
 
-                LogDebug($"Added {MSBuildItemName.TapAsset} from {existingFilePath} to {outputFilePath} as {MSBuildItemName.AndroidResource}");
+                LogDebug($"Including {MSBuildItemName.TapAsset} from {existingFilePath} to {outputFilePath} as {MSBuildItemName.AndroidResource}");
                 outputAndroidResources.Add(new TaskItem(outputFilePath));
             }
 

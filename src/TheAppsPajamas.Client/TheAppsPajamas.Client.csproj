@@ -99,7 +99,6 @@
     <Compile Include="Shared\Types\MediaOrientationType.cs" />
     <Compile Include="Tasks\ModifyProject.cs" />
     <Compile Include="Tasks\SaveModifiedProjectBackToProject.cs" />
-    <Compile Include="Tasks\AddResourceBackIntoModifedProject.cs" />
     <Compile Include="Constants\MetadataType.cs" />
     <Compile Include="Constants\MSBuildItemName.cs" />
     <Compile Include="Tasks\SetIosAssetCatalogue.cs" />

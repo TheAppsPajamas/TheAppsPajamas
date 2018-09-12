@@ -42,7 +42,7 @@
     
     <Target Name="LoadRemoteBuildConfig" 
         AfterTargets="_GetReferenceAssemblyPaths;_BeforeCoreCompileInterfaceDefinitions"
-        Condition="'$(DesignTimeBuild)' == 'false' ">
+        Condition="'$(DesignTimeBuild)' != 'true' ">
         <LoadRemoteBuildConfig 
             TapConfig="@(TapConfig)"
             ProjectName="$(MSBuildProjectName)" 

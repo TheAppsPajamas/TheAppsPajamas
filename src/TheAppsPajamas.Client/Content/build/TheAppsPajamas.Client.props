@@ -24,5 +24,4 @@
 
   <UsingTask TaskName="TheAppsPajamas.Client.Tasks.ModifyProject" AssemblyFile="$(TapClientToolAssembly)" />
   <UsingTask TaskName="TheAppsPajamas.Client.Tasks.SaveModifiedProjectBackToProject" AssemblyFile="$(TapClientToolAssembly)" />
-  <UsingTask TaskName="TheAppsPajamas.Client.Tasks.AddResourceBackIntoModifedProject" AssemblyFile="$(TapClientToolAssembly)" />
-</Project>
+ </Project>

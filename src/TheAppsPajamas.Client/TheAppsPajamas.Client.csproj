@@ -11,7 +11,7 @@
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <PackOnBuild>true</PackOnBuild>
     <PackageId>TheAppsPajamas.Client</PackageId>
-    <PackageVersion>0.0.1</PackageVersion>
+    <PackageVersion>1.0.0</PackageVersion>
     <Authors>The Apps Pajamas</Authors>
     <Description>The Apps Pajamas Client</Description>
     <IsTool>true</IsTool>
@@ -19,7 +19,7 @@
     <NeutralLanguage>en-GB</NeutralLanguage>
     <PackageLicenseUrl>https://www.theappspajamas.com</PackageLicenseUrl>
     <Owners>Dean marcussen</Owners>
-    <PackageTags>Build Xamarin MSBuild Android iOS</PackageTags>
+    <PackageTags>Build Xamarin MSBuild Android iOS Tap TheAppsPajamas</PackageTags>
     <Title>TheAppsPajamas.Client</Title>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -54,6 +54,9 @@
         </PackageReference>
     <!-- Marks all packages as 'local only' so they don't end up in the nuspec. -->
     <PackageReference Update="@(PackageReference)" PrivateAssets="All" />
+    <PackageReference Include="NuGet.Build.Packaging">
+      <Version>0.2.2</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />

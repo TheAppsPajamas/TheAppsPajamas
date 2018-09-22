@@ -11,7 +11,7 @@
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <PackOnBuild>true</PackOnBuild>
     <PackageId>TheAppsPajamas.Client</PackageId>
-    <PackageVersion>1.0.0</PackageVersion>
+    <PackageVersion>1.0.1</PackageVersion>
     <Authors>The Apps Pajamas</Authors>
     <Description>The Apps Pajamas Client</Description>
     <IsTool>true</IsTool>
@@ -116,6 +116,7 @@
     <Compile Include="JsonDtos\BuildConfigJson.cs" />
     <Compile Include="JsonDtos\ProjectJson.cs" />
     <Compile Include="JsonDtos\ProjectsJson.cs" />
+    <Compile Include="Extensions\DirectoryExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
@@ -134,7 +135,15 @@
  <!--   <Content Include="build\*" PackagePath="build\" />-->
     <Content Include="Content\build\TheAppsPajamas.Client.props" PackagePath="build\TheAppsPajamas.Client.props" />
     <Content Include="Content\build\TheAppsPajamas.Client.targets" PackagePath="build\TheAppsPajamas.Client.targets" />
-
+        
+    <None Include="Content\content\tapsecurity.json"> 
+        <Pack>true</Pack>
+        <PackagePath>content\tapsecurity.json</PackagePath>
+    </None>
+    <None Include="Content\content\tapsettings.json" > 
+        <Pack>true</Pack>
+        <PackagePath>content\tapsettings.json</PackagePath>
+    </None>
     <!--<Content Include="NugetContent\Ios\theappspajamas.xcassets\**" PackagePath="content\Xamarin.iOS10\theappspajamas.xcassets\**" />
 -->  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

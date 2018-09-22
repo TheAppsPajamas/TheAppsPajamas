@@ -24,45 +24,50 @@ namespace TheAppsPajamas.Client.Extensions
         /// <param name="baseTask">Base task.</param>
         public static ITaskItem GetTapSettings(this BaseTask baseTask)
         {
-            //baseTask.Log.LogMessage($"Loading {Consts.TapConfig} file");
-
             try
             {
-                var tapSettingPath = Path.Combine(baseTask.PackagesDir, Consts.TapSettingFile);
-                if (!File.Exists(tapSettingPath))
+
+                var tapSettingsPath = baseTask.FindTopFileInProjectDir(Consts.TapSettingFile);
+
+                if (String.IsNullOrEmpty(tapSettingsPath))
                 {
                     var tapSettingTaskItem = new TaskItem(MetadataType.TapConfig);
 
                     tapSettingTaskItem.SetMetadata(MetadataType.TapEndpoint, Consts.TapEndpoint);
                     tapSettingTaskItem.SetMetadata(MetadataType.TapLogLevel, TapLogLevel.Information);
-     
+
                     //baseTask.Log.LogMessage($"Tap log level set to {tapConfigTaskItem.GetMetadata(MetadataType.TapLogLevel)}");
                     return tapSettingTaskItem;
                 }
                 else
                 {
-                    var json = File.ReadAllText(tapSettingPath);
+                    var json = File.ReadAllText(tapSettingsPath);
                     var tapSetting = JsonConvert.DeserializeObject<TapSettingJson>(json);
 
                     var tapSettingTaskItem = new TaskItem(MetadataType.TapConfig);
 
-                    if (!String.IsNullOrEmpty(tapSetting.TapLogLevel)){
+                    if (!String.IsNullOrEmpty(tapSetting.TapLogLevel))
+                    {
                         tapSettingTaskItem.SetMetadata(MetadataType.TapLogLevel, tapSetting.TapLogLevel);
-                    } else {
+                    }
+                    else
+                    {
                         tapSettingTaskItem.SetMetadata(MetadataType.TapLogLevel, TapLogLevel.Information);
                     }
 
                     if (!String.IsNullOrEmpty(tapSetting.Endpoint))
                     {
                         tapSettingTaskItem.SetMetadata(MetadataType.TapEndpoint, tapSetting.Endpoint);
-                    } else {
+                    }
+                    else
+                    {
                         tapSettingTaskItem.SetMetadata(MetadataType.TapEndpoint, Consts.TapEndpoint);
                     }
                     baseTask.LogInformation($"Tap log level set to {tapSettingTaskItem.GetMetadata(MetadataType.TapLogLevel)}");
                     return tapSettingTaskItem;
                 }
             }
-            catch 
+            catch
             {
                 var tapSettingTaskItem = new TaskItem(MetadataType.TapConfig);
 
@@ -80,15 +85,11 @@ namespace TheAppsPajamas.Client.Extensions
 
             try
             {
-                var tapSettingsPath = Path.Combine(baseTask.PackagesDir, Consts.TapSettingFile);
+                var tapSettingsPath = baseTask.FindTopFileInProjectDir(Consts.TapSettingFile);
                 TapSettingJson tapSetting = null;
-                if (!File.Exists(tapSettingsPath))
+                if (String.IsNullOrEmpty(tapSettingsPath))
                 {
-                    baseTask.LogDebug($"Creating blank {Consts.TapSettingFile} at {tapSettingsPath}");
-                    tapSetting = new TapSettingJson();
-                    var json = JsonConvert.SerializeObject(tapSetting, Formatting.Indented);
-                    File.WriteAllText(tapSettingsPath, json);
-                    baseTask.Log.LogError($"{Consts.TapSettingFile} file not found, created at solution root. Please complete TapAppId and restart build process");
+                    baseTask.Log.LogError($"{Consts.TapSettingFile} file not found");
                     return null;
                 }
                 else
@@ -123,7 +124,7 @@ namespace TheAppsPajamas.Client.Extensions
 
             try
             {
-                var tapSettingsPath = Path.Combine(baseTask.PackagesDir, Consts.TapSettingFile);
+                var tapSettingsPath = baseTask.FindTopFileInProjectDir(Consts.TapSettingFile);
                 var json = JsonConvert.SerializeObject(tapSetting, Formatting.Indented);
                 File.WriteAllText(tapSettingsPath, json);
                 baseTask.LogDebug($"{Consts.TapSettingFile} file saved");
@@ -135,23 +136,17 @@ namespace TheAppsPajamas.Client.Extensions
             }
         }
 
-
-
         public static TapSecurityJson GetSecurity(this BaseTask baseTask)
         {
             baseTask.LogDebug($"Loading {Consts.TapSecurityFile} file");
 
             try
             {
-                var tapSecurityPath = Path.Combine(baseTask.PackagesDir, Consts.TapSecurityFile);
+                var tapSecurityPath = baseTask.FindTopFileInProjectDir(Consts.TapSecurityFile);
                 TapSecurityJson tapSecurity = null;
-                if (!File.Exists(tapSecurityPath))
+                if (String.IsNullOrEmpty(tapSecurityPath))
                 {
-                    baseTask.LogDebug($"Creating empty {Consts.TapSecurityFile} at {tapSecurityPath}");
-                    tapSecurity = new TapSecurityJson();
-                    var json = JsonConvert.SerializeObject(tapSecurity, Formatting.Indented);
-                    File.WriteAllText(tapSecurityPath, json);
-                    baseTask.Log.LogError($"{Consts.TapSecurityFile} file not found, created at {tapSecurityPath}. Please complete username, and password and restart build process");
+                    baseTask.Log.LogError($"{Consts.TapSecurityFile} file not found");
                     return null;
                 }
                 else
@@ -180,19 +175,11 @@ namespace TheAppsPajamas.Client.Extensions
 
         public static ClientConfigDto GetClientConfig(this BaseLoadTask baseTask, string json)
         {
-   //         //try
-            //{
-                baseTask.LogDebug("Deserializing ClientConfigDto, length '{0}'", json.Length);
-                var clientConfigDto = JsonConvert.DeserializeObject<ClientConfigDto>(json);
-                baseTask.LogDebug("Deserialized ClientConfigDto, packagingFields: '{0}', appIconFields: '{1}', splashFields: '{2}'"
-                                  , clientConfigDto.Packaging.Fields.Count, clientConfigDto.AppIcon.Fields.Count, clientConfigDto.Splash.Fields.Count);
-                return clientConfigDto;
-            //}
-            //catch (Exception ex)
-            //{
-            //    baseTask.Log.LogErrorFromException(ex);
-            //}
-            //return null;
+            baseTask.LogDebug("Deserializing ClientConfigDto, length '{0}'", json.Length);
+            var clientConfigDto = JsonConvert.DeserializeObject<ClientConfigDto>(json);
+            baseTask.LogDebug("Deserialized ClientConfigDto, packagingFields: '{0}', appIconFields: '{1}', splashFields: '{2}'"
+                              , clientConfigDto.Packaging.Fields.Count, clientConfigDto.AppIcon.Fields.Count, clientConfigDto.Splash.Fields.Count);
+            return clientConfigDto;
         }
 
         public static ITaskItem[] GetPackagingOutput(this BaseLoadTask baseTask, ClientConfigDto clientConfigDto)
@@ -219,7 +206,7 @@ namespace TheAppsPajamas.Client.Extensions
             taskItem.SetDisabledMetadata(baseTask, holder.Disabled, description);
             return taskItem;
         }
-        
+
         public static ITaskItem[] GetStringFieldOutput<TFieldClientDto>(this BaseLoadTask baseTask
                                                                         , IList<TFieldClientDto> fieldsDto
                                                                         , ITaskItem holder)
@@ -384,10 +371,6 @@ namespace TheAppsPajamas.Client.Extensions
             }
 
             return sb.ToString();
-
         }
-
-
-
     }
 }

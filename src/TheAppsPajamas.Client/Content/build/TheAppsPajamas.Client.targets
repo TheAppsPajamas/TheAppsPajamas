@@ -32,7 +32,6 @@
         AfterTargets="Clean" 
         Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' ">
         <CleanAssetCatalogues 
-            PackagesDir="$(PackagesDir)" 
             ProjectDir="$(MSBuildProjectDirectory)" 
             TargetsDir="$(MSBuildThisFileDirectory)">
 
@@ -47,7 +46,6 @@
             TapSettings="@(TapSettings)"
             ProjectName="$(MSBuildProjectName)" 
             BuildConfiguration="$(Configuration)" 
-            PackagesDir="$(PackagesDir)" 
             ProjectDir="$(MSBuildProjectDirectory)" 
             TargetFrameworkIdentifier='$(TargetFrameworkIdentifier)'>
                 <Output TaskParameter="TapAssetDir" PropertyName="TapAssetDir" />
@@ -78,7 +76,6 @@
         <DeleteUnusedMediaFiles 
             TapSettings="@(TapSettings)"
             ProjectDir="$(MSBuildProjectDirectory)" 
-            PackagesDir="$(PackagesDir)" 
             AppIconFields="@(AppIconFields)" 
             SplashFields="@(SplashFields)" 
             TapAssets="@(TapAsset)"
@@ -114,7 +111,6 @@
             TapAppId="$(TapAppId)" 
             ProjectDir="$(MSBuildProjectDirectory)" 
             Token="$(TapAccessToken)" 
-            PackagesDir="$(PackagesDir)" 
             AppIconFields="@(AppIconFields)" 
             SplashFields="@(SplashFields)" 
             BuildConfiguration="$(Configuration)"
@@ -142,7 +138,6 @@
         <SetDroidMedia 
             TapSettings="@(TapSettings)"
             BuildConfiguration="$(Configuration)" 
-            PackagesDir="$(PackagesDir)" 
             ProjectDir="$(MSBuildProjectDirectory)" 
             AppIconFields="@(AppIconFields)"
             SplashFields="@(SplashFields)"
@@ -167,7 +162,6 @@
         Condition="'$(TargetFrameworkIdentifier)' == 'Xamarin.iOS' And '$(TapShouldContinue)' == 'True' ">
         <SetIosPlist 
             TapSettings="@(TapSettings)"
-            PackagesDir="$(PackagesDir)" 
             ProjectDir="$(MSBuildProjectDirectory)" 
             PackagingFields="@(PackagingFields)" 
             PackagingHolder="@(PackagingHolder)"
@@ -184,7 +178,6 @@
         <SetIosAssetCatalogue 
             TapSettings="@(TapSettings)" 
             BuildConfiguration="$(Configuration)" 
-            PackagesDir="$(PackagesDir)" 
             ProjectDir="$(MSBuildProjectDirectory)" 
             AppIconFields="@(AppIconFields)" 
             AssetCatalogueName="@(AssetCatalogueName)" 
@@ -212,7 +205,6 @@
         <SetIosAssetCatalogueSets 
             TapSettings="@(TapSettings)"
             BuildConfiguration="$(Configuration)" 
-            PackagesDir="$(PackagesDir)" 
             ProjectDir="$(MSBuildProjectDirectory)" 
             AppIconFields="@(AppIconFields)" 
             SplashFields="@(SplashFields)" 
@@ -250,7 +242,6 @@
         <SetIosItunesArtwork 
             TapSettings="@(TapSettings)" 
             BuildConfiguration="$(Configuration)" 
-            PackagesDir="$(PackagesDir)" 
 
             ProjectDir="$(MSBuildProjectDirectory)" 
             AppIconHolder="@(AppIconHolder)"
@@ -302,7 +293,6 @@
         Condition=" '$(TapShouldContinue)' == 'True' ">
            <ModifyProject 
             TapSettings="@(TapSettings)" 
-            PackagesDir="$(PackagesDir)" 
             ProjectDir="$(MSBuildProjectDirectory)"             
             ProjectFileLoad="$(MSBuildProjectFullPath)"
             FilesToAddToProject="@(FilesToAddToProject)"
@@ -338,7 +328,6 @@
         Condition=" $(ProjectShouldModifyOriginal) == 'True' And '$(TapShouldContinue)' == 'True' ">
         <SaveOriginalProject 
             TapSettings="@(TapSettings)"
-            PackagesDir="$(PackagesDir)" 
             ProjectDir="$(MSBuildProjectDirectory)" 
             ProjectFileOriginalName="$(MSBuildProjectFullPath)"
             ProjectFileModifiedName="$(ModifiedProjectFullPath)">

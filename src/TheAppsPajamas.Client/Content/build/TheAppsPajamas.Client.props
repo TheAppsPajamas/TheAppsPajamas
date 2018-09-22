@@ -6,8 +6,6 @@
   <PropertyGroup>	
 
     <TapClientToolAssembly>$(MSBuildThisFileDirectory)..\tools\TheAppsPajamas.Client.dll</TapClientToolAssembly>
-
-    <PackagesDir>$(MSBuildThisFileDirectory)..\..\..\</PackagesDir>
   </PropertyGroup>
 
   <UsingTask TaskName="TheAppsPajamas.Client.Tasks.LoadTapBuildConfig" AssemblyFile="$(TapClientToolAssembly)" />

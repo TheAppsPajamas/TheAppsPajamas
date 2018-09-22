@@ -8,8 +8,6 @@ namespace TheAppsPajamas.Client.Tasks
     public abstract class BaseTask : Task
     {
         public ITaskItem TapSettings { get; set; }
-
-        public string PackagesDir { get; set; }
         public string ProjectDir { get; set; }
 
         [Output]

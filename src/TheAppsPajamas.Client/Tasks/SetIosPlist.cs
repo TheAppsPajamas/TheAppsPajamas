@@ -69,7 +69,7 @@ namespace TheAppsPajamas.Client.Tasks
                 }
 
 
-                touched = LaunchStoryboardName(touched, plist);
+                touched = LaunchStoryboardName(touched, plist, useLaunchStoryboard);
 
 
                 //don't need to set other image asset catalogues in plist. bonus
@@ -407,7 +407,7 @@ namespace TheAppsPajamas.Client.Tasks
             return touched;
         }
 
-        private bool LaunchStoryboardName(bool touched, Dictionary<string, object> plist)
+        private bool LaunchStoryboardName(bool touched, Dictionary<string, object> plist, bool useLaunchStoryboard)
         {
             var launchStoryboardNameField = PackagingFields
                 .FirstOrDefault(x => FieldType.FromValue(Int32.Parse(x.ItemSpec)) == FieldType.PackagingIosLaunchStoryboardName);
@@ -423,23 +423,35 @@ namespace TheAppsPajamas.Client.Tasks
 
                 if (plist.ContainsKey("UILaunchStoryboardName"))
                 {
-                    var plistKey = (string)plist["UILaunchStoryboardName"];
-                    if (plistKey != launchStoryboardName)
+                    if (useLaunchStoryboard)
                     {
-                        plist["UILaunchStoryboardName"] = launchStoryboardName;
-                        LogInformation("Package launch storyboard changed to '{0}', setting Plist", plist["UILaunchStoryboardName"]);
+                        var plistKey = (string)plist["UILaunchStoryboardName"];
+                        if (plistKey != launchStoryboardName)
+                        {
+                            plist["UILaunchStoryboardName"] = launchStoryboardName;
+                            LogInformation("Package launch storyboard changed to '{0}', setting Plist", plist["UILaunchStoryboardName"]);
+                            touched = true;
+                        }
+                        else
+                        {
+                            LogInformation("Package launch storyboard unchanged, skipping");
+                        }
+                    } else {
+                        plist.Remove("UILaunchStoryboardName");
                         touched = true;
-                    }
-                    else
-                    {
-                        LogInformation("Package launch storyboard unchanged, skipping");
+                        LogInformation("Package launch storyboard useLanuchStoryboard false, but key exists, removing from plist");
                     }
                 }
                 else
                 {
-                    plist.Add("UILaunchStoryboardName", launchStoryboardName);
-                    touched = true;
-                    LogInformation("Package launch storyboard not found in Plist, creating with value '{0}'", plist["UILaunchStoryboardName"]);
+                    if (useLaunchStoryboard)
+                    {
+                        plist.Add("UILaunchStoryboardName", launchStoryboardName);
+                        touched = true;
+                        LogInformation("Package launch storyboard not found in Plist, creating with value '{0}'", plist["UILaunchStoryboardName"]);
+                    } else {
+                        LogInformation("Package launch storyboard useLanuchStoryboard false, not adding to plist");
+                    }
                 }
             }
 

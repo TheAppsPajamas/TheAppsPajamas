@@ -9,5 +9,6 @@ namespace TheAppsPajamas.Client.Models
         public PackagingClientDto Packaging { get; set; } = new PackagingClientDto();
         public AppIconClientDto AppIcon { get; set; } = new AppIconClientDto();
         public SplashClientDto Splash { get; set; } = new SplashClientDto();
+        public string MediaAccessKey { get; set; }
     }
 }

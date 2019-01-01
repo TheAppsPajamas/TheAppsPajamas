@@ -20,10 +20,11 @@ namespace TheAppsPajamas.Client.Constants
 
         public const string TapEndpoint = "https://api.theappspajamas.com";
 
-        public const string TapClientEndpoint = "/api/tapclient";
+        public const string MediaEndpoint = "https://privatetheappspajamas.blob.core.windows.net";
+
+        public const string TapClientEndpoint = "/api/tapclient/get";
         public const string TokenEndpoint = "/connect/token";
 
-        public const string MediaEndpoint = "/api/media";
 
         public const string iOSContents = "Contents.json";
 

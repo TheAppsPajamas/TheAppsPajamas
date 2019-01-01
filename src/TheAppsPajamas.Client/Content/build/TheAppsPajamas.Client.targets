@@ -59,10 +59,9 @@
                 <Output TaskParameter="SplashHolderOutput" ItemName="SplashHolder" />
             
                 <Output TaskParameter="AssetCatalogueName" ItemName="AssetCatalogueName"/>
-                <Output TaskParameter="Token" PropertyName="TapAccessToken"/>
+                <Output TaskParameter="MediaAccessKey" PropertyName="MediaAccessKey"/>
                 <Output TaskParameter="TapAppId" PropertyName="TapAppId" />
-
-
+                
                 <Output TaskParameter="TapAssetDirRelative" PropertyName="TapAssetDirRelative" />
 
                 <Output TaskParameter="TapShouldContinue" PropertyName="TapShouldContinue" />
@@ -110,7 +109,7 @@
             TapSettings="@(TapSettings)"
             TapAppId="$(TapAppId)" 
             ProjectDir="$(MSBuildProjectDirectory)" 
-            Token="$(TapAccessToken)" 
+            MediaAccessKey="$(MediaAccessKey)" 
             AppIconFields="@(AppIconFields)" 
             SplashFields="@(SplashFields)" 
             BuildConfiguration="$(Configuration)"

@@ -27,24 +27,39 @@ namespace TheAppsPajamas.Client.Extensions
                 using (WebClient client = new WebClient())
                 {
                     var tokenUrl = String.Concat(baseTask.TapSettings.GetMetadata(MetadataType.TapEndpoint), Consts.TokenEndpoint);
+                    System.Collections.Specialized.NameValueCollection postData = null;
 
-                    System.Collections.Specialized.NameValueCollection postData =
-                        new System.Collections.Specialized.NameValueCollection()
-                       {
-                        { "username", tapSecurity.Username },
-                        { "password", tapSecurity.Password },
-                        { "grant_type", "password" },
-                        { "scope", "openid email plantype profile offline_access roles"},
-                        { "resource", "loadremotebuildconfig"}
+                    if (String.IsNullOrEmpty(tapSecurity.ServiceUserAccessKey))
+                    {
+                        postData = new System.Collections.Specialized.NameValueCollection()
+                           {
+                                { "username", tapSecurity.Username },
+                                { "password", tapSecurity.Password },
+                                { "grant_type", "password" },
+                                { "scope", "openid email plantype profile offline_access roles"},
+                                { "resource", "loadremotebuildconfig"}
+                           };
 
-                       };
+                        baseTask.LogDebug("Using grant_type: password");
+                    }
+                    else
+                    {
+                        postData = new System.Collections.Specialized.NameValueCollection()
+                           {
+                                { "password", tapSecurity.ServiceUserAccessKey },
+                                { "grant_type", "access_key" },
+                                { "scope", "openid email plantype profile offline_access roles"},
+                                { "resource", "loadremotebuildconfig"}
+                           };
+                        baseTask.LogDebug("Using grant_type: access_key");
+                    }
 
                     var tokenResult = Encoding.UTF8.GetString(client.UploadValues(tokenUrl, postData));
 
                     token = JsonConvert.DeserializeObject<LoginResponseDto>(tokenResult);
                     //client.Credentials = new NetworkCredential(securityConfig.UserName, securityConfig.Password);
                     //var tokenResult = client.DownloadString(tokenUrl);
-                    baseTask.LogDebug("Token result recieved <-- value removed from log -->", token.access_token);
+                    baseTask.LogDebug("Token result recieved <-- value removed from log -->");
                     return new TaskItem(token.access_token);
                 }
             }

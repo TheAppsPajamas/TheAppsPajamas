@@ -16,7 +16,7 @@ namespace TheAppsPajamas.Client.Tasks
 
         public ITaskItem[] SplashFields { get; set; }
         public string BuildConfiguration { get; set; }
-        public ITaskItem Token { get; set; }
+        public ITaskItem MediaAccessKey { get; set; }
         public ITaskItem TapAppId { get; set; }
 
         [Output]
@@ -26,26 +26,12 @@ namespace TheAppsPajamas.Client.Tasks
         {
             var baseResult = base.Execute();
             LogInformation("Downloading media files");
+            LogDebug($"Media access key ${MediaAccessKey.ItemSpec}");
 
             var allMediaFields = this.CombineMediaFields(AppIconFields, SplashFields);
 
             var existingFiles = this.GetExistingMediaFiles(BuildConfiguration).Select(x => new FileHolder(x));
             LogInformation("{0} media files required, {1} media files already available", allMediaFields.Count(), existingFiles.Count());
-
-            if (Token == null || String.IsNullOrEmpty(Token.ItemSpec)){
-                var securityConfig = this.GetSecurity();
-
-                if (securityConfig == null)
-                    return false;
-                
-                Token = this.Login(securityConfig);
-                if (Token == null)
-                {
-                    Log.LogError("Authentication failure");
-                    return false;
-                }
-            }
-
 
             var filesToDeleteFromProject = new List<ITaskItem>();
 
@@ -70,9 +56,11 @@ namespace TheAppsPajamas.Client.Tasks
                         using (WebClient client = new WebClient())
                         {
                             LogDebug("Media file exists, getting setup for download");
-                            client.SetWebClientHeaders(Token);
+                            //do we need headers at all?
+                            //client.SetWebClientHeaders(Token);
                             LogDebug("Generating url for mediaId {0}, {1}", field.GetMetadata(MetadataType.MediaFileId), TapAppId.ItemSpec);
-                            var url = String.Concat(TapSettings.GetMetadata(MetadataType.TapEndpoint), Consts.MediaEndpoint, "/", TapAppId.ItemSpec, "/", field.GetMetadata(MetadataType.MediaFileId));
+                            var url = String.Concat(TapSettings.GetMetadata(MetadataType.MediaEndpoint), "/", TapAppId.ItemSpec, "/", field.GetMetadata(MetadataType.MediaFileId), ".png", MediaAccessKey.ItemSpec);
+                            LogDebug($"url generated : {url}");
                             LogDebug("Finding directory");
                             var directory = Path.Combine(buildConfigurationAssetDir, field.GetMetadata(MetadataType.TapAssetPath));
                             LogDebug("Checking directory existance {0}", directory);

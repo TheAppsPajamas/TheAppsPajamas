@@ -18,6 +18,11 @@ namespace TheAppsPajamas.Client.Constants
         /// </summary>
         public const string TapEndpoint = "TapEndpoint";
 
+        /// <summary>
+        /// The Tap MediaEndpoint, defaults to Consts.MediaEndpoint if not specified
+        /// </summary>
+        public const string MediaEndpoint = "MediaEndpoint";
+
 
         /// <summary>
         /// The idiom for/from the iOS Contents.json file.

@@ -34,6 +34,7 @@ namespace TheAppsPajamas.Client.Extensions
                     var tapSettingTaskItem = new TaskItem(MetadataType.TapConfig);
 
                     tapSettingTaskItem.SetMetadata(MetadataType.TapEndpoint, Consts.TapEndpoint);
+                    tapSettingTaskItem.SetMetadata(MetadataType.MediaEndpoint, Consts.MediaEndpoint);
                     tapSettingTaskItem.SetMetadata(MetadataType.TapLogLevel, TapLogLevel.Information);
 
                     //baseTask.Log.LogMessage($"Tap log level set to {tapConfigTaskItem.GetMetadata(MetadataType.TapLogLevel)}");
@@ -55,13 +56,21 @@ namespace TheAppsPajamas.Client.Extensions
                         tapSettingTaskItem.SetMetadata(MetadataType.TapLogLevel, TapLogLevel.Information);
                     }
 
-                    if (!String.IsNullOrEmpty(tapSetting.Endpoint))
+                    if (!String.IsNullOrEmpty(tapSetting.TapEndpoint))
                     {
-                        tapSettingTaskItem.SetMetadata(MetadataType.TapEndpoint, tapSetting.Endpoint);
+                        tapSettingTaskItem.SetMetadata(MetadataType.TapEndpoint, tapSetting.TapEndpoint);
                     }
                     else
                     {
                         tapSettingTaskItem.SetMetadata(MetadataType.TapEndpoint, Consts.TapEndpoint);
+                    }
+                    if (!String.IsNullOrEmpty(tapSetting.MediaEndpoint))
+                    {
+                        tapSettingTaskItem.SetMetadata(MetadataType.MediaEndpoint, tapSetting.MediaEndpoint);
+                    }
+                    else
+                    {
+                        tapSettingTaskItem.SetMetadata(MetadataType.MediaEndpoint, Consts.MediaEndpoint);
                     }
                     baseTask.LogInformation($"Tap log level set to {tapSettingTaskItem.GetMetadata(MetadataType.TapLogLevel)}");
                     return tapSettingTaskItem;
@@ -72,6 +81,7 @@ namespace TheAppsPajamas.Client.Extensions
                 var tapSettingTaskItem = new TaskItem(MetadataType.TapConfig);
 
                 tapSettingTaskItem.SetMetadata(MetadataType.TapEndpoint, Consts.TapClientEndpoint);
+                tapSettingTaskItem.SetMetadata(MetadataType.MediaEndpoint, Consts.MediaEndpoint);
                 tapSettingTaskItem.SetMetadata(MetadataType.TapLogLevel, TapLogLevel.Information);
                 baseTask.Log.LogWarning($"Error trying to read {Consts.TapSettingFile}, returning defaults");
                 baseTask.LogInformation($"Tap log level set to {tapSettingTaskItem.GetMetadata(MetadataType.TapLogLevel)}");
@@ -99,7 +109,7 @@ namespace TheAppsPajamas.Client.Extensions
                     var json = File.ReadAllText(tapSettingsPath);
                     tapSetting = JsonConvert.DeserializeObject<TapSettingJson>(json);
 
-                    if (tapSetting.TapAppId == 0)
+                    if (String.IsNullOrEmpty(tapSetting.TapAppId))
                     {
                         baseTask.Log.LogError($"{Consts.TapSettingFile} TapAppId is 0, please complete TapAppId and restart build process");
                         return null;

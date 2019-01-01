@@ -11,5 +11,9 @@ namespace TheAppsPajamas.Client.JsonDtos
 
         [JsonProperty(Order = 2)]
         public string Password { get; set; } = String.Empty;
+
+
+        [JsonProperty(Order = 3, NullValueHandling = NullValueHandling.Ignore)]
+        public string ServiceUserAccessKey { get; set; } = String.Empty;
     }
 }

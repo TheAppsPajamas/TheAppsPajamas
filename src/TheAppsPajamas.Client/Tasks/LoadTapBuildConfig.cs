@@ -18,10 +18,10 @@ namespace TheAppsPajamas.Client.Tasks
     public class LoadTapBuildConfig : BaseLoadTask
     {
         [Output]
-        public ITaskItem Token { get; set; }
+        public ITaskItem TapAppId { get; set; }
 
         [Output]
-        public ITaskItem TapAppId { get; set; }
+        public ITaskItem MediaAccessKey { get; set; }
 
         public LoadTapBuildConfig()
         {
@@ -51,10 +51,10 @@ namespace TheAppsPajamas.Client.Tasks
                 return false;
             }
 
-            TapAppId = new TaskItem(_tapSetting.TapAppId.ToString());
+            TapAppId = new TaskItem(_tapSetting.TapAppId);
 
-            Token = this.Login(securitySettings);
-            if (Token == null){
+            var token = this.Login(securitySettings);
+            if (token == null){
                 Log.LogError("Authentication failure");
                 return false;
             }
@@ -69,7 +69,7 @@ namespace TheAppsPajamas.Client.Tasks
             {
                 using (WebClient client = new WebClient())
                 {
-                    client.SetWebClientHeaders(Token);
+                    client.SetWebClientHeaders(token);
 
                     jsonClientConfig = client.DownloadString(url);
                     LogInformation("Successfully loaded tap build config from '{0}', recieved '{1}'", url, jsonClientConfig.Length);
@@ -89,7 +89,7 @@ namespace TheAppsPajamas.Client.Tasks
                 }
 
                 if (response.StatusCode == HttpStatusCode.NotFound){
-                    LogWarning($"Tap server responded with message '{response.StatusDescription}', TheAppsPajamams cannot continue, exiting gracefully, build will continue");
+                    LogWarning($"Tap server responded with message '{response.StatusDescription}', TheAppsPajamas cannot continue, exiting gracefully, build will continue");
                     TapShouldContinue = bool.FalseString;
                     return true;
                 }
@@ -107,6 +107,8 @@ namespace TheAppsPajamas.Client.Tasks
             if (clientConfigDto == null)
                 return false;
 
+
+            MediaAccessKey = new TaskItem(clientConfigDto.MediaAccessKey);
             //this is not quite identical in base
 
             var projectsConfig = this.GetProjectsConfig();

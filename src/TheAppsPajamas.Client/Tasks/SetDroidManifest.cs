@@ -96,7 +96,7 @@ namespace TheAppsPajamas.Client.Tasks
         private bool VersionCode(XmlDocument xml, bool touched)
         {
             var packageVersionCodeField = PackagingFields
-                .FirstOrDefault(x => FieldType.FromValue(Int32.Parse(x.ItemSpec)) == FieldType.PackagingDroidVersionNumber);
+                .FirstOrDefault(x => FieldType.FromValue(x.ItemSpec) == FieldType.PackagingDroidVersionNumber);
 
             if (packageVersionCodeField != null && packageVersionCodeField.IsEnabled() && !String.IsNullOrEmpty(packageVersionCodeField.GetMetadata("Value")))
             {
@@ -127,7 +127,7 @@ namespace TheAppsPajamas.Client.Tasks
         private bool VersionText(XmlDocument xml, bool touched)
         {
             var packageVersionNameField = PackagingFields
-                .FirstOrDefault(x => FieldType.FromValue(Int32.Parse(x.ItemSpec)) == FieldType.PackagingDroidVersionText);
+                .FirstOrDefault(x => FieldType.FromValue(x.ItemSpec) == FieldType.PackagingDroidVersionText);
 
             if (packageVersionNameField != null && packageVersionNameField.IsEnabled() && !String.IsNullOrEmpty(packageVersionNameField.GetMetadata("Value")))
             {
@@ -158,7 +158,7 @@ namespace TheAppsPajamas.Client.Tasks
         private bool BundleIdentifier(XmlDocument xml, bool touched)
         {
             var packageIdentifierField = PackagingFields
-                .FirstOrDefault(x => FieldType.FromValue(Int32.Parse(x.ItemSpec)) == FieldType.PackagingDroidIdentifier);
+                .FirstOrDefault(x => FieldType.FromValue(x.ItemSpec) == FieldType.PackagingDroidIdentifier);
 
             if (packageIdentifierField != null && packageIdentifierField.IsEnabled() && !String.IsNullOrEmpty(packageIdentifierField.GetMetadata("Value")))
             {
@@ -189,7 +189,7 @@ namespace TheAppsPajamas.Client.Tasks
         private bool LaunchIcon(bool touched, XmlNode appNode)
         {
             var iconNameField = PackagingFields
-                .FirstOrDefault(x => FieldType.FromValue(Int32.Parse(x.ItemSpec)) == FieldType.PackagingDroidAppIconName);
+                .FirstOrDefault(x => FieldType.FromValue(x.ItemSpec) == FieldType.PackagingDroidAppIconName);
 
             if (iconNameField != null && iconNameField.IsEnabled() && !String.IsNullOrEmpty(iconNameField.GetMetadata("Value")))
             {
@@ -229,7 +229,7 @@ namespace TheAppsPajamas.Client.Tasks
         private bool BundleName(bool touched, XmlNode appNode)
         {
             var packageNameField = PackagingFields
-                .FirstOrDefault(x => FieldType.FromValue(Int32.Parse(x.ItemSpec)) == FieldType.PackagingDroidName);
+                .FirstOrDefault(x => FieldType.FromValue(x.ItemSpec) == FieldType.PackagingDroidName);
 
             if (packageNameField != null && packageNameField.IsEnabled() && !String.IsNullOrEmpty(packageNameField.GetMetadata("Value")))
             {

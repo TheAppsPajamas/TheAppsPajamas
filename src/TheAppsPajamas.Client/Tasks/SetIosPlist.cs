@@ -51,7 +51,7 @@ namespace TheAppsPajamas.Client.Tasks
                 touched = VersionNumber(touched, plist);
 
                 var assetCatalogueNameField = PackagingFields
-                    .FirstOrDefault(x => FieldType.FromValue(Int32.Parse(x.ItemSpec)) == FieldType.PackagingIosAssetCatalogueName);
+                    .FirstOrDefault(x => FieldType.FromValue(x.ItemSpec) == FieldType.PackagingIosAssetCatalogueName);
 
                 touched = AppIconCatalogueSetName(touched, plist, assetCatalogueNameField);
 
@@ -60,7 +60,7 @@ namespace TheAppsPajamas.Client.Tasks
                 //don't think we need this
                 bool useLaunchStoryboard = false;
                 var useLaunchStoryboardField = PackagingFields
-                    .FirstOrDefault(x => FieldType.FromValue(Int32.Parse(x.ItemSpec)) == FieldType.PackagingIosUseLaunchStoryboard);
+                    .FirstOrDefault(x => FieldType.FromValue(x.ItemSpec) == FieldType.PackagingIosUseLaunchStoryboard);
                 if (useLaunchStoryboardField != null
                     && useLaunchStoryboardField.IsEnabled()
                     && !String.IsNullOrEmpty(useLaunchStoryboardField.GetMetadata("Value")))
@@ -100,7 +100,7 @@ namespace TheAppsPajamas.Client.Tasks
         private bool Name(bool touched, Dictionary<string, object> plist)
         {
             var packageNameField = PackagingFields
-                .FirstOrDefault(x => FieldType.FromValue(Int32.Parse(x.ItemSpec)) == FieldType.PackagingIosName);
+                .FirstOrDefault(x => FieldType.FromValue(x.ItemSpec) == FieldType.PackagingIosName);
 
             if (packageNameField != null && packageNameField.IsEnabled() && !String.IsNullOrEmpty(packageNameField.GetMetadata("Value")))
             {
@@ -161,7 +161,7 @@ namespace TheAppsPajamas.Client.Tasks
         private bool Identifier(bool touched, Dictionary<string, object> plist)
         {
             var packageIdentifierField = PackagingFields
-                .FirstOrDefault(x => FieldType.FromValue(Int32.Parse(x.ItemSpec)) == FieldType.PackagingIosIdentifier);
+                .FirstOrDefault(x => FieldType.FromValue(x.ItemSpec) == FieldType.PackagingIosIdentifier);
 
             if (packageIdentifierField != null && packageIdentifierField.IsEnabled() && !String.IsNullOrEmpty(packageIdentifierField.GetMetadata("Value")))
             {
@@ -201,7 +201,7 @@ namespace TheAppsPajamas.Client.Tasks
         private bool VersionText(bool touched, Dictionary<string, object> plist)
         {
             var packageVersionTextField = PackagingFields
-                    .FirstOrDefault(x => FieldType.FromValue(Int32.Parse(x.ItemSpec)) == FieldType.PackagingIosVersionText);
+                    .FirstOrDefault(x => FieldType.FromValue(x.ItemSpec) == FieldType.PackagingIosVersionText);
 
             if (packageVersionTextField != null && packageVersionTextField.IsEnabled() && !String.IsNullOrEmpty(packageVersionTextField.GetMetadata("Value")))
             {
@@ -244,7 +244,7 @@ namespace TheAppsPajamas.Client.Tasks
         private bool VersionNumber(bool touched, Dictionary<string, object> plist)
         {
             var packageVersionNumberField = PackagingFields
-                .FirstOrDefault(x => FieldType.FromValue(Int32.Parse(x.ItemSpec)) == FieldType.PackagingIosVersionNumber);
+                .FirstOrDefault(x => FieldType.FromValue(x.ItemSpec) == FieldType.PackagingIosVersionNumber);
 
             if (packageVersionNumberField != null && packageVersionNumberField.IsEnabled() && !String.IsNullOrEmpty(packageVersionNumberField.GetMetadata("Value")))
             {
@@ -286,7 +286,7 @@ namespace TheAppsPajamas.Client.Tasks
         private bool AppIconCatalogueSetName(bool touched, Dictionary<string, object> plist, ITaskItem assetCatalogueNameField)
         {
             var appIconCatalogueNameField = PackagingFields
-                .FirstOrDefault(x => FieldType.FromValue(Int32.Parse(x.ItemSpec)) == FieldType.PackagingIosAppIconXcAssetsName);
+                .FirstOrDefault(x => FieldType.FromValue(x.ItemSpec) == FieldType.PackagingIosAppIconXcAssetsName);
 
             if (assetCatalogueNameField != null
                 && assetCatalogueNameField.IsEnabled()
@@ -342,7 +342,7 @@ namespace TheAppsPajamas.Client.Tasks
         private bool LaunchCatalogueSetName(bool touched, Dictionary<string, object> plist, ITaskItem assetCatalogueNameField)
         {
             var launchCatalogueNameField = PackagingFields
-                .FirstOrDefault(x => FieldType.FromValue(Int32.Parse(x.ItemSpec)) == FieldType.PackagingIosLaunchImageXcAssetsName);
+                .FirstOrDefault(x => FieldType.FromValue(x.ItemSpec) == FieldType.PackagingIosLaunchImageXcAssetsName);
 
             if (assetCatalogueNameField != null
                 && assetCatalogueNameField.IsEnabled()
@@ -410,7 +410,7 @@ namespace TheAppsPajamas.Client.Tasks
         private bool LaunchStoryboardName(bool touched, Dictionary<string, object> plist, bool useLaunchStoryboard)
         {
             var launchStoryboardNameField = PackagingFields
-                .FirstOrDefault(x => FieldType.FromValue(Int32.Parse(x.ItemSpec)) == FieldType.PackagingIosLaunchStoryboardName);
+                .FirstOrDefault(x => FieldType.FromValue(x.ItemSpec) == FieldType.PackagingIosLaunchStoryboardName);
 
             if (launchStoryboardNameField != null
                 && launchStoryboardNameField.IsEnabled()
@@ -471,7 +471,7 @@ namespace TheAppsPajamas.Client.Tasks
         private bool UsesNonExemptEncryption(bool touched, Dictionary<string, object> plist)
         {
             var usesNonExemptEncryptionField = PackagingFields
-                .FirstOrDefault(x => FieldType.FromValue(Int32.Parse(x.ItemSpec)) == FieldType.PackagingIosUsesNonExemptEncryption);
+                .FirstOrDefault(x => FieldType.FromValue(x.ItemSpec) == FieldType.PackagingIosUsesNonExemptEncryption);
 
             if (usesNonExemptEncryptionField != null
                 && usesNonExemptEncryptionField.IsEnabled()

@@ -233,7 +233,7 @@ namespace TheAppsPajamas.Client.Extensions
                 //TODO deal with this in setmanifest
                 itemMetadata.Add(MetadataType.FieldHolderDisabled, holder.GetMetadata(MetadataType.Disabled));
 
-                var taskItem = new TaskItem(field.FieldId.ToString(), itemMetadata);
+                var taskItem = new TaskItem(field.FieldId, itemMetadata);
 
                 var fieldType = FieldType.GetAll().FirstOrDefault(x => x.Value == field.FieldId);
                 taskItem.SetDisabledMetadata(baseTask, field.Disabled, fieldType.DisplayName);
@@ -323,7 +323,7 @@ namespace TheAppsPajamas.Client.Extensions
 
                         if (!String.IsNullOrEmpty(fieldType.GetMetadata(MetadataType.CataloguePackagingFieldId)))
                         {
-                            var catalogueSetField = clientConfigDto.Packaging.Fields.FirstOrDefault(x => x.FieldId == Int32.Parse(fieldType.GetMetadata(MetadataType.CataloguePackagingFieldId)));
+                            var catalogueSetField = clientConfigDto.Packaging.Fields.FirstOrDefault(x => x.FieldId == fieldType.GetMetadata(MetadataType.CataloguePackagingFieldId));
                             catalogueSetName = catalogueSetField.Value.ApplyImageSetExt();
                         }
 

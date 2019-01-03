@@ -107,6 +107,21 @@ namespace TheAppsPajamas.Client.Tasks
             if (clientConfigDto == null)
                 return false;
 
+            if (clientConfigDto.AppIcon.Succeeded == false 
+                || clientConfigDto.Splash.Succeeded == false)
+            {
+                foreach(var message in clientConfigDto.AppIcon.Messages.Where(x => x.MessageImportanceTypeValue ==
+                    MessageImportanceType.Error.Value))
+                {
+                    Log.LogError(message.MessageBody);
+                }
+                foreach (var message in clientConfigDto.Splash.Messages.Where(x => x.MessageImportanceTypeValue ==
+                    MessageImportanceType.Error.Value))
+                {
+                    Log.LogError(message.MessageBody);
+                }
+                return false;
+            }
 
             MediaAccessKey = new TaskItem(clientConfigDto.MediaAccessKey);
             //this is not quite identical in base

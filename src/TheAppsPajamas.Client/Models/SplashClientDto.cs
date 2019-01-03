@@ -1,7 +1,7 @@
 ﻿using System;
 namespace TheAppsPajamas.Client.Models
 {
-    public class SplashClientDto : BaseHolderClientDto<MediaFieldClientDto>
+    public class SplashClientDto : BaseHolderClientResultDto<MediaFieldClientDto>
     {
     }
 }

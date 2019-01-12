@@ -111,7 +111,7 @@ namespace TheAppsPajamas.Client.Tasks
                     LogDebug("Create asset folder at {0}", outputDir);
                 }
                                              
-                if (existingAssets.FirstOrDefault(x => x.ItemSpec == existingFilePath.GetPathRelativeToProject(ProjectDir)) == null)
+                if (existingAssets.FirstOrDefault(x => x.ItemSpec.StripSlashes() == existingFilePath.GetPathRelativeToProject(ProjectDir).StripSlashes()) == null)
                 {
                     LogDebug($"Adding {existingFilePath} as a {MSBuildItemName.TapAsset} to add to project list as it is not in current project");
                     filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.TapAsset, new Dictionary<string, string> { { MetadataType.IncludePath, existingFilePath } }));
@@ -119,7 +119,7 @@ namespace TheAppsPajamas.Client.Tasks
 
                 var outputFilePath = Path.Combine(ProjectDir, field.GetMetadata(MetadataType.ProjectAssetPath), field.GetMetadata(MetadataType.LogicalName));
 
-                if (existingAssets.FirstOrDefault(x => x.ItemSpec == outputFilePath.GetPathRelativeToProject(ProjectDir)) == null)
+                if (existingAssets.FirstOrDefault(x => x.ItemSpec.StripSlashes() == outputFilePath.GetPathRelativeToProject(ProjectDir).StripSlashes()) == null)
                 {
                     LogDebug($"Adding {outputFilePath} as a {MSBuildItemName.AndroidResource} to add to project list as it is not in current project");
                     filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.AndroidResource, new Dictionary<string, string> { { MetadataType.IncludePath, outputFilePath } }));

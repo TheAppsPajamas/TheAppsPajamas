@@ -48,7 +48,7 @@ namespace TheAppsPajamas.Client.Tasks
                     //think this should work, won't be able to test until we have are further along
                     foreach (var deleteItem in FilesToDeleteFromProject)
                     {
-                        var existingItem = existingItems.FirstOrDefault(x => x.Include == deleteItem.ItemSpec.GetPathRelativeToProject(ProjectDir));
+                        var existingItem = existingItems.FirstOrDefault(x => x.Include.StripSlashes() == deleteItem.ItemSpec.GetPathRelativeToProject(ProjectDir).StripSlashes());
 
                     //&& x.Include == deleteItem.GetMetadata(MetadataType.DeletePath).GetPathRelativeToProject(ProjectDir));
                     if (existingItem != null)

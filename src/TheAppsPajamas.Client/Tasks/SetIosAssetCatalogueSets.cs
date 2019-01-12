@@ -290,14 +290,14 @@ namespace TheAppsPajamas.Client.Tasks
 
                         //we want a list of existing imageassets, and itunesartwork to work of, rather than a test of file existence
 
-                        if (existingAssets.FirstOrDefault(x => x.ItemSpec == existingFilePath.GetPathRelativeToProject(ProjectDir)) == null)
+                        if (existingAssets.FirstOrDefault(x => x.ItemSpec.StripSlashes() == existingFilePath.GetPathRelativeToProject(ProjectDir).StripSlashes()) == null)
                         {
                             LogDebug("Adding {0} to add to project list as it is not in current project", existingFilePath);
                             filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.ImageAsset, new Dictionary<string, string> { { MetadataType.IncludePath, existingFilePath } }));
 
                         }
 
-                        if (existingAssets.FirstOrDefault(x => x.ItemSpec == projectOutputFilePath.GetPathRelativeToProject(ProjectDir)) == null)
+                        if (existingAssets.FirstOrDefault(x => x.ItemSpec.StripSlashes() == projectOutputFilePath.GetPathRelativeToProject(ProjectDir).StripSlashes()) == null)
                         {
                             LogDebug("Adding {0} to add to project list as it is not in current project", projectOutputFilePath);
                             filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.ImageAsset, new Dictionary<string, string> { { MetadataType.IncludePath, projectOutputFilePath } }));
@@ -337,7 +337,7 @@ namespace TheAppsPajamas.Client.Tasks
                         NullValueHandling = NullValueHandling.Ignore
                     });
 
-                if (existingAssets.FirstOrDefault(x => x.ItemSpec == mediaResourceCatalogueSetContentsPath.GetPathRelativeToProject(ProjectDir)) == null)
+                if (existingAssets.FirstOrDefault(x => x.ItemSpec.StripSlashes() == mediaResourceCatalogueSetContentsPath.GetPathRelativeToProject(ProjectDir).StripSlashes()) == null)
                 {
                     LogDebug("Adding {0} to add to project list as it is not in current project", mediaResourceCatalogueSetContentsPath);
                     filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.ImageAsset
@@ -348,7 +348,7 @@ namespace TheAppsPajamas.Client.Tasks
                 var projectOutputCatalogueSetContentsPath = Path.Combine(ProjectDir, AssetCatalogueName.ItemSpec, catalogue, Consts.iOSContents);
                 LogDebug($"Added project output {catalogue} Contents.json at path {projectOutputCatalogueSetContentsPath}");
 
-                if (existingAssets.FirstOrDefault(x => x.ItemSpec == projectOutputCatalogueSetContentsPath.GetPathRelativeToProject(ProjectDir)) == null)
+                if (existingAssets.FirstOrDefault(x => x.ItemSpec.StripSlashes() == projectOutputCatalogueSetContentsPath.GetPathRelativeToProject(ProjectDir).StripSlashes()) == null)
                 {
                     LogDebug("Adding {0} to add to project list as it is not in current project", projectOutputCatalogueSetContentsPath);
                     filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.ImageAsset

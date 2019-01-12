@@ -47,9 +47,9 @@ namespace TheAppsPajamas.Client.Extensions
 
                     var tapSettingTaskItem = new TaskItem(MetadataType.TapConfig);
 
-                    if (!String.IsNullOrEmpty(tapSetting.TapLogLevel))
+                    if (!String.IsNullOrEmpty(tapSetting.LogLevel))
                     {
-                        tapSettingTaskItem.SetMetadata(MetadataType.TapLogLevel, tapSetting.TapLogLevel);
+                        tapSettingTaskItem.SetMetadata(MetadataType.TapLogLevel, tapSetting.LogLevel);
                     }
                     else
                     {

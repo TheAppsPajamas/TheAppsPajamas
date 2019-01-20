@@ -18,7 +18,7 @@ namespace TheAppsPajamas.Client.JsonDtos
         //}
 
         [JsonProperty("LogLevel", NullValueHandling = NullValueHandling.Ignore, Order = 3)]
-        public string TapLogLevel { get; set; }
+        public string LogLevel { get; set; }
 
         [JsonProperty("TapEndpoint", NullValueHandling = NullValueHandling.Ignore, Order = 3)]
         public string TapEndpoint { get; set; }

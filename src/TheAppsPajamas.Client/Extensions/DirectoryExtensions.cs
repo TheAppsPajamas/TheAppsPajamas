@@ -11,18 +11,18 @@ namespace TheAppsPajamas.Client.Extensions
             try
             {
 
-                baseTask.LogVerbose($"Reading DirectoryInfo for folder {baseTask.ProjectDir}");
+                baseTask.LogVerbose($"Searching for config file {fileToFind}");
                 var currentDirectoryInfo = new DirectoryInfo(baseTask.ProjectDir);
                 if (currentDirectoryInfo == null){
-                    baseTask.LogVerbose($"DirectoryInfo for {baseTask.ProjectDir} is null");
+                    baseTask.Log.LogError($"Directory {baseTask.ProjectDir} is null");
                 }
                 do
                 {
                     var fileExistenceToTest = Path.Combine(currentDirectoryInfo.FullName, fileToFind);
-                    baseTask.LogVerbose($"Testing file existance at path {fileExistenceToTest}");
+                    //baseTask.LogVerbose($"Testing for file {fileExistenceToTest}");
                     if (File.Exists(fileExistenceToTest))
                     {
-                        baseTask.LogVerbose($"File exists at path {fileExistenceToTest}");
+                        //baseTask.LogVerbose($"File exists at {fileExistenceToTest}");
                         filePath = fileExistenceToTest;
                     }
                     if (currentDirectoryInfo.Parent == null){
@@ -33,7 +33,7 @@ namespace TheAppsPajamas.Client.Extensions
 
                 if (!String.IsNullOrEmpty(filePath))
                 {
-                    baseTask.LogInformation($"Found {fileToFind} at path {filePath}");
+                    baseTask.LogInformation($"Selecting {fileToFind} from {filePath}");
                 }
                 else
                 {

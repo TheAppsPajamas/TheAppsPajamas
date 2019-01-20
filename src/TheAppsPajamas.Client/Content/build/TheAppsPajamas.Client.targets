@@ -294,6 +294,7 @@
             TapSettings="@(TapSettings)" 
             ProjectDir="$(MSBuildProjectDirectory)"             
             ProjectFileLoad="$(MSBuildProjectFullPath)"
+            IntermediateOutputPath="$(IntermediateOutputPath)"
             FilesToAddToProject="@(FilesToAddToProject)"
             FilesToDeleteFromProject="@(FilesToDeleteFromProject)">
             <Output TaskParameter="ProjectFileSave" PropertyName="ModifiedProjectFullPath"/>
@@ -302,7 +303,23 @@
 
             <Output TaskParameter="TapSettingsOutput" ItemName="TapSettings"/>
         </ModifyProject>
-
+       <PropertyGroup Condition="'$(ProjectShouldModifyOriginal)' == 'True' And '$(TapShouldContinue)' == 'True' ">
+          <_PostBuildTargets>
+            SaveOriginalProject;
+            $(_PostBuildTargets)
+          </_PostBuildTargets>
+        </PropertyGroup>
+        <PropertyGroup Condition=" '$(TapShouldContinue)' == 'True' ">
+          <_PostBuildTargets>
+            SaveOriginalProject;
+            $(_PostBuildTargets)
+          </_PostBuildTargets>
+        </PropertyGroup>
+        
+            <CreateProperty Value="PackageForAndroid">
+                <Output TaskParameter="Value" PropertyName="SaveOriginalProjectTest" />
+            </CreateProperty>
+        
     </Target>
 
     
@@ -330,10 +347,8 @@
             ProjectDir="$(MSBuildProjectDirectory)" 
             ProjectFileOriginalName="$(MSBuildProjectFullPath)"
             ProjectFileModifiedName="$(ModifiedProjectFullPath)">
-
             <Output TaskParameter="TapSettingsOutput" ItemName="TapSettings"/>
         </SaveOriginalProject>
-    </Target>  
-
+    </Target> 
     
 </Project>

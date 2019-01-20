@@ -138,13 +138,13 @@ namespace TheAppsPajamas.Client.Tasks
                     Log.LogMessage("Saving {1} Contents.json to path {0}", projectAssetCatalogueContentsPath, AssetCatalogueName.ItemSpec);
                 }
 
-                if (existingAssets.FirstOrDefault(x => x.ItemSpec == mediaResourceAssetCatalogueContentsPath.GetPathRelativeToProject(ProjectDir)) == null)
+                if (existingAssets.FirstOrDefault(x => x.ItemSpec.StripSlashes() == mediaResourceAssetCatalogueContentsPath.GetPathRelativeToProject(ProjectDir).StripSlashes()) == null)
                 {
                     filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.ImageAsset, new Dictionary<string, string> { { MetadataType.IncludePath, mediaResourceAssetCatalogueContentsPath } }));
                     LogDebug("Adding {0} to add to project list as it is not in current project", mediaResourceAssetCatalogueContentsPath);
                 }
 
-                if (existingAssets.FirstOrDefault(x => x.ItemSpec == projectAssetCatalogueContentsPath.GetPathRelativeToProject(ProjectDir)) == null)
+                if (existingAssets.FirstOrDefault(x => x.ItemSpec.StripSlashes() == projectAssetCatalogueContentsPath.GetPathRelativeToProject(ProjectDir).StripSlashes()) == null)
                 {
                     filesToAddToModifiedProject.Add(new TaskItem(MSBuildItemName.ImageAsset, new Dictionary<string, string> { { MetadataType.IncludePath, projectAssetCatalogueContentsPath } }));
                     LogDebug("Adding {0} to add to project list as it is not in current project", projectAssetCatalogueContentsPath);

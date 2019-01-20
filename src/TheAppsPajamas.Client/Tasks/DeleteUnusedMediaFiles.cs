@@ -85,13 +85,13 @@ namespace TheAppsPajamas.Client.Tasks
 
                     ITaskItem existingAsset = null;
                     string existingAssetItemGroup = String.Empty;
-                    existingAsset = tapAssets.FirstOrDefault(x => x.ItemSpec == file.GetPathRelativeToProject(ProjectDir));
+                    existingAsset = tapAssets.FirstOrDefault(x => x.ItemSpec.StripSlashes() == file.GetPathRelativeToProject(ProjectDir).StripSlashes());
                     if (existingAsset != null){
                         tapAssetsToRemoveFromProject.Add(new TaskItem(file.GetPathRelativeToProject(ProjectDir)));
                     }
                     if (existingAsset == null)
                     {
-                        existingAsset = iosImageAssets.FirstOrDefault(x => x.ItemSpec == file.GetPathRelativeToProject(ProjectDir));
+                        existingAsset = iosImageAssets.FirstOrDefault(x => x.ItemSpec.StripSlashes() == file.GetPathRelativeToProject(ProjectDir).StripSlashes());
                         LogDebug($"Searching for existing asset {file.GetPathRelativeToProject(ProjectDir)} in iosimage assets");
                         if (existingAsset != null)
                         {
@@ -101,7 +101,7 @@ namespace TheAppsPajamas.Client.Tasks
                     }
                     if (existingAsset == null)
                     {
-                        existingAsset = iosItunesArtwork.FirstOrDefault(x => x.ItemSpec == file.GetPathRelativeToProject(ProjectDir));
+                        existingAsset = iosItunesArtwork.FirstOrDefault(x => x.ItemSpec.StripSlashes() == file.GetPathRelativeToProject(ProjectDir).StripSlashes());
                         if (existingAsset != null)
                         {
                             iosItunesArtworkToRemoveFromProject.Add(new TaskItem(file.GetPathRelativeToProject(ProjectDir)));

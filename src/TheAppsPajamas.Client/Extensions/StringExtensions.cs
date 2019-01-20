@@ -7,14 +7,16 @@ namespace TheAppsPajamas.Client.Extensions
 {
     public static class StringExtensions
     {
-        public static string ApplyXcAssetsExt(this string s){
+        public static string ApplyXcAssetsExt(this string s)
+        {
             if (s.Contains(".xcassets"))
                 return s;
             else
                 return string.Concat(s, ".xcassets");
         }
 
-        public static string ApplyPngExt(this string s){
+        public static string ApplyPngExt(this string s)
+        {
             if (s.Contains(".png"))
                 return s;
             else
@@ -78,6 +80,13 @@ namespace TheAppsPajamas.Client.Extensions
             //remove \ or /
             o = o.Substring(1, o.Length - 1);
             return o;
+        }
+
+        public static string StripSlashes(this string s)
+        {
+            var exForward = s.Replace("/", String.Empty);
+            var exBack = exForward.Replace("\\", String.Empty);
+            return exBack;
         }
     }
 }

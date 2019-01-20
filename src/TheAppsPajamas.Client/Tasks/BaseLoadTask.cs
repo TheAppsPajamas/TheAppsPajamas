@@ -59,8 +59,8 @@ namespace TheAppsPajamas.Client.Tasks
 
         public override bool Execute()
         {
-            var baseResult = base.Execute();
             LogInformation($"Running {_taskName}");
+            var baseResult = base.Execute();
 
             LogDebug($"Project name {ProjectName}");
             LogDebug($"Build configuration {BuildConfiguration}");

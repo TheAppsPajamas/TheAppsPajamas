@@ -19,10 +19,10 @@ namespace TheAppsPajamas.Client.Extensions
                 do
                 {
                     var fileExistenceToTest = Path.Combine(currentDirectoryInfo.FullName, fileToFind);
-                    baseTask.LogVerbose($"Testing for file {fileExistenceToTest}");
+                    //baseTask.LogVerbose($"Testing for file {fileExistenceToTest}");
                     if (File.Exists(fileExistenceToTest))
                     {
-                        baseTask.LogVerbose($"File exists at {fileExistenceToTest}");
+                        //baseTask.LogVerbose($"File exists at {fileExistenceToTest}");
                         filePath = fileExistenceToTest;
                     }
                     if (currentDirectoryInfo.Parent == null){

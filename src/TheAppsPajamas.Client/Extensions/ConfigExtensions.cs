@@ -164,9 +164,10 @@ namespace TheAppsPajamas.Client.Extensions
                     var json = File.ReadAllText(tapSecurityPath);
                     tapSecurity = JsonConvert.DeserializeObject<TapSecurityJson>(json);
 
-                    if (String.IsNullOrEmpty(tapSecurity.Username) || String.IsNullOrEmpty(tapSecurity.Password))
+                    if ((String.IsNullOrEmpty(tapSecurity.Username) || String.IsNullOrEmpty(tapSecurity.Password))
+                        && String.IsNullOrEmpty(tapSecurity.ServiceUserAccessKey))
                     {
-                        baseTask.Log.LogError($"{Consts.TapSecurityFile} username or password is null, please complete username, and password at {tapSecurityPath} and restart build process");
+                        baseTask.Log.LogError($"{Consts.TapSecurityFile} username, password, or service user access key is null, please complete username and password, or service user access key at {tapSecurityPath} and restart build process");
                         return null;
                     }
                     else

@@ -35,7 +35,7 @@ namespace TheAppsPajamas.Client.Extensions
 
                     tapSettingTaskItem.SetMetadata(MetadataType.TapEndpoint, Consts.TapEndpoint);
                     tapSettingTaskItem.SetMetadata(MetadataType.MediaEndpoint, Consts.MediaEndpoint);
-                    tapSettingTaskItem.SetMetadata(MetadataType.TapLogLevel, TapLogLevel.Information);
+                    tapSettingTaskItem.SetMetadata(MetadataType.TapLogLevel, LogLevelConsts.Information);
 
                     //baseTask.Log.LogMessage($"Tap log level set to {tapConfigTaskItem.GetMetadata(MetadataType.TapLogLevel)}");
                     return tapSettingTaskItem;
@@ -53,7 +53,7 @@ namespace TheAppsPajamas.Client.Extensions
                     }
                     else
                     {
-                        tapSettingTaskItem.SetMetadata(MetadataType.TapLogLevel, TapLogLevel.Information);
+                        tapSettingTaskItem.SetMetadata(MetadataType.TapLogLevel, LogLevelConsts.Information);
                     }
 
                     if (!String.IsNullOrEmpty(tapSetting.TapEndpoint))
@@ -82,7 +82,7 @@ namespace TheAppsPajamas.Client.Extensions
 
                 tapSettingTaskItem.SetMetadata(MetadataType.TapEndpoint, Consts.TapClientEndpoint);
                 tapSettingTaskItem.SetMetadata(MetadataType.MediaEndpoint, Consts.MediaEndpoint);
-                tapSettingTaskItem.SetMetadata(MetadataType.TapLogLevel, TapLogLevel.Information);
+                tapSettingTaskItem.SetMetadata(MetadataType.TapLogLevel, LogLevelConsts.Information);
                 baseTask.Log.LogWarning($"Error trying to read {Consts.TapSettingFile}, returning defaults");
                 baseTask.LogInformation($"Tap log level set to {tapSettingTaskItem.GetMetadata(MetadataType.TapLogLevel)}");
                 return tapSettingTaskItem;

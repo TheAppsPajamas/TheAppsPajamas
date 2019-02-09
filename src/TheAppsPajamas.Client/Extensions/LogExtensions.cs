@@ -11,7 +11,7 @@ namespace TheAppsPajamas.Client.Extensions
             if (baseTask.TapSettings == null){
                 return true;
             }
-            if (baseTask.TapSettings.GetMetadata(MetadataType.TapLogLevel).ToLower() == TapLogLevel.Verbose.ToLower())
+            if (baseTask.TapSettings.GetMetadata(MetadataType.TapLogLevel).ToLower() == LogLevelConsts.Verbose.ToLower())
             {
                 return true;
             }
@@ -24,7 +24,7 @@ namespace TheAppsPajamas.Client.Extensions
             {
                 return true;
             }
-            if (baseTask.TapSettings.GetMetadata(MetadataType.TapLogLevel).ToLower() == TapLogLevel.Debug.ToLower())
+            if (baseTask.TapSettings.GetMetadata(MetadataType.TapLogLevel).ToLower() == LogLevelConsts.Debug.ToLower())
             {
                 return true;
             }
@@ -44,7 +44,7 @@ namespace TheAppsPajamas.Client.Extensions
                 return true;
             }
 
-            if (baseTask.TapSettings.GetMetadata(MetadataType.TapLogLevel).ToLower() == TapLogLevel.Information.ToLower())
+            if (baseTask.TapSettings.GetMetadata(MetadataType.TapLogLevel).ToLower() == LogLevelConsts.Information.ToLower())
             {
                 return true;
             }
@@ -63,7 +63,7 @@ namespace TheAppsPajamas.Client.Extensions
                 return true;
             }
 
-            if (baseTask.TapSettings.GetMetadata(MetadataType.TapLogLevel).ToLower() == TapLogLevel.Warn.ToLower())
+            if (baseTask.TapSettings.GetMetadata(MetadataType.TapLogLevel).ToLower() == LogLevelConsts.Warn.ToLower())
             {
                 return true;
             }

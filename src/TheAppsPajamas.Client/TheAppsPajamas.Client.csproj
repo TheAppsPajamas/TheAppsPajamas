@@ -108,7 +108,7 @@
     <Compile Include="Models\PackagingClientDto.cs" />
     <Compile Include="Models\BuildConfigClientDto.cs" />
     <Compile Include="Extensions\TaskItemExtensions.cs" />
-    <Compile Include="Constants\TapLogLevel.cs" />
+    <Compile Include="Constants\LogLevelConsts.cs" />
     <Compile Include="Extensions\LogExtensions.cs" />
     <Compile Include="Tasks\SetIosItunesArtwork.cs" />
     <Compile Include="JsonDtos\TapSettingJson.cs" />

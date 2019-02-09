@@ -1,7 +1,7 @@
 ﻿using System;
 namespace TheAppsPajamas.Client.Constants
 {
-    public static class TapLogLevel
+    public static class LogLevelConsts
     {
         public const string Verbose = "Verbose";
         public const string Debug = "Debug";

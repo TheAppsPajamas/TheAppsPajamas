@@ -83,15 +83,15 @@ namespace TheAppsPajamas.Client.Tasks
                 var response = ex.Response as HttpWebResponse;
                 if (response == null)
                 {
-                    LogDebug("Webexception not ususal status code encountered, fatal, exiting");
-                    Log.LogErrorFromException(ex);
+                    Log.LogError($"Unknown server api error {response.StatusCode.ToString()}, exiting");
+                    //Log.LogErrorFromException(ex);
                     return false;
                 }
 
                 if (response.StatusCode == HttpStatusCode.NotFound){
-                    LogWarning($"Tap server responded with message '{response.StatusDescription}', TheAppsPajamas cannot continue, exiting gracefully, build will continue");
+                    Log.LogError($"Build configuration or Tap App Id not found on server, exiting");
                     TapShouldContinue = bool.FalseString;
-                    return true;
+                    return false;
                 }
 
                 //TODO load client config from projects if no web available and run anyway

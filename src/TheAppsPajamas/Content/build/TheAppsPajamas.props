@@ -1,0 +1,25 @@
+<!-- 
+  This file is automatically imported by NuGet into a user's project
+  when it targets a single framework, or in classic (pre 2017) csproj projects.
+-->
+<Project TreatAsLocalProperty="TheAppsPajamasToolAssembly">
+  <PropertyGroup>	
+
+    <TheAppsPajamasToolAssembly>$(MSBuildThisFileDirectory)..\tools\TheAppsPajamas.dll</TheAppsPajamasToolAssembly>
+  </PropertyGroup>
+
+  <UsingTask TaskName="TheAppsPajamas.Tasks.LoadTapBuildConfig" AssemblyFile="$(TheAppsPajamasToolAssembly)" />
+  <UsingTask TaskName="TheAppsPajamas.Tasks.SetDroidManifest" AssemblyFile="$(TheAppsPajamasToolAssembly)" />
+  <UsingTask TaskName="TheAppsPajamas.Tasks.CleanAssetCatalogues" AssemblyFile="$(TheAppsPajamasToolAssembly)" />
+  <UsingTask TaskName="TheAppsPajamas.Tasks.DeleteUnusedMediaFiles" AssemblyFile="$(TheAppsPajamasToolAssembly)" />
+  <UsingTask TaskName="TheAppsPajamas.Tasks.DownloadMediaFiles" AssemblyFile="$(TheAppsPajamasToolAssembly)" />
+  <UsingTask TaskName="TheAppsPajamas.Tasks.SetDroidMedia" AssemblyFile="$(TheAppsPajamasToolAssembly)" />
+  <UsingTask TaskName="TheAppsPajamas.Tasks.SetIosAssetCatalogueSets" AssemblyFile="$(TheAppsPajamasToolAssembly)" />
+
+  <UsingTask TaskName="TheAppsPajamas.Tasks.SetIosAssetCatalogue" AssemblyFile="$(TheAppsPajamasToolAssembly)" />
+  <UsingTask TaskName="TheAppsPajamas.Tasks.SetIosItunesArtwork" AssemblyFile="$(TheAppsPajamasToolAssembly)" />
+  <UsingTask TaskName="TheAppsPajamas.Tasks.SetIosPlist" AssemblyFile="$(TheAppsPajamasToolAssembly)" />
+
+  <UsingTask TaskName="TheAppsPajamas.Tasks.ModifyProject" AssemblyFile="$(TheAppsPajamasToolAssembly)" />
+  <UsingTask TaskName="TheAppsPajamas.Tasks.SaveOriginalProject" AssemblyFile="$(TheAppsPajamasToolAssembly)" />
+ </Project>

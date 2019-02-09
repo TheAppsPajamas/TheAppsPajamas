@@ -11,7 +11,7 @@
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <PackOnBuild>true</PackOnBuild>
     <PackageId>TheAppsPajamas</PackageId>
-    <PackageVersion>1.0.0</PackageVersion>
+    <PackageVersion>1.1.0</PackageVersion>
     <Authors>The Apps Pajamas</Authors>
     <Description>The Apps Pajamas</Description>
     <IsTool>true</IsTool>

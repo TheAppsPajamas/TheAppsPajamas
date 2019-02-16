@@ -11,14 +11,15 @@
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <PackOnBuild>true</PackOnBuild>
     <PackageId>TheAppsPajamas</PackageId>
-    <PackageVersion>1.1.0</PackageVersion>
+    <PackageVersion>1.1.1</PackageVersion>
     <Authors>The Apps Pajamas</Authors>
     <Description>The Apps Pajamas</Description>
     <IsTool>true</IsTool>
     <PackageProjectUrl>https://www.theappspajamas.com</PackageProjectUrl>
     <NeutralLanguage>en-GB</NeutralLanguage>
     <PackageLicenseUrl>https://www.theappspajamas.com</PackageLicenseUrl>
-    <Owners>Dean marcussen</Owners>
+    <IconUrl>https://github.com/TheAppsPajamas/TheAppsPajamas/blob/master/Icon.png?raw=true</IconUrl>    
+    <Owners>Dean Marcussen</Owners>
     <PackageTags>Build Xamarin MSBuild Android iOS Tap TheAppsPajamas</PackageTags>
     <Title>TheAppsPajamas</Title>
   </PropertyGroup>

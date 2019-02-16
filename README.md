@@ -19,7 +19,7 @@ To check out [The Apps Pajamas](https://www.theappspajamas.com), login to the [D
     User: sample.user@theappspajamas.com
     Password: sample.user
 
-Then clone [The Apps Pajamas Sample Projects](https://github.com/TheAppsPajamas/TheAppsPajamas.Samples) and build one of the sample projects.
+Then clone [The Apps Pajamas Sample Projects Repository](https://github.com/TheAppsPajamas/TheAppsPajamas.Samples) and build one of the sample projects.
 
 ## Installing via NuGet
 

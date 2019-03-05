@@ -10,7 +10,7 @@ It is the easiest way to build a White label Xamarin App.
 
 Get started for free by registering an account on the [Dashboard](https://app.theappspajamas.com/users/register)
 
-Create your assets, install [TheAppsPajamas NuGet](https://www.nuget.org/packages/TheAppsPajamas/) pacakge and start building.
+Create your assets, install <a rel="nofollow" href="https://www.nuget.org/packages/TheAppsPajamas/">TheAppsPajamas NuGet</a> package and start building.
 
 ## Sample App
 
@@ -19,13 +19,13 @@ To check out [The Apps Pajamas](https://www.theappspajamas.com), login to the [D
     User: sample.user@theappspajamas.com
     Password: sample.user
 
-Then clone [The Apps Pajamas Sample Projects Repository](https://github.com/TheAppsPajamas/TheAppsPajamas.Samples) and build one of the sample projects.
+Then clone <a rel="nofollow" href="https://github.com/TheAppsPajamas/TheAppsPajamas.Samples">The Apps Pajamas Sample Projects Repository</a> and build one of the sample projects.
 
 ## Installing via NuGet
 
-The easiest way to install [The Apps Pajamas](https://www.theappspajamas.com) is via [NuGet](https://www.nuget.org/packages/TheAppsPajamas/).
+The easiest way to install [The Apps Pajamas](https://www.theappspajamas.com) is via <a rel="nofollow" href="https://www.nuget.org/packages/TheAppsPajamas/">NuGet</a>
 
-In Visual Studio's [Package Manager Console](http://docs.nuget.org/docs/start-here/using-the-package-manager-console),
+In Visual Studio's <a rel="nofollow" href="http://docs.nuget.org/docs/start-here/using-the-package-manager-console">Package Manager Console</a>,
 enter the following command:
 
     Install-Package TheAppsPajamas

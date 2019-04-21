@@ -143,6 +143,21 @@ namespace TheAppsPajamas.Constants
         public const string Value = "Value";
 
         /// <summary>
+        /// The client dto field SourceFilePathValue (calculated value)
+        /// </summary>
+        public const string SourceFilePathValue = "SourceFilePathValue";
+
+        /// <summary>
+        /// The client dto field DestinationFilePathValue (calculated value)
+        /// </summary>
+        public const string DestinationFilePathValue = "DestinationFilePathValue";
+
+        /// <summary>
+        /// The client dto field BuildActionValue (calculated value)
+        /// </summary>
+        public const string BuildActionValue = "BuildActionValue";
+
+        /// <summary>
         /// The asset catalogue set name, i.e. AppIcon.appicon, Launch, Image etc
         /// </summary>
         public const string CatalogueSetName = "CatalogueSetName";

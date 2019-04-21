@@ -4,8 +4,8 @@ using System.Collections.Generic;
 namespace TheAppsPajamas.Models
 {
 
-    public class BaseHolderClientResultDto<TFieldDto> : BaseHolderClientDto<TFieldDto>
-        where TFieldDto : BaseFieldClientDto, new()
+    public class BaseHolderClientResultDto<TFieldDto, TValueDto> : BaseHolderClientDto<TFieldDto, TValueDto>
+        where TFieldDto : BaseFieldClientDto<TValueDto>, new()
     {
 
         public bool Succeeded { get; set; }

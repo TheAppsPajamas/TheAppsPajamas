@@ -11,7 +11,7 @@
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <PackOnBuild>true</PackOnBuild>
     <PackageId>TheAppsPajamas</PackageId>
-    <PackageVersion>1.1.2</PackageVersion>
+    <PackageVersion>1.2.0</PackageVersion>
     <Authors>The Apps Pajamas</Authors>
     <Description>The Apps Pajamas Xamarin Client Build Tool</Description>
     <IsTool>true</IsTool>
@@ -120,6 +120,14 @@
     <Compile Include="Models\BaseHolderClientResultDto.cs" />
     <Compile Include="Models\MessageDto.cs" />
     <Compile Include="Shared\Types\MessageImportanceType.cs" />
+    <Compile Include="Models\FileExchangeClientDto.cs" />
+    <Compile Include="Models\FileExchangeFieldClientDto.cs" />
+    <Compile Include="Models\FileExchangeFieldClientValueDto.cs" />
+    <Compile Include="Shared\Types\AppIconFieldVersionType.cs" />
+    <Compile Include="Shared\Types\BuildConfigRecordSetFieldVersionType.cs" />
+    <Compile Include="Shared\Types\FieldVersionType.cs" />
+    <Compile Include="Shared\Types\PackagingFieldVersionType.cs" />
+    <Compile Include="Shared\Types\SplashFieldVersionType.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />

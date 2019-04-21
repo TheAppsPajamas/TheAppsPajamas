@@ -1,7 +1,7 @@
 ﻿using System;
 namespace TheAppsPajamas.Models
 {
-    public class MediaFieldClientDto : BaseFieldClientDto
+    public class MediaFieldClientDto : BaseFieldClientDto<string>
     {
     }
 }

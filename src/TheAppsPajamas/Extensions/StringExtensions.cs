@@ -55,7 +55,7 @@ namespace TheAppsPajamas.Extensions
                 return s;
         }
 
-        public static string ApplyFieldId(this string s, BaseFieldClientDto field)
+        public static string ApplyFieldId(this string s, BaseFieldClientDto<string> field)
         {
             if (s.Contains(field.Value))
                 return s;

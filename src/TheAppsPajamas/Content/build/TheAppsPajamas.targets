@@ -39,6 +39,13 @@
         </CleanAssetCatalogues>
     </Target>
     
+    <Target Name="UsefelProperties" 
+        BeforeTargets="Build" >
+
+        <Message Text="Framework $(TargetFrameworkIdentifier)"/>
+        <Message Text="MSBuildBinPath $(MSBuildBinPath)"/>
+    </Target>
+    
     <Target Name="LoadTapBuildConfig" 
         AfterTargets="_GetReferenceAssemblyPaths;_BeforeCoreCompileInterfaceDefinitions"
         Condition="'$(DesignTimeBuild)' != 'true' ">
@@ -70,6 +77,39 @@
             <Output TaskParameter="TapSettingsOutput" ItemName="TapSettings"/>
         </LoadTapBuildConfig>
     </Target>
+    
+    <!-- have to repeat for library. must be better way -->
+    <Target Name="LoadTapBuildConfigForLibrary" 
+        BeforeTargets="Build"
+        Condition="'$(DesignTimeBuild)' != 'true' And '$(TargetFrameworkIdentifier)' != 'MonoAndroid' And '$(TargetFrameworkIdentifier)' != 'Xamarin.iOS' ">
+        <LoadTapBuildConfig 
+            TapSettings="@(TapSettings)"
+            ProjectName="$(MSBuildProjectName)" 
+            BuildConfiguration="$(Configuration)" 
+            ProjectDir="$(MSBuildProjectDirectory)" 
+            TargetFrameworkIdentifier='$(TargetFrameworkIdentifier)'>
+                <Output TaskParameter="TapAssetDir" PropertyName="TapAssetDir" />
+                <Output TaskParameter="PackagingFieldOutput" ItemName="PackagingFields" />
+                <Output TaskParameter="AppIconFieldOutput" ItemName="AppIconFields" />
+                <Output TaskParameter="SplashFieldOutput" ItemName="SplashFields" />
+                <Output TaskParameter="FileExchangeFieldOutput" ItemName="FileExchangeFields" />
+
+                <Output TaskParameter="BuildConfigHolderOutput" ItemName="BuildConfigHolder" />
+                <Output TaskParameter="PackagingHolderOutput" ItemName="PackagingHolder" />
+                <Output TaskParameter="AppIconHolderOutput" ItemName="AppIconHolder" />
+                <Output TaskParameter="SplashHolderOutput" ItemName="SplashHolder" />
+                <Output TaskParameter="FileExchangeHolderOutput" ItemName="FileExchangeHolder" />
+            
+                <Output TaskParameter="AssetCatalogueName" ItemName="AssetCatalogueName"/>
+                <Output TaskParameter="MediaAccessKey" PropertyName="MediaAccessKey"/>
+                <Output TaskParameter="TapAppId" PropertyName="TapAppId" />
+                
+                <Output TaskParameter="TapAssetDirRelative" PropertyName="TapAssetDirRelative" />
+
+                <Output TaskParameter="TapShouldContinue" PropertyName="TapShouldContinue" />
+            <Output TaskParameter="TapSettingsOutput" ItemName="TapSettings"/>
+        </LoadTapBuildConfig>
+    </Target>    
     
     <Target Name="DeleteUnusedMediaFiles" 
         AfterTargets="LoadTapBuildConfig"
@@ -134,7 +174,7 @@
     </Target>
     
     <Target Name="SetFileExchangeSourceToNone"
-        AfterTargets="SetDroidManifest" 
+        AfterTargets="SetDroidManifest;LoadTapBuildConfigForLibrary" 
         Condition=" '$(TapShouldContinue)' == 'True' ">
         <ItemGroup>
             <!-- Shared -->
@@ -237,7 +277,7 @@
     </Target>
     
     <Target Name="SetFileExchangeDestination"
-        AfterTargets="SetFileExchangeSourceToNone" 
+        AfterTargets="SetFileExchangeSourceToNone;LoadTapBuildConfigForLibrary" 
         Condition=" '$(TapShouldContinue)' == 'True' ">
         
         <ItemGroup>

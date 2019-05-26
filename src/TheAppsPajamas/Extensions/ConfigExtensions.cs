@@ -188,8 +188,8 @@ namespace TheAppsPajamas.Extensions
         {
             baseTask.LogDebug("Deserializing ClientConfigDto, length '{0}'", json.Length);
             var clientConfigDto = JsonConvert.DeserializeObject<ClientConfigDto>(json);
-            baseTask.LogDebug("Deserialized ClientConfigDto, packagingFields: '{0}', appIconFields: '{1}', splashFields: '{2}'"
-                              , clientConfigDto.Packaging.Fields.Count, clientConfigDto.AppIcon.Fields.Count, clientConfigDto.Splash.Fields.Count);
+            baseTask.LogDebug("Deserialized ClientConfigDto, packagingFields: '{0}', appIconFields: '{1}', splashFields: '{2}', fileExchangeFields: '{3'"
+                              , clientConfigDto.Packaging.Fields.Count, clientConfigDto.AppIcon.Fields.Count, clientConfigDto.Splash.Fields.Count, clientConfigDto.FileExchange.Fields.Count);
             return clientConfigDto;
         }
 

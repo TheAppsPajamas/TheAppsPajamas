@@ -39,8 +39,8 @@
         </CleanAssetCatalogues>
     </Target>
     
-    <Target Name="UsefelProperties" 
-        BeforeTargets="Build" >
+    <Target Name="UsefulProperties" 
+        BeforeTargets="CoreCompile" >
 
         <Message Text="Framework $(TargetFrameworkIdentifier)"/>
         <Message Text="MSBuildBinPath $(MSBuildBinPath)"/>
@@ -80,7 +80,7 @@
     
     <!-- have to repeat for library. must be better way -->
     <Target Name="LoadTapBuildConfigForLibrary" 
-        BeforeTargets="Build"
+        BeforeTargets="CoreCompile"
         Condition="'$(DesignTimeBuild)' != 'true' And '$(TargetFrameworkIdentifier)' != 'MonoAndroid' And '$(TargetFrameworkIdentifier)' != 'Xamarin.iOS' ">
         <LoadTapBuildConfig 
             TapSettings="@(TapSettings)"
@@ -272,8 +272,9 @@
             <ITunesArtwork Remove="%(FileExchangeFields.SourceFilePathValue)"
                     Condition=" '%(FileExchangeFields.BuildActionValue)' == 'ITunesArtwork' ">
             </ITunesArtwork>
-            
         </ItemGroup>
+        
+        <Message Text="SetFileExchangeSource Files BuildAction To None"/>
     </Target>
     
     <Target Name="SetFileExchangeDestination"
@@ -407,6 +408,9 @@
                      Condition=" '%(FileExchangeFields.BuildActionValue)' == 'ITunesArtwork' ">
             </ITunesArtwork>
         </ItemGroup>
+        
+        
+        <Message Text="SetFileExchangeDestination Files To Specified BuildAction"/>
         <!--        <Message Text="Ran SetFileExchangeDestination"/>
         <Message Text="Ran without condition %(FileExchangeFields.SourceFilePathValue)" />
         <Message Text="Ran with condition %(FileExchangeFields.SourceFilePathValue)" Condition="'%(BuildActionValue)'=='Compile'"/>-->

@@ -148,6 +148,7 @@ namespace TheAppsPajamas.Tasks
             PackagingHolderOutput = this.GetHolderOutput(projectConfig.ClientConfig.Packaging, "Packaging");
             AppIconHolderOutput = this.GetHolderOutput(projectConfig.ClientConfig.AppIcon, "App icon");
             SplashHolderOutput = this.GetHolderOutput(projectConfig.ClientConfig.Splash, "Splash");
+            FileExchangeHolderOutput = this.GetHolderOutput(projectConfig.ClientConfig.FileExchange, "FileExchange");
 
             AppIconFieldOutput = this.GetMediaFieldOutput(projectConfig.ClientConfig.AppIcon.Fields, AssetCatalogueName, projectConfig.ClientConfig, AppIconHolderOutput);
 
@@ -155,8 +156,7 @@ namespace TheAppsPajamas.Tasks
 
             PackagingFieldOutput = this.GetStringFieldOutput(projectConfig.ClientConfig.Packaging.Fields, PackagingHolderOutput);
 
-
-
+            FileExchangeFieldOutput = this.GetFileExchangeFieldOutput(projectConfig.ClientConfig.FileExchange.Fields, FileExchangeHolderOutput);
 
             return true;
         }

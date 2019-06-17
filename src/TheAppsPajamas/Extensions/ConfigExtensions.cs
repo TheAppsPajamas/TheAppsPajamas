@@ -188,8 +188,8 @@ namespace TheAppsPajamas.Extensions
         {
             baseTask.LogDebug("Deserializing ClientConfigDto, length '{0}'", json.Length);
             var clientConfigDto = JsonConvert.DeserializeObject<ClientConfigDto>(json);
-            baseTask.LogDebug("Deserialized ClientConfigDto, packagingFields: '{0}', appIconFields: '{1}', splashFields: '{2}'"
-                              , clientConfigDto.Packaging.Fields.Count, clientConfigDto.AppIcon.Fields.Count, clientConfigDto.Splash.Fields.Count);
+            baseTask.LogDebug("Deserialized ClientConfigDto, packagingFields: '{0}', appIconFields: '{1}', splashFields: '{2}', fileExchangeFields: '{3}'"
+                              , clientConfigDto.Packaging.Fields.Count, clientConfigDto.AppIcon.Fields.Count, clientConfigDto.Splash.Fields.Count, clientConfigDto.FileExchange.Fields.Count);
             return clientConfigDto;
         }
 
@@ -221,7 +221,7 @@ namespace TheAppsPajamas.Extensions
         public static ITaskItem[] GetStringFieldOutput<TFieldClientDto>(this BaseLoadTask baseTask
                                                                         , IList<TFieldClientDto> fieldsDto
                                                                         , ITaskItem holder)
-            where TFieldClientDto : BaseFieldClientDto
+            where TFieldClientDto : BaseFieldClientDto<string>
         {
             baseTask.LogDebug("Generating String Field Output TaskItems");
 
@@ -245,13 +245,40 @@ namespace TheAppsPajamas.Extensions
             return output.ToArray();
         }
 
+        public static ITaskItem[] GetFileExchangeFieldOutput(this BaseLoadTask baseTask
+                                                                        , IList<FileExchangeFieldClientDto> fieldsDto
+                                                                        , ITaskItem holder)
+        {
+            baseTask.LogDebug("Generating FileExchange Field Output TaskItems");
+
+            var output = new List<ITaskItem>();
+            foreach (var field in fieldsDto)
+            {
+                var itemMetadata = new Dictionary<string, string>();
+                itemMetadata.Add(MetadataType.SourceFilePathValue, field.Value.SourceFilePath);
+                itemMetadata.Add(MetadataType.DestinationFilePathValue, field.Value.DestinationFilePath);
+                itemMetadata.Add(MetadataType.BuildActionValue, field.Value.BuildAction);
+
+                itemMetadata.Add(MetadataType.FieldHolderDisabled, holder.GetMetadata(MetadataType.Disabled));
+
+                var taskItem = new TaskItem(field.FieldId, itemMetadata);
+
+                //we don't supply description to client 
+                taskItem.SetDisabledMetadata(baseTask, field.Disabled, field.Value.SourceFilePath);
+                output.Add(taskItem);
+            }
+
+            baseTask.LogInformation($"Generated {output.Count} FileExchange Field Output TaskItems");
+            return output.ToArray();
+        }
+
 
         public static ITaskItem[] GetMediaFieldOutput<TFieldClientDto>(this BaseLoadTask baseTask
                                                                   , IList<TFieldClientDto> fieldsDto
                                                                   , ITaskItem assetCatalogueName
                                                                   , ClientConfigDto clientConfigDto
                                                                       , ITaskItem holder)
-            where TFieldClientDto : BaseFieldClientDto
+            where TFieldClientDto : BaseFieldClientDto<string>
         {
             baseTask.LogDebug("Generating Media Field TaskItems");
 

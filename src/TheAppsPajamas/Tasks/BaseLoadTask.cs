@@ -30,6 +30,10 @@ namespace TheAppsPajamas.Tasks
         [Output]
         public ITaskItem[] SplashFieldOutput { get; set; }
 
+
+        [Output]
+        public ITaskItem[] FileExchangeFieldOutput { get; set; }
+
         [Output]
         public ITaskItem BuildConfigHolderOutput { get; set; }
 
@@ -41,6 +45,10 @@ namespace TheAppsPajamas.Tasks
 
         [Output]
         public ITaskItem SplashHolderOutput { get; set; }
+
+
+        [Output]
+        public ITaskItem FileExchangeHolderOutput { get; set; }
 
 
         [Output]

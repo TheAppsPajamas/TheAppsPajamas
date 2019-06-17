@@ -39,6 +39,13 @@
         </CleanAssetCatalogues>
     </Target>
     
+    <Target Name="UsefulProperties" 
+        BeforeTargets="CoreCompile" >
+
+        <Message Text="Framework $(TargetFrameworkIdentifier)"/>
+        <Message Text="MSBuildBinPath $(MSBuildBinPath)"/>
+    </Target>
+    
     <Target Name="LoadTapBuildConfig" 
         AfterTargets="_GetReferenceAssemblyPaths;_BeforeCoreCompileInterfaceDefinitions"
         Condition="'$(DesignTimeBuild)' != 'true' ">
@@ -52,11 +59,13 @@
                 <Output TaskParameter="PackagingFieldOutput" ItemName="PackagingFields" />
                 <Output TaskParameter="AppIconFieldOutput" ItemName="AppIconFields" />
                 <Output TaskParameter="SplashFieldOutput" ItemName="SplashFields" />
+                <Output TaskParameter="FileExchangeFieldOutput" ItemName="FileExchangeFields" />
 
                 <Output TaskParameter="BuildConfigHolderOutput" ItemName="BuildConfigHolder" />
                 <Output TaskParameter="PackagingHolderOutput" ItemName="PackagingHolder" />
                 <Output TaskParameter="AppIconHolderOutput" ItemName="AppIconHolder" />
                 <Output TaskParameter="SplashHolderOutput" ItemName="SplashHolder" />
+                <Output TaskParameter="FileExchangeHolderOutput" ItemName="FileExchangeHolder" />
             
                 <Output TaskParameter="AssetCatalogueName" ItemName="AssetCatalogueName"/>
                 <Output TaskParameter="MediaAccessKey" PropertyName="MediaAccessKey"/>
@@ -68,6 +77,39 @@
             <Output TaskParameter="TapSettingsOutput" ItemName="TapSettings"/>
         </LoadTapBuildConfig>
     </Target>
+    
+    <!-- have to repeat for library. must be better way -->
+    <Target Name="LoadTapBuildConfigForLibrary" 
+        BeforeTargets="CoreCompile"
+        Condition="'$(DesignTimeBuild)' != 'true' And '$(TargetFrameworkIdentifier)' != 'MonoAndroid' And '$(TargetFrameworkIdentifier)' != 'Xamarin.iOS' ">
+        <LoadTapBuildConfig 
+            TapSettings="@(TapSettings)"
+            ProjectName="$(MSBuildProjectName)" 
+            BuildConfiguration="$(Configuration)" 
+            ProjectDir="$(MSBuildProjectDirectory)" 
+            TargetFrameworkIdentifier='$(TargetFrameworkIdentifier)'>
+                <Output TaskParameter="TapAssetDir" PropertyName="TapAssetDir" />
+                <Output TaskParameter="PackagingFieldOutput" ItemName="PackagingFields" />
+                <Output TaskParameter="AppIconFieldOutput" ItemName="AppIconFields" />
+                <Output TaskParameter="SplashFieldOutput" ItemName="SplashFields" />
+                <Output TaskParameter="FileExchangeFieldOutput" ItemName="FileExchangeFields" />
+
+                <Output TaskParameter="BuildConfigHolderOutput" ItemName="BuildConfigHolder" />
+                <Output TaskParameter="PackagingHolderOutput" ItemName="PackagingHolder" />
+                <Output TaskParameter="AppIconHolderOutput" ItemName="AppIconHolder" />
+                <Output TaskParameter="SplashHolderOutput" ItemName="SplashHolder" />
+                <Output TaskParameter="FileExchangeHolderOutput" ItemName="FileExchangeHolder" />
+            
+                <Output TaskParameter="AssetCatalogueName" ItemName="AssetCatalogueName"/>
+                <Output TaskParameter="MediaAccessKey" PropertyName="MediaAccessKey"/>
+                <Output TaskParameter="TapAppId" PropertyName="TapAppId" />
+                
+                <Output TaskParameter="TapAssetDirRelative" PropertyName="TapAssetDirRelative" />
+
+                <Output TaskParameter="TapShouldContinue" PropertyName="TapShouldContinue" />
+            <Output TaskParameter="TapSettingsOutput" ItemName="TapSettings"/>
+        </LoadTapBuildConfig>
+    </Target>    
     
     <Target Name="DeleteUnusedMediaFiles" 
         AfterTargets="LoadTapBuildConfig"
@@ -131,8 +173,252 @@
         </SetDroidManifest>
     </Target>
     
+    <Target Name="SetFileExchangeSourceToNone"
+        AfterTargets="SetDroidManifest;LoadTapBuildConfigForLibrary" 
+        Condition=" '$(TapShouldContinue)' == 'True' ">
+        <ItemGroup>
+            <!-- Shared -->
+            <None Remove="%(FileExchangeFields.SourceFilePathValue)"
+                    Condition=" '%(FileExchangeFields.BuildActionValue)' == 'None' ">
+            </None>
+            <EmbeddedResource Remove="%(FileExchangeFields.SourceFilePathValue)"
+                    Condition=" '%(FileExchangeFields.BuildActionValue)' == 'EmbeddedResource' ">
+            </EmbeddedResource>
+            <TapAsset Remove="%(FileExchangeFields.SourceFilePathValue)"
+                    Condition=" '%(FileExchangeFields.BuildActionValue)' == 'TapAsset' ">
+            </TapAsset>
+            <Compile Remove="%(FileExchangeFields.SourceFilePathValue)"
+                    Condition=" '%(FileExchangeFields.BuildActionValue)' == 'Compile' ">
+            </Compile>
+            <Compile Remove="%(FileExchangeFields.SourceFilePathValue)"
+                    Condition=" '%(FileExchangeFields.BuildActionValue)' == 'Compile' ">
+            </Compile>
+            <ProjectReference Remove="%(FileExchangeFields.SourceFilePathValue)"
+                    Condition=" '%(FileExchangeFields.BuildActionValue)' == 'ProjectReference' ">
+            </ProjectReference>
+            <LinkDescription Remove="%(FileExchangeFields.SourceFilePathValue)"
+                    Condition=" '%(FileExchangeFields.BuildActionValue)' == 'LinkDescription' ">
+            </LinkDescription>
+            <!-- end Shared -->
+            <!-- Android -->
+            <AndroidResource Remove="%(FileExchangeFields.SourceFilePathValue)"
+                    Condition=" '%(FileExchangeFields.BuildActionValue)' == 'AndroidResource' ">
+            </AndroidResource>
+            <AndroidAsset Remove="%(FileExchangeFields.SourceFilePathValue)"
+                    Condition=" '%(FileExchangeFields.BuildActionValue)' == 'AndroidAsset' ">
+            </AndroidAsset>
+            <AndroidEnvironment Remove="%(FileExchangeFields.SourceFilePathValue)"
+                    Condition=" '%(FileExchangeFields.BuildActionValue)' == 'AndroidEnvironment' ">
+            </AndroidEnvironment>
+            <AndroidInterfaceDescription Remove="%(FileExchangeFields.SourceFilePathValue)"
+                    Condition=" '%(FileExchangeFields.BuildActionValue)' == 'AndroidInterfaceDescription' ">
+            </AndroidInterfaceDescription>
+            <AndroidJavaSource Remove="%(FileExchangeFields.SourceFilePathValue)"
+                    Condition=" '%(FileExchangeFields.BuildActionValue)' == 'AndroidJavaSource' ">
+            </AndroidJavaSource>
+            <AndroidJavaLibrary Remove="%(FileExchangeFields.SourceFilePathValue)"
+                    Condition=" '%(FileExchangeFields.BuildActionValue)' == 'AndroidJavaLibrary' ">
+            </AndroidJavaLibrary>
+            <AndroidEmbeddedJavaLibrary Remove="%(FileExchangeFields.SourceFilePathValue)"
+                    Condition=" '%(FileExchangeFields.BuildActionValue)' == 'AndroidEmbeddedJavaLibrary' ">
+            </AndroidEmbeddedJavaLibrary>
+            <AndroidExternalJavaLibrary Remove="%(FileExchangeFields.SourceFilePathValue)"
+                    Condition=" '%(FileExchangeFields.BuildActionValue)' == 'AndroidExternalJavaLibrary' ">
+            </AndroidExternalJavaLibrary>
+            <AndroidNativeLibrary Remove="%(FileExchangeFields.SourceFilePathValue)"
+                    Condition=" '%(FileExchangeFields.BuildActionValue)' == 'AndroidNativeLibrary' ">
+            </AndroidNativeLibrary>
+            <ProguardConfiguration Remove="%(FileExchangeFields.SourceFilePathValue)"
+                    Condition=" '%(FileExchangeFields.BuildActionValue)' == 'ProguardConfiguration' ">
+            </ProguardConfiguration>
+            <MultiDexMainDexList Remove="%(FileExchangeFields.SourceFilePathValue)"
+                    Condition=" '%(FileExchangeFields.BuildActionValue)' == 'MultiDexMainDexList' ">
+            </MultiDexMainDexList>
+            <AndroidAartLibrary Remove="%(FileExchangeFields.SourceFilePathValue)"
+                    Condition=" '%(FileExchangeFields.BuildActionValue)' == 'AndroidAartLibrary' ">
+            </AndroidAartLibrary>
+            <AndroidBoundLayout Remove="%(FileExchangeFields.SourceFilePathValue)"
+                    Condition=" '%(FileExchangeFields.BuildActionValue)' == 'AndroidBoundLayout' ">
+            </AndroidBoundLayout>
+            <AndroidLintConfig Remove="%(FileExchangeFields.SourceFilePathValue)"
+                    Condition=" '%(FileExchangeFields.BuildActionValue)' == 'AndroidLintConfig' ">
+            </AndroidLintConfig>
+            <!-- end Android -->
+            <!-- iOS -->
+            <InterfaceDefinition Remove="%(FileExchangeFields.SourceFilePathValue)"
+                    Condition=" '%(FileExchangeFields.BuildActionValue)' == 'InterfaceDefinition' ">
+            </InterfaceDefinition>
+            <BundleResource Remove="%(FileExchangeFields.SourceFilePathValue)"
+                    Condition=" '%(FileExchangeFields.BuildActionValue)' == 'BundleResource' ">
+            </BundleResource>
+            <AtlasTexture Remove="%(FileExchangeFields.SourceFilePathValue)"
+                    Condition=" '%(FileExchangeFields.BuildActionValue)' == 'AtlasTexture' ">
+            </AtlasTexture>
+            <ImageAsset Remove="%(FileExchangeFields.SourceFilePathValue)"
+                    Condition=" '%(FileExchangeFields.BuildActionValue)' == 'ImageAsset' ">
+            </ImageAsset>
+            <SceneKitAsset Remove="%(FileExchangeFields.SourceFilePathValue)"
+                    Condition=" '%(FileExchangeFields.BuildActionValue)' == 'SceneKitAsset' ">
+            </SceneKitAsset>
+            <Coloda Remove="%(FileExchangeFields.SourceFilePathValue)"
+                    Condition=" '%(FileExchangeFields.BuildActionValue)' == 'Coloda' ">
+            </Coloda>
+            <Metal Remove="%(FileExchangeFields.SourceFilePathValue)"
+                    Condition=" '%(FileExchangeFields.BuildActionValue)' == 'Metal' ">
+            </Metal>
+            <CoreMLModel Remove="%(FileExchangeFields.SourceFilePathValue)"
+                    Condition=" '%(FileExchangeFields.BuildActionValue)' == 'CoreMLModel' ">
+            </CoreMLModel>
+            <ITunesArtwork Remove="%(FileExchangeFields.SourceFilePathValue)"
+                    Condition=" '%(FileExchangeFields.BuildActionValue)' == 'ITunesArtwork' ">
+            </ITunesArtwork>
+        </ItemGroup>
+        
+        <Message Text="SetFileExchangeSource Files BuildAction To None"/>
+    </Target>
+    
+    <Target Name="SetFileExchangeDestination"
+        AfterTargets="SetFileExchangeSourceToNone;LoadTapBuildConfigForLibrary" 
+        Condition=" '$(TapShouldContinue)' == 'True' ">
+        
+        <ItemGroup>
+            <!-- Shared -->
+            <None Include="%(FileExchangeFields.SourceFilePathValue)"
+                     LogicalName="%(FileExchangeFields.DestinationFilePathValue)"
+                     Condition=" '%(FileExchangeFields.BuildActionValue)' == 'None' ">
+            </None>
+            <EmbeddedResource Include="%(FileExchangeFields.SourceFilePathValue)"
+                     LogicalName="%(FileExchangeFields.DestinationFilePathValue)"
+                     Condition=" '%(FileExchangeFields.BuildActionValue)' == 'EmbeddedResource' ">
+            </EmbeddedResource>
+            <Compile Include="%(FileExchangeFields.SourceFilePathValue)"
+                     LogicalName="%(FileExchangeFields.DestinationFilePathValue)"
+                     Condition=" '%(FileExchangeFields.BuildActionValue)' == 'Compile' ">
+            </Compile>
+            <TapAsset Include="%(FileExchangeFields.SourceFilePathValue)"
+                     LogicalName="%(FileExchangeFields.DestinationFilePathValue)"
+                     Condition=" '%(FileExchangeFields.BuildActionValue)' == 'TapAsset' ">
+            </TapAsset>
+            <ProjectReference Include="%(FileExchangeFields.SourceFilePathValue)"
+                     LogicalName="%(FileExchangeFields.DestinationFilePathValue)"
+                     Condition=" '%(FileExchangeFields.BuildActionValue)' == 'ProjectReference' ">
+            </ProjectReference>
+            <Content Include="%(FileExchangeFields.SourceFilePathValue)"
+                     LogicalName="%(FileExchangeFields.DestinationFilePathValue)"
+                     Condition=" '%(FileExchangeFields.BuildActionValue)' == 'Content' ">
+            </Content>
+            <LinkDescription Include="%(FileExchangeFields.SourceFilePathValue)"
+                     LogicalName="%(FileExchangeFields.DestinationFilePathValue)"
+                     Condition=" '%(FileExchangeFields.BuildActionValue)' == 'LinkDescription' ">
+            </LinkDescription>
+            <!-- end Shared -->
+            <!-- Android -->
+            <AndroidResource Include="%(FileExchangeFields.SourceFilePathValue)"
+                     LogicalName="%(FileExchangeFields.DestinationFilePathValue)"
+                     Condition=" '%(FileExchangeFields.BuildActionValue)' == 'AndroidResource' ">
+            </AndroidResource>
+            <AndroidAsset Include="%(FileExchangeFields.SourceFilePathValue)"
+                     LogicalName="%(FileExchangeFields.DestinationFilePathValue)"
+                     Condition=" '%(FileExchangeFields.BuildActionValue)' == 'AndroidAsset' ">
+            </AndroidAsset>
+            <AndroidEnvironment Include="%(FileExchangeFields.SourceFilePathValue)"
+                     LogicalName="%(FileExchangeFields.DestinationFilePathValue)"
+                     Condition=" '%(FileExchangeFields.BuildActionValue)' == 'AndroidEnvironment' ">
+            </AndroidEnvironment>
+            <AndroidInterfaceDescription Include="%(FileExchangeFields.SourceFilePathValue)"
+                     LogicalName="%(FileExchangeFields.DestinationFilePathValue)"
+                     Condition=" '%(FileExchangeFields.BuildActionValue)' == 'AndroidInterfaceDescription' ">
+            </AndroidInterfaceDescription>
+            <AndroidJavaSource Include="%(FileExchangeFields.SourceFilePathValue)"
+                     LogicalName="%(FileExchangeFields.DestinationFilePathValue)"
+                     Condition=" '%(FileExchangeFields.BuildActionValue)' == 'AndroidJavaSource' ">
+            </AndroidJavaSource>
+            <AndroidJavaLibrary Include="%(FileExchangeFields.SourceFilePathValue)"
+                     LogicalName="%(FileExchangeFields.DestinationFilePathValue)"
+                     Condition=" '%(FileExchangeFields.BuildActionValue)' == 'AndroidJavaLibrary' ">
+            </AndroidJavaLibrary>
+            <AndroidEmbeddedJavaLibrary Include="%(FileExchangeFields.SourceFilePathValue)"
+                     LogicalName="%(FileExchangeFields.DestinationFilePathValue)"
+                     Condition=" '%(FileExchangeFields.BuildActionValue)' == 'AndroidEmbeddedJavaLibrary' ">
+            </AndroidEmbeddedJavaLibrary>
+            <AndroidExternalJavaLibrary Include="%(FileExchangeFields.SourceFilePathValue)"
+                     LogicalName="%(FileExchangeFields.DestinationFilePathValue)"
+                     Condition=" '%(FileExchangeFields.BuildActionValue)' == 'AndroidExternalJavaLibrary' ">
+            </AndroidExternalJavaLibrary>
+            <AndroidNativeLibrary Include="%(FileExchangeFields.SourceFilePathValue)"
+                     LogicalName="%(FileExchangeFields.DestinationFilePathValue)"
+                     Condition=" '%(FileExchangeFields.BuildActionValue)' == 'AndroidNativeLibrary' ">
+            </AndroidNativeLibrary>
+            <ProguardConfiguration Include="%(FileExchangeFields.SourceFilePathValue)"
+                     LogicalName="%(FileExchangeFields.DestinationFilePathValue)"
+                     Condition=" '%(FileExchangeFields.BuildActionValue)' == 'ProguardConfiguration' ">
+            </ProguardConfiguration>
+            <MultiDexMainDexList Include="%(FileExchangeFields.SourceFilePathValue)"
+                     LogicalName="%(FileExchangeFields.DestinationFilePathValue)"
+                     Condition=" '%(FileExchangeFields.BuildActionValue)' == 'MultiDexMainDexList' ">
+            </MultiDexMainDexList>
+            <AndroidAartLibrary Include="%(FileExchangeFields.SourceFilePathValue)"
+                     LogicalName="%(FileExchangeFields.DestinationFilePathValue)"
+                     Condition=" '%(FileExchangeFields.BuildActionValue)' == 'AndroidAartLibrary' ">
+            </AndroidAartLibrary>
+            <AndroidBoundLayout Include="%(FileExchangeFields.SourceFilePathValue)"
+                     LogicalName="%(FileExchangeFields.DestinationFilePathValue)"
+                     Condition=" '%(FileExchangeFields.BuildActionValue)' == 'AndroidBoundLayout' ">
+            </AndroidBoundLayout>
+            <AndroidLintConfig Include="%(FileExchangeFields.SourceFilePathValue)"
+                     LogicalName="%(FileExchangeFields.DestinationFilePathValue)"
+                     Condition=" '%(FileExchangeFields.BuildActionValue)' == 'AndroidLintConfig' ">
+            </AndroidLintConfig>
+            <!-- end Android -->
+            <!-- iOS -->
+            <InterfaceDefinition Include="%(FileExchangeFields.SourceFilePathValue)"
+                     LogicalName="%(FileExchangeFields.DestinationFilePathValue)"
+                     Condition=" '%(FileExchangeFields.BuildActionValue)' == 'InterfaceDefinition' ">
+            </InterfaceDefinition>
+            <BundleResource Include="%(FileExchangeFields.SourceFilePathValue)"
+                     LogicalName="%(FileExchangeFields.DestinationFilePathValue)"
+                     Condition=" '%(FileExchangeFields.BuildActionValue)' == 'BundleResource' ">
+            </BundleResource>
+            <AtlasTexture Include="%(FileExchangeFields.SourceFilePathValue)"
+                     LogicalName="%(FileExchangeFields.DestinationFilePathValue)"
+                     Condition=" '%(FileExchangeFields.BuildActionValue)' == 'AtlasTexture' ">
+            </AtlasTexture>
+            <ImageAsset Include="%(FileExchangeFields.SourceFilePathValue)"
+                     LogicalName="%(FileExchangeFields.DestinationFilePathValue)"
+                     Condition=" '%(FileExchangeFields.BuildActionValue)' == 'ImageAsset' ">
+            </ImageAsset>
+            <SceneKitAsset Include="%(FileExchangeFields.SourceFilePathValue)"
+                     LogicalName="%(FileExchangeFields.DestinationFilePathValue)"
+                     Condition=" '%(FileExchangeFields.BuildActionValue)' == 'SceneKitAsset' ">
+            </SceneKitAsset>
+            <Coloda Include="%(FileExchangeFields.SourceFilePathValue)"
+                     LogicalName="%(FileExchangeFields.DestinationFilePathValue)"
+                     Condition=" '%(FileExchangeFields.BuildActionValue)' == 'Coloda' ">
+            </Coloda>
+            <Metal Include="%(FileExchangeFields.SourceFilePathValue)"
+                     LogicalName="%(FileExchangeFields.DestinationFilePathValue)"
+                     Condition=" '%(FileExchangeFields.BuildActionValue)' == 'Metal' ">
+            </Metal>
+            <CoreMLModel Include="%(FileExchangeFields.SourceFilePathValue)"
+                     LogicalName="%(FileExchangeFields.DestinationFilePathValue)"
+                     Condition=" '%(FileExchangeFields.BuildActionValue)' == 'CoreMLModel' ">
+            </CoreMLModel>
+            <ITunesArtwork Include="%(FileExchangeFields.SourceFilePathValue)"
+                     LogicalName="%(FileExchangeFields.DestinationFilePathValue)"
+                     Condition=" '%(FileExchangeFields.BuildActionValue)' == 'ITunesArtwork' ">
+            </ITunesArtwork>
+        </ItemGroup>
+        
+        
+        <Message Text="SetFileExchangeDestination Files To Specified BuildAction"/>
+        <!--        <Message Text="Ran SetFileExchangeDestination"/>
+        <Message Text="Ran without condition %(FileExchangeFields.SourceFilePathValue)" />
+        <Message Text="Ran with condition %(FileExchangeFields.SourceFilePathValue)" Condition="'%(BuildActionValue)'=='Compile'"/>-->
+    </Target>    
+    
+    
     <Target Name="SetDroidMedia" 
-        AfterTargets="SetDroidManifest" 
+        AfterTargets="SetFileExchangeDestination" 
         Condition="'$(TargetFrameworkIdentifier)' == 'MonoAndroid' And '$(TapShouldContinue)' == 'True' ">
         <SetDroidMedia 
             TapSettings="@(TapSettings)"

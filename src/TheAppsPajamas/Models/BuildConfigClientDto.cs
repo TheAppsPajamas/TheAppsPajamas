@@ -1,7 +1,7 @@
 ﻿using System;
 namespace TheAppsPajamas.Models
 {
-    public class BuildConfigClientClientDto : BaseHolderClientDto<StringFieldClientDto>
+    public class BuildConfigClientClientDto : BaseHolderClientDto<StringFieldClientDto, string>
     {
     }
 }

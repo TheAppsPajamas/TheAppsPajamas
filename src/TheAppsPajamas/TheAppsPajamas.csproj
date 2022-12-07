@@ -49,8 +49,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
       <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="9.0.1">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
         </PackageReference>
     <!-- Marks all packages as 'local only' so they don't end up in the nuspec. -->
     <PackageReference Update="@(PackageReference)" PrivateAssets="All" />
